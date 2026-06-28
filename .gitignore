@@ -1,0 +1,27 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.idea/
+.vscode/
+*.swp
+
+# Claude Code — may contain credentials
+.claude/
+
+# Xcode / iOS (when added)
+DerivedData/
+*.xcuserstate
+xcuserdata/
+build/
+*.ipa
+*.dSYM.zip
+
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Node (if any tooling added later)
+node_modules/
