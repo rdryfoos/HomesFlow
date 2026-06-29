@@ -1,0 +1,694 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		1722B1ACE322FE2FA06754B8 /* AuthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60414CD441B73249944E83F4 /* AuthView.swift */; };
+		2A02F0FC48E56B2DD0627BB2 /* NetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D4B91998F226F2A6A692880 /* NetworkMonitor.swift */; };
+		2DD10E22B53C7F762C0C8E24 /* PermissionServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9ADD6A2E347D891C2C1B0E8D /* PermissionServiceTests.swift */; };
+		42B2D02124FD78D2B2E51FA1 /* SwiftDataModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 202D9DB27925A958E207D429 /* SwiftDataModels.swift */; };
+		47452E66A214480A18D45100 /* SupabaseConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10EF2773A56AA32BB0F9C556 /* SupabaseConfig.swift */; };
+		48C127EED88CD74CF221603F /* HomeFlowUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33213B4805ED062B656B0320 /* HomeFlowUITests.swift */; };
+		567510031EA05B1113D6FC6B /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FD7A866773F9C47EAFBED1B /* DashboardView.swift */; };
+		5FF8919A11BADF5CCEF374EC /* SyncEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3BFD92FD120F1ABCD3DD57D /* SyncEngine.swift */; };
+		6C825E505BECCFE0A496263F /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = 60FC5960D5740F386C342B50 /* Supabase */; };
+		6CB0E839149BBC53CCD9CB2C /* Secrets.xcconfig.example in Resources */ = {isa = PBXBuildFile; fileRef = B1DD90540655FA98347267C7 /* Secrets.xcconfig.example */; };
+		8B3075FC9E428CE58FC66133 /* PermissionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CF9D16647D19E7853C52246 /* PermissionService.swift */; };
+		8B4E453C70FCC3711FE17255 /* HomeFlowApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1CD4F9264B8E65BF4B75240 /* HomeFlowApp.swift */; };
+		B8B2DDB29BBC436B18FD38B8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B8EA1C0B8D56E94220543B63 /* Assets.xcassets */; };
+		C66085F8C146521809D6E671 /* DomainEnums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53C5D96F41A0A87D10BD1AF6 /* DomainEnums.swift */; };
+		C825A3509D94B360ED7184C0 /* ActivityLogService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8233B3D385B58C52FAC3D9E /* ActivityLogService.swift */; };
+		CCA37724D9C0870EE62062C5 /* AppRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 065E11DA60C5236E9094516D /* AppRouter.swift */; };
+		EFDD81EA5F10127E3496161A /* SupabaseClientProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A55055DFB89B27A44EE4537 /* SupabaseClientProvider.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		02F77D834EB8EA94AAB23EC0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1B162E3B3C8213AD6479791F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 98683CA64C9F06E51878D55A;
+			remoteInfo = HomeFlow;
+		};
+		82C57DBA384CF4424F2F2058 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1B162E3B3C8213AD6479791F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 98683CA64C9F06E51878D55A;
+			remoteInfo = HomeFlow;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		0235D13863B7B80F3C4C1853 /* HomeFlowUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = HomeFlowUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		065E11DA60C5236E9094516D /* AppRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRouter.swift; sourceTree = "<group>"; };
+		0A7B265F1408F64C1E951AD6 /* HomeFlow.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = HomeFlow.entitlements; sourceTree = "<group>"; };
+		10EF2773A56AA32BB0F9C556 /* SupabaseConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseConfig.swift; sourceTree = "<group>"; };
+		202D9DB27925A958E207D429 /* SwiftDataModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftDataModels.swift; sourceTree = "<group>"; };
+		2E273D44AB8D24A9FA10E46A /* HomeFlowTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = HomeFlowTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		33213B4805ED062B656B0320 /* HomeFlowUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeFlowUITests.swift; sourceTree = "<group>"; };
+		4A55055DFB89B27A44EE4537 /* SupabaseClientProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseClientProvider.swift; sourceTree = "<group>"; };
+		4FD7A866773F9C47EAFBED1B /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
+		53C5D96F41A0A87D10BD1AF6 /* DomainEnums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainEnums.swift; sourceTree = "<group>"; };
+		60414CD441B73249944E83F4 /* AuthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthView.swift; sourceTree = "<group>"; };
+		7D4B91998F226F2A6A692880 /* NetworkMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMonitor.swift; sourceTree = "<group>"; };
+		8085E2B49EE2ABC4C37EF2A9 /* Secrets.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Secrets.xcconfig; sourceTree = "<group>"; };
+		9ADD6A2E347D891C2C1B0E8D /* PermissionServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionServiceTests.swift; sourceTree = "<group>"; };
+		9CF9D16647D19E7853C52246 /* PermissionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionService.swift; sourceTree = "<group>"; };
+		B1DD90540655FA98347267C7 /* Secrets.xcconfig.example */ = {isa = PBXFileReference; path = Secrets.xcconfig.example; sourceTree = "<group>"; };
+		B8EA1C0B8D56E94220543B63 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		C1CD4F9264B8E65BF4B75240 /* HomeFlowApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeFlowApp.swift; sourceTree = "<group>"; };
+		C68A188BA476640949CB88D1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		E8233B3D385B58C52FAC3D9E /* ActivityLogService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityLogService.swift; sourceTree = "<group>"; };
+		ECBB805D2DD0798C893D12DE /* HomeFlow.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = HomeFlow.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		F3BFD92FD120F1ABCD3DD57D /* SyncEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncEngine.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		65CDF603EF307F5DD913C3F3 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6C825E505BECCFE0A496263F /* Supabase in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		01736165696AAAB402C9F151 /* Sync */ = {
+			isa = PBXGroup;
+			children = (
+				7D4B91998F226F2A6A692880 /* NetworkMonitor.swift */,
+				F3BFD92FD120F1ABCD3DD57D /* SyncEngine.swift */,
+			);
+			path = Sync;
+			sourceTree = "<group>";
+		};
+		46948D206745A33A05E8C71B /* Supabase */ = {
+			isa = PBXGroup;
+			children = (
+				4A55055DFB89B27A44EE4537 /* SupabaseClientProvider.swift */,
+				10EF2773A56AA32BB0F9C556 /* SupabaseConfig.swift */,
+			);
+			path = Supabase;
+			sourceTree = "<group>";
+		};
+		513985728A2F638732FC5627 /* Auth */ = {
+			isa = PBXGroup;
+			children = (
+				60414CD441B73249944E83F4 /* AuthView.swift */,
+			);
+			path = Auth;
+			sourceTree = "<group>";
+		};
+		5F4E56FEF150BA94394DC277 /* ActivityLog */ = {
+			isa = PBXGroup;
+			children = (
+				E8233B3D385B58C52FAC3D9E /* ActivityLogService.swift */,
+			);
+			path = ActivityLog;
+			sourceTree = "<group>";
+		};
+		63EDF7724807DB4BA66B9E66 /* HomeFlowUITests */ = {
+			isa = PBXGroup;
+			children = (
+				33213B4805ED062B656B0320 /* HomeFlowUITests.swift */,
+			);
+			path = HomeFlowUITests;
+			sourceTree = "<group>";
+		};
+		744C0B77571C58412132248C /* HomeFlow */ = {
+			isa = PBXGroup;
+			children = (
+				F26D1DBE319CAD37E08C4AF7 /* App */,
+				F7CAB161543CEAE61F89F8E3 /* Core */,
+				F8E314873019AF902F23DA1E /* Features */,
+				9B68B1B4E7B4C934706F512D /* Resources */,
+			);
+			path = HomeFlow;
+			sourceTree = "<group>";
+		};
+		8A0E5A011EF2FBDD2859008C /* HomeFlowTests */ = {
+			isa = PBXGroup;
+			children = (
+				9ADD6A2E347D891C2C1B0E8D /* PermissionServiceTests.swift */,
+			);
+			path = HomeFlowTests;
+			sourceTree = "<group>";
+		};
+		93598A3F8C1C1792A953E5DB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				ECBB805D2DD0798C893D12DE /* HomeFlow.app */,
+				2E273D44AB8D24A9FA10E46A /* HomeFlowTests.xctest */,
+				0235D13863B7B80F3C4C1853 /* HomeFlowUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		953D81A20B03C94CAC374C73 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				53C5D96F41A0A87D10BD1AF6 /* DomainEnums.swift */,
+				202D9DB27925A958E207D429 /* SwiftDataModels.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		9B68B1B4E7B4C934706F512D /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				B8EA1C0B8D56E94220543B63 /* Assets.xcassets */,
+				0A7B265F1408F64C1E951AD6 /* HomeFlow.entitlements */,
+				C68A188BA476640949CB88D1 /* Info.plist */,
+				8085E2B49EE2ABC4C37EF2A9 /* Secrets.xcconfig */,
+				B1DD90540655FA98347267C7 /* Secrets.xcconfig.example */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		C1603E5AFA92D679D2188F06 /* Dashboard */ = {
+			isa = PBXGroup;
+			children = (
+				4FD7A866773F9C47EAFBED1B /* DashboardView.swift */,
+			);
+			path = Dashboard;
+			sourceTree = "<group>";
+		};
+		C9AADF6075297D90F12DA7D5 = {
+			isa = PBXGroup;
+			children = (
+				744C0B77571C58412132248C /* HomeFlow */,
+				8A0E5A011EF2FBDD2859008C /* HomeFlowTests */,
+				63EDF7724807DB4BA66B9E66 /* HomeFlowUITests */,
+				93598A3F8C1C1792A953E5DB /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		DF6EA5C537611189122FCA15 /* Permissions */ = {
+			isa = PBXGroup;
+			children = (
+				9CF9D16647D19E7853C52246 /* PermissionService.swift */,
+			);
+			path = Permissions;
+			sourceTree = "<group>";
+		};
+		F26D1DBE319CAD37E08C4AF7 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				065E11DA60C5236E9094516D /* AppRouter.swift */,
+				C1CD4F9264B8E65BF4B75240 /* HomeFlowApp.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		F7CAB161543CEAE61F89F8E3 /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				5F4E56FEF150BA94394DC277 /* ActivityLog */,
+				953D81A20B03C94CAC374C73 /* Models */,
+				DF6EA5C537611189122FCA15 /* Permissions */,
+				46948D206745A33A05E8C71B /* Supabase */,
+				01736165696AAAB402C9F151 /* Sync */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+		F8E314873019AF902F23DA1E /* Features */ = {
+			isa = PBXGroup;
+			children = (
+				513985728A2F638732FC5627 /* Auth */,
+				C1603E5AFA92D679D2188F06 /* Dashboard */,
+			);
+			path = Features;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		035550F9B612421A7879FCA8 /* HomeFlowUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AAEDE9CBA8C4007277C751CC /* Build configuration list for PBXNativeTarget "HomeFlowUITests" */;
+			buildPhases = (
+				CBC21039E4AC7E03146A92C7 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				A5CC2BCC60E6BA42EC44E176 /* PBXTargetDependency */,
+			);
+			name = HomeFlowUITests;
+			packageProductDependencies = (
+			);
+			productName = HomeFlowUITests;
+			productReference = 0235D13863B7B80F3C4C1853 /* HomeFlowUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+		6C5D6D5066442FA7C68598C3 /* HomeFlowTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 42B956981FF90CDA6C86AF15 /* Build configuration list for PBXNativeTarget "HomeFlowTests" */;
+			buildPhases = (
+				997EDAFC2E091ABB6866F062 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				BC492969182FC1C9957965E5 /* PBXTargetDependency */,
+			);
+			name = HomeFlowTests;
+			packageProductDependencies = (
+			);
+			productName = HomeFlowTests;
+			productReference = 2E273D44AB8D24A9FA10E46A /* HomeFlowTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		98683CA64C9F06E51878D55A /* HomeFlow */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 11A274C57FDF5FFF8AF42A2D /* Build configuration list for PBXNativeTarget "HomeFlow" */;
+			buildPhases = (
+				850FDCB0DAED85DD14DF5D82 /* Sources */,
+				8B74E3E7D84FC81B611EA81C /* Resources */,
+				65CDF603EF307F5DD913C3F3 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = HomeFlow;
+			packageProductDependencies = (
+				60FC5960D5740F386C342B50 /* Supabase */,
+			);
+			productName = HomeFlow;
+			productReference = ECBB805D2DD0798C893D12DE /* HomeFlow.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		1B162E3B3C8213AD6479791F /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					035550F9B612421A7879FCA8 = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Automatic;
+						TestTargetID = 98683CA64C9F06E51878D55A;
+					};
+					6C5D6D5066442FA7C68598C3 = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Automatic;
+					};
+					98683CA64C9F06E51878D55A = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 18C16B5EEF7C44E9A2CD4232 /* Build configuration list for PBXProject "HomeFlow" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = C9AADF6075297D90F12DA7D5;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				28E98D8D92085EF96A10D611 /* XCRemoteSwiftPackageReference "supabase-swift" */,
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 93598A3F8C1C1792A953E5DB /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				98683CA64C9F06E51878D55A /* HomeFlow */,
+				6C5D6D5066442FA7C68598C3 /* HomeFlowTests */,
+				035550F9B612421A7879FCA8 /* HomeFlowUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		8B74E3E7D84FC81B611EA81C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B8B2DDB29BBC436B18FD38B8 /* Assets.xcassets in Resources */,
+				6CB0E839149BBC53CCD9CB2C /* Secrets.xcconfig.example in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		850FDCB0DAED85DD14DF5D82 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C825A3509D94B360ED7184C0 /* ActivityLogService.swift in Sources */,
+				CCA37724D9C0870EE62062C5 /* AppRouter.swift in Sources */,
+				1722B1ACE322FE2FA06754B8 /* AuthView.swift in Sources */,
+				567510031EA05B1113D6FC6B /* DashboardView.swift in Sources */,
+				C66085F8C146521809D6E671 /* DomainEnums.swift in Sources */,
+				8B4E453C70FCC3711FE17255 /* HomeFlowApp.swift in Sources */,
+				2A02F0FC48E56B2DD0627BB2 /* NetworkMonitor.swift in Sources */,
+				8B3075FC9E428CE58FC66133 /* PermissionService.swift in Sources */,
+				EFDD81EA5F10127E3496161A /* SupabaseClientProvider.swift in Sources */,
+				47452E66A214480A18D45100 /* SupabaseConfig.swift in Sources */,
+				42B2D02124FD78D2B2E51FA1 /* SwiftDataModels.swift in Sources */,
+				5FF8919A11BADF5CCEF374EC /* SyncEngine.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		997EDAFC2E091ABB6866F062 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2DD10E22B53C7F762C0C8E24 /* PermissionServiceTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CBC21039E4AC7E03146A92C7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				48C127EED88CD74CF221603F /* HomeFlowUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		A5CC2BCC60E6BA42EC44E176 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 98683CA64C9F06E51878D55A /* HomeFlow */;
+			targetProxy = 02F77D834EB8EA94AAB23EC0 /* PBXContainerItemProxy */;
+		};
+		BC492969182FC1C9957965E5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 98683CA64C9F06E51878D55A /* HomeFlow */;
+			targetProxy = 82C57DBA384CF4424F2F2058 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		07307DE44AE6DC794D3863CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 8085E2B49EE2ABC4C37EF2A9 /* Secrets.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = HomeFlow/Resources/HomeFlow.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				ENABLE_TESTABILITY = YES;
+				INFOPLIST_FILE = HomeFlow/Resources/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.homeflow.app;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		0DB6B2771B8F5CA300E97735 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.homeflow.app.tests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/HomeFlow.app/HomeFlow";
+			};
+			name = Release;
+		};
+		15144CCC171A9490DB425F74 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.homeflow.app.uitests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = HomeFlow;
+			};
+			name = Debug;
+		};
+		20B69B8A0C68F10590457F34 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.homeflow.app.uitests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = HomeFlow;
+			};
+			name = Release;
+		};
+		2E05DFDD222EDA3A85FE98E7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.homeflow.app.tests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/HomeFlow.app/HomeFlow";
+			};
+			name = Debug;
+		};
+		87A62039DE5D184C9B8E8B8D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 8085E2B49EE2ABC4C37EF2A9 /* Secrets.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = HomeFlow/Resources/HomeFlow.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				ENABLE_TESTABILITY = YES;
+				INFOPLIST_FILE = HomeFlow/Resources/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.homeflow.app;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		B315227AAB9D7E4AC7ABADC3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.9;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		C0AD839DACA6F0C2178D2E94 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = "";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.9;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		11A274C57FDF5FFF8AF42A2D /* Build configuration list for PBXNativeTarget "HomeFlow" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				87A62039DE5D184C9B8E8B8D /* Debug */,
+				07307DE44AE6DC794D3863CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		18C16B5EEF7C44E9A2CD4232 /* Build configuration list for PBXProject "HomeFlow" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B315227AAB9D7E4AC7ABADC3 /* Debug */,
+				C0AD839DACA6F0C2178D2E94 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		42B956981FF90CDA6C86AF15 /* Build configuration list for PBXNativeTarget "HomeFlowTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2E05DFDD222EDA3A85FE98E7 /* Debug */,
+				0DB6B2771B8F5CA300E97735 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		AAEDE9CBA8C4007277C751CC /* Build configuration list for PBXNativeTarget "HomeFlowUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				15144CCC171A9490DB425F74 /* Debug */,
+				20B69B8A0C68F10590457F34 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		28E98D8D92085EF96A10D611 /* XCRemoteSwiftPackageReference "supabase-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/supabase/supabase-swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.5.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		60FC5960D5740F386C342B50 /* Supabase */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 28E98D8D92085EF96A10D611 /* XCRemoteSwiftPackageReference "supabase-swift" */;
+			productName = Supabase;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 1B162E3B3C8213AD6479791F /* Project object */;
+}

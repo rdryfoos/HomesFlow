@@ -22,6 +22,7 @@ build/
 .env
 .env.*
 !.env.example
+ios/HomeFlow/Resources/Secrets.xcconfig
 
 # Node (if any tooling added later)
 node_modules/

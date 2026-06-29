@@ -67,6 +67,21 @@
 
 ---
 
+### D10 — UI reference & tab mapping
+
+**Decision**: Figma site is non-authoritative visual reference. PRD + spec govern behavior. SwiftUI-native adaptive layouts (not web port).
+
+**Home detail tabs** (inside a selected home):
+
+| Tab (UI label) | Implements | Notes |
+|----------------|------------|-------|
+| Procedures | FR-PROC-* | Figma “Tasks” → Procedures in spec |
+| Contacts | FR-HOME-02 | Service providers directory only |
+| Documents | FR-HOME-03 | Visibility-scoped library |
+| People | FR-USER-* | Members, invites, roles (Admin) |
+
+**Out of MVP UI scope from prototype**: per-step assignees.
+
 ### D7 — File storage
 
 **Decision**: Supabase Storage buckets: `home-photos`, `procedure-attachments`, `documents`. Paths scoped by `home_id`. RLS via storage policies tied to membership role.

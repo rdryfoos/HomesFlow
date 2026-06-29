@@ -1,0 +1,2 @@
+-- Optional dev seed (run manually after migrations)
+-- insert sample data for local testing

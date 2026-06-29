@@ -1,0 +1,38 @@
+# HomeFlow local Supabase — run `supabase start` from repo root.
+# See specs/001-mvp/quickstart.md
+
+project_id = "homeflow"
+
+[api]
+enabled = true
+port = 54321
+
+[db]
+port = 54322
+major_version = 15
+
+[studio]
+enabled = true
+port = 54323
+
+[inbucket]
+enabled = true
+port = 54324
+
+[storage]
+enabled = true
+
+[auth]
+enabled = true
+site_url = "homeflow://auth-callback"
+additional_redirect_urls = ["homeflow://auth-callback"]
+enable_signup = true
+
+[auth.email]
+enable_signup = true
+enable_confirmations = false
+
+# Apple Sign-In — enable for production with client_id + secret.
+# Local dev uses email/password only (FR-AUTH-01).
+[auth.external.apple]
+enabled = false

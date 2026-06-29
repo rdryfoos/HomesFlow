@@ -20,6 +20,8 @@ HomeFlow/
 ├── README Architectural & Process Decisions.rtf
 ├── .specify/                    ← Spec Kit (templates, scripts, constitution)
 │   └── memory/constitution.md   ← non-negotiable laws
+├── ios/                         ← SwiftUI app (XcodeGen)
+├── supabase/                    ← migrations + local config
 └── specs/
     └── 001-mvp/                 ← active feature (spec → plan → tasks → code)
         ├── spec.md
@@ -43,7 +45,18 @@ export SPECIFY_FEATURE_DIRECTORY=specs/001-mvp
 | 3 | `/speckit.plan` | `plan.md`, `research.md`, `data-model.md` |
 | 4 | `/speckit.tasks` | `tasks.md` with `Traces:` fields |
 | 5 | `/speckit.analyze` | Gate — must pass before coding |
-| 6 | `/speckit.implement` | Generates source under `ios/` (once plan exists) |
+| 6 | `/speckit.implement` | `ios/`, `supabase/` |
+
+## Run locally (Phase 0)
+
+```bash
+supabase start && supabase db reset
+cp ios/HomeFlow/Resources/Secrets.xcconfig.example ios/HomeFlow/Resources/Secrets.xcconfig
+# Paste SUPABASE_URL and SUPABASE_ANON_KEY from `supabase start` output
+cd ios && xcodegen generate && open HomeFlow.xcodeproj
+```
+
+UI reference (non-authoritative): https://haze-rabbit-58180688.figma.site
 
 **Before step 1:** Add durable IDs to requirements and ACs in `HomeFlow PRD.md` per `traceability.md` §3.
 

@@ -191,6 +191,9 @@ All roles can read and write while offline; sync on reconnect with deterministic
 - Document upload uses standard iOS file/photo pickers; files stored in Supabase Storage.
 - "Most recent timestamp wins" uses server `updated_at` at sync acceptance time.
 - Offline: local SwiftData cache + outbox queue; sync on reconnect.
+- **Step assignees**: Out of MVP scope (prototype shows assignees; ignore for v1).
+- **Contacts tab**: Implements **service providers** only (FR-HOME-02); no separate key-contacts entity.
+- **UI reference**: [Figma prototype](https://haze-rabbit-58180688.figma.site) — layout inspiration only; SwiftUI-native iPhone/iPad layouts per plan, PRD wins on behavior.
 
 ## Out of Scope (MVP)
 
@@ -198,3 +201,5 @@ All roles can read and write while offline; sync on reconnect with deterministic
 - IoT / smart home integration
 - In-app chat or social features
 - Export to Apple Notes/Reminders (future integration)
+- Per-step assignees
+- Separate key-contacts entity (use service providers)

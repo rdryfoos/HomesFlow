@@ -44,7 +44,7 @@ specs/001-mvp/
 ├── contracts/
 │   ├── sync-protocol.md
 │   └── rls-permissions.md
-└── tasks.md             ← /speckit.tasks (next)
+└── tasks.md             ← task list (generated)
 ```
 
 ### Source Code (repository root)
@@ -135,9 +135,22 @@ supabase/
 
 ## UI Architecture
 
-**iPhone**: `NavigationStack` + bottom tab bar (Home, Procedures, Contacts/Documents, Settings).
+**Authority**: PRD + spec. [Figma prototype](https://haze-rabbit-58180688.figma.site) is visual reference only — implement with native SwiftUI patterns, not as a web port.
 
-**iPad**: `NavigationSplitView` — sidebar (home sections / procedure list) + detail panel; tab bar full width at bottom. Same view models; layout via `horizontalSizeClass`.
+**iPhone**: `NavigationStack` — dashboard (home list) → home detail with segmented/tab bar: **Procedures | Contacts | Documents | People**. App-level Settings via toolbar or tab.
+
+**iPad**: `NavigationSplitView` — column 1: home list / sidebar nav; column 2: section list (procedures, providers, etc.); column 3: detail (when applicable). Use `horizontalSizeClass` and `NavigationSplitView` column visibility APIs — optimize for iPad multi-column, iPhone stack.
+
+**Home detail tab mapping**:
+
+| UI label | Spec term | FR |
+|----------|-----------|-----|
+| Procedures | Procedures | FR-PROC-* |
+| Contacts | Service providers | FR-HOME-02 |
+| Documents | Documents | FR-HOME-03 |
+| People | Members | FR-USER-* |
+
+**MVP exclusions**: step assignees; separate key-contacts entity.
 
 **State**: `@Observable` view models per feature; inject `SyncEngine`, `AuthService`, `PermissionService`.
 
