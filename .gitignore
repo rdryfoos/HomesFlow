@@ -26,3 +26,7 @@ ios/HomeFlow/Resources/Secrets.xcconfig
 
 # Node (if any tooling added later)
 node_modules/
+
+# Supabase local CLI state
+supabase/.branches/
+supabase/.temp/
