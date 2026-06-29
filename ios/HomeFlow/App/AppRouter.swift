@@ -35,7 +35,7 @@ struct RootView: View {
         Group {
             switch router.route {
             case .auth:
-                AuthView(onAuthenticated: { router.refreshRoute() })
+                AuthView()
             case .dashboard:
                 if let appEnvironment {
                     DashboardView()

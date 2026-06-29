@@ -3,8 +3,8 @@ import SwiftUI
 // @covers FR-AUTH-01
 
 struct AuthView: View {
+    @ObservedObject private var auth = SupabaseClientProvider.shared
     @StateObject private var viewModel = AuthViewModel()
-    var onAuthenticated: () -> Void
 
     var body: some View {
         NavigationStack {
@@ -18,27 +18,33 @@ struct AuthView: View {
                     if let error = viewModel.errorMessage {
                         Text(error).foregroundStyle(.red).font(.caption)
                     }
-                    Button("Sign In") {
-                        Task {
-                            await viewModel.signIn()
-                            if viewModel.isAuthenticated { onAuthenticated() }
+                    Button {
+                        Task { await viewModel.signIn() }
+                    } label: {
+                        if viewModel.isLoading {
+                            ProgressView()
+                        } else {
+                            Text("Sign In")
                         }
                     }
                     .disabled(viewModel.isLoading || !viewModel.canSubmit)
                 }
 
                 Section {
-                    Button("Create Account") {
-                        Task {
-                            await viewModel.signUp()
-                            if viewModel.isAuthenticated { onAuthenticated() }
+                    Button {
+                        Task { await viewModel.signUp() }
+                    } label: {
+                        if viewModel.isLoading {
+                            ProgressView()
+                        } else {
+                            Text("Create Account")
                         }
                     }
                     .disabled(viewModel.isLoading || !viewModel.canSubmit)
                 } header: {
                     Text("New account")
                 } footer: {
-                    Text("Password must be at least 6 characters.")
+                    Text("Password must be at least 6 characters. Local test user: diane@test.com / homeflow123")
                 }
 
                 Section {
@@ -51,6 +57,11 @@ struct AuthView: View {
             }
             .navigationTitle("HomeFlow")
         }
+        .onChange(of: auth.isAuthenticated) { _, isAuthenticated in
+            if isAuthenticated {
+                viewModel.errorMessage = nil
+            }
+        }
     }
 }
 
@@ -60,7 +71,6 @@ final class AuthViewModel: ObservableObject {
     @Published var password = ""
     @Published var errorMessage: String?
     @Published var isLoading = false
-    @Published var isAuthenticated = false
 
     private let auth = SupabaseClientProvider.shared
 
@@ -73,10 +83,9 @@ final class AuthViewModel: ObservableObject {
         defer { isLoading = false }
         do {
             try await auth.signIn(email: email, password: password)
-            isAuthenticated = auth.isAuthenticated
             errorMessage = nil
         } catch {
-            errorMessage = error.localizedDescription
+            errorMessage = friendlyAuthError(error)
         }
     }
 
@@ -85,10 +94,22 @@ final class AuthViewModel: ObservableObject {
         defer { isLoading = false }
         do {
             try await auth.signUp(email: email, password: password)
-            isAuthenticated = auth.isAuthenticated
             errorMessage = nil
         } catch {
-            errorMessage = error.localizedDescription
+            errorMessage = friendlyAuthError(error)
         }
+    }
+
+    private func friendlyAuthError(_ error: Error) -> String {
+        let message = error.localizedDescription
+        if message.localizedCaseInsensitiveContains("already registered")
+            || message.localizedCaseInsensitiveContains("already exists") {
+            return "That email is already registered. Sign in instead, or use a different email."
+        }
+        if message.localizedCaseInsensitiveContains("invalid login")
+            || message.localizedCaseInsensitiveContains("invalid credentials") {
+            return "Incorrect email or password. For local dev, try diane@test.com / homeflow123."
+        }
+        return message
     }
 }
