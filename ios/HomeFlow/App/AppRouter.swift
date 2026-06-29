@@ -1,4 +1,5 @@
 import SwiftUI
+import SwiftData
 
 // @covers FR-AUTH-01
 
@@ -26,9 +27,9 @@ final class AppRouter: ObservableObject {
 struct RootView: View {
     @ObservedObject var router: AppRouter
     @ObservedObject private var network = NetworkMonitor.shared
+    @ObservedObject private var auth = SupabaseClientProvider.shared
     @Environment(\.modelContext) private var modelContext
-    @StateObject private var auth = SupabaseClientProvider.shared
-    @State private var syncEngine: SyncEngine?
+    @State private var appEnvironment: AppEnvironment?
 
     var body: some View {
         Group {
@@ -36,21 +37,22 @@ struct RootView: View {
             case .auth:
                 AuthView(onAuthenticated: { router.refreshRoute() })
             case .dashboard:
-                DashboardView()
+                if let appEnvironment {
+                    DashboardView()
+                        .environment(\.appEnvironment, appEnvironment)
+                } else {
+                    ProgressView()
+                }
             }
         }
         .onAppear {
-            if syncEngine == nil {
-                syncEngine = SyncEngine(
-                    modelContext: modelContext,
-                    client: auth.client,
-                    activityLog: ActivityLogService(modelContext: modelContext)
-                )
+            if appEnvironment == nil {
+                appEnvironment = AppEnvironment(modelContext: modelContext)
             }
         }
         .onChange(of: network.isConnected) { _, connected in
             if connected {
-                Task { await syncEngine?.run() }
+                Task { await appEnvironment?.syncEngine.run() }
             }
         }
         .onChange(of: auth.isAuthenticated) { _, _ in

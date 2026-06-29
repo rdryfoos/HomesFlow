@@ -24,17 +24,21 @@ struct AuthView: View {
                             if viewModel.isAuthenticated { onAuthenticated() }
                         }
                     }
-                    .disabled(viewModel.isLoading)
+                    .disabled(viewModel.isLoading || !viewModel.canSubmit)
                 }
 
-                Section("New account") {
+                Section {
                     Button("Create Account") {
                         Task {
                             await viewModel.signUp()
                             if viewModel.isAuthenticated { onAuthenticated() }
                         }
                     }
-                    .disabled(viewModel.isLoading)
+                    .disabled(viewModel.isLoading || !viewModel.canSubmit)
+                } header: {
+                    Text("New account")
+                } footer: {
+                    Text("Password must be at least 6 characters.")
                 }
 
                 Section {
@@ -59,6 +63,10 @@ final class AuthViewModel: ObservableObject {
     @Published var isAuthenticated = false
 
     private let auth = SupabaseClientProvider.shared
+
+    var canSubmit: Bool {
+        email.contains("@") && password.count >= 6
+    }
 
     func signIn() async {
         isLoading = true

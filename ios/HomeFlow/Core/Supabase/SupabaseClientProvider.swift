@@ -28,6 +28,11 @@ final class SupabaseClientProvider: ObservableObject {
     func signUp(email: String, password: String) async throws {
         _ = try await client.auth.signUp(email: email, password: password)
         await refreshSession()
+        // Local Supabase: if signup didn't return a session, sign in immediately.
+        if session == nil {
+            try await client.auth.signIn(email: email, password: password)
+            await refreshSession()
+        }
     }
 
     func signIn(email: String, password: String) async throws {

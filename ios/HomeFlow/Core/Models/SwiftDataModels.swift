@@ -46,20 +46,69 @@ final class CachedMembership {
     var homeId: UUID
     var userId: UUID
     var role: String
+    var displayEmail: String?
+    var displayName: String?
     var syncStatus: String
     var serverUpdatedAt: Date?
 
-    init(id: UUID = UUID(), homeId: UUID, userId: UUID, role: HomeRole) {
+    init(
+        id: UUID = UUID(),
+        homeId: UUID,
+        userId: UUID,
+        role: HomeRole,
+        displayEmail: String? = nil,
+        displayName: String? = nil,
+        serverUpdatedAt: Date? = nil
+    ) {
         self.id = id
         self.homeId = homeId
         self.userId = userId
         self.role = role.rawValue
+        self.displayEmail = displayEmail
+        self.displayName = displayName
         self.syncStatus = SyncStatus.synced.rawValue
+        self.serverUpdatedAt = serverUpdatedAt
     }
 
     var homeRole: HomeRole {
         get { HomeRole(rawValue: role) ?? .guest }
         set { role = newValue.rawValue }
+    }
+}
+
+@Model
+final class CachedInvite {
+    @Attribute(.unique) var id: UUID
+    var homeId: UUID
+    var email: String
+    var role: String
+    var token: String
+    var status: String
+
+    init(
+        id: UUID = UUID(),
+        homeId: UUID,
+        email: String,
+        role: HomeRole,
+        token: String,
+        status: InviteStatus
+    ) {
+        self.id = id
+        self.homeId = homeId
+        self.email = email
+        self.role = role.rawValue
+        self.token = token
+        self.status = status.rawValue
+    }
+
+    var homeRole: HomeRole {
+        get { HomeRole(rawValue: role) ?? .guest }
+        set { role = newValue.rawValue }
+    }
+
+    var inviteStatus: InviteStatus {
+        get { InviteStatus(rawValue: status) ?? .revoked }
+        set { status = newValue.rawValue }
     }
 }
 
@@ -129,6 +178,7 @@ enum SwiftDataContainer {
         let schema = Schema([
             CachedHome.self,
             CachedMembership.self,
+            CachedInvite.self,
             MutationOutboxEntry.self,
             CachedActivityLogEntry.self
         ])
