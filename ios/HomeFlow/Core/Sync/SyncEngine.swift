@@ -39,9 +39,24 @@ final class SyncEngine: ObservableObject {
         try? modelContext.save()
     }
 
-    func run() async {
+    /// Runs push then pull. Returns a user-facing message when sync failed.
+    @discardableResult
+    func run() async -> String? {
         await pushOutbox()
         await pullChanges()
+        return lastNotification?.message
+    }
+
+    func clearNotification() {
+        lastNotification = nil
+    }
+
+    func isHomeSynced(_ homeId: UUID) -> Bool {
+        let targetId = homeId
+        guard let home = try? modelContext.fetch(FetchDescriptor<CachedHome>(
+            predicate: #Predicate<CachedHome> { $0.id == targetId }
+        )).first else { return false }
+        return home.sync == .synced
     }
 
     private func pushOutbox() async {

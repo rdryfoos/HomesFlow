@@ -168,7 +168,7 @@ struct HomePhotoThumbnail: View {
               let path = storagePath,
               let homeId,
               let repo = appEnvironment?.homeRepository else { return }
-        let summary = HomeSummary(id: homeId, name: "", streetAddress: "", photoURL: path)
+        let summary = HomeSummary(id: homeId, name: "", streetAddress: "", photoURL: path, isPendingSync: false)
         remoteURL = try? await repo.signedPhotoURL(for: summary)
     }
 }

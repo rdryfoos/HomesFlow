@@ -5,11 +5,13 @@ import SwiftUI
 struct DashboardView: View {
     @Environment(\.horizontalSizeClass) private var sizeClass
     @Environment(\.appEnvironment) private var appEnvironment
+    @EnvironmentObject private var syncEngine: SyncEngine
 
     @StateObject private var viewModel = DashboardViewModel()
     @State private var showAddHome = false
     @State private var showJoinInvite = false
     @State private var selectedHomeId: UUID?
+    @State private var showSyncAlert = false
 
     var body: some View {
         Group {
@@ -52,6 +54,16 @@ struct DashboardView: View {
             Button("OK", role: .cancel) {}
         } message: {
             Text(viewModel.errorMessage ?? "")
+        }
+        .alert("Sync Issue", isPresented: $showSyncAlert) {
+            Button("OK", role: .cancel) {
+                syncEngine.clearNotification()
+            }
+        } message: {
+            Text(syncEngine.lastNotification?.message ?? "")
+        }
+        .onChange(of: syncEngine.lastNotification?.id) { _, _ in
+            showSyncAlert = syncEngine.lastNotification != nil
         }
     }
 
@@ -112,13 +124,45 @@ struct DashboardView: View {
     }
 
     private var homeList: some View {
-        List(viewModel.homes, selection: $selectedHomeId) { home in
-            NavigationLink(value: home.id) {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(home.name).font(.headline)
-                    Text(home.streetAddress)
+        List(selection: $selectedHomeId) {
+            if let message = syncEngine.lastNotification?.message {
+                Section {
+                    Label(message, systemImage: "exclamationmark.triangle.fill")
+                        .foregroundStyle(.orange)
                         .font(.subheadline)
-                        .foregroundStyle(.secondary)
+                }
+            }
+
+            if viewModel.homes.contains(where: \.isPendingSync) {
+                Section {
+                    Label(
+                        "Some homes haven't synced to Supabase yet. Pull to refresh after confirming `supabase status` is running.",
+                        systemImage: "icloud.and.arrow.up"
+                    )
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                }
+            }
+
+            Section {
+                ForEach(viewModel.homes) { home in
+                    NavigationLink(value: home.id) {
+                        HStack {
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text(home.name).font(.headline)
+                                Text(home.streetAddress)
+                                    .font(.subheadline)
+                                    .foregroundStyle(.secondary)
+                            }
+                            Spacer()
+                            if home.isPendingSync {
+                                Image(systemName: "icloud.and.arrow.up")
+                                    .foregroundStyle(.orange)
+                                    .accessibilityLabel("Not synced")
+                            }
+                        }
+                    }
+                    .tag(home.id)
                 }
             }
         }

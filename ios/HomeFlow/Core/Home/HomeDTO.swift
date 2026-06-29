@@ -22,6 +22,7 @@ struct HomeSummary: Identifiable, Sendable, Hashable {
     let name: String
     let streetAddress: String
     let photoURL: String?
+    let isPendingSync: Bool
 }
 
 enum HomeValidationError: LocalizedError, Equatable {

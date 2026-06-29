@@ -62,12 +62,11 @@ final class HomeRepository: ObservableObject {
         syncEngine.enqueue(entityType: .home, entityId: homeId, operation: .insert)
         try modelContext.save()
 
+        try await syncHomeToServer(homeId: homeId, requiredForPhoto: photoData != nil)
+
         if let photoData {
             try await attachPhoto(homeId: homeId, photoData: photoData, actorId: userId)
-        }
-
-        if NetworkMonitor.shared.isConnected {
-            await syncEngine.run()
+            try await syncHomeToServer(homeId: homeId, requiredForPhoto: false)
         }
 
         activityLog.append(
@@ -117,12 +116,11 @@ final class HomeRepository: ObservableObject {
         syncEngine.enqueue(entityType: .home, entityId: id, operation: .update)
         try modelContext.save()
 
+        try await syncHomeToServer(homeId: id, requiredForPhoto: photoData != nil)
+
         if let photoData {
             try await attachPhoto(homeId: id, photoData: photoData, actorId: userId)
-        }
-
-        if NetworkMonitor.shared.isConnected {
-            await syncEngine.run()
+            try await syncHomeToServer(homeId: id, requiredForPhoto: false)
         }
 
         activityLog.append(
@@ -150,6 +148,23 @@ final class HomeRepository: ObservableObject {
         return summary(from: cached)
     }
 
+    private func syncHomeToServer(homeId: UUID, requiredForPhoto: Bool) async throws {
+        guard NetworkMonitor.shared.isConnected else {
+            if requiredForPhoto {
+                throw HomeSyncError.offline
+            }
+            return
+        }
+
+        if let message = await syncEngine.run() {
+            throw HomeSyncError.failed(message)
+        }
+
+        guard syncEngine.isHomeSynced(homeId) else {
+            throw HomeSyncError.notSynced
+        }
+    }
+
     private func attachPhoto(homeId: UUID, photoData: Data, actorId: UUID) async throws {
         let targetId = homeId
         guard let home = try? modelContext.fetch(FetchDescriptor<CachedHome>(
@@ -158,12 +173,16 @@ final class HomeRepository: ObservableObject {
             throw HomeEditError.notFound
         }
 
-        let path = try await homePhotoService.uploadPhoto(homeId: homeId, imageData: photoData)
-        home.photoURL = path
-        home.localUpdatedAt = .now
-        home.sync = .pending
-        syncEngine.enqueue(entityType: .home, entityId: homeId, operation: .update)
-        try modelContext.save()
+        do {
+            let path = try await homePhotoService.uploadPhoto(homeId: homeId, imageData: photoData)
+            home.photoURL = path
+            home.localUpdatedAt = .now
+            home.sync = .pending
+            syncEngine.enqueue(entityType: .home, entityId: homeId, operation: .update)
+            try modelContext.save()
+        } catch {
+            throw HomeSyncError.photoUploadFailed(error.localizedDescription)
+        }
     }
 
     private func summary(from cached: CachedHome) -> HomeSummary {
@@ -171,7 +190,8 @@ final class HomeRepository: ObservableObject {
             id: cached.id,
             name: cached.name,
             streetAddress: cached.streetAddress,
-            photoURL: cached.photoURL
+            photoURL: cached.photoURL,
+            isPendingSync: cached.sync == .pending
         )
     }
 }
@@ -192,6 +212,26 @@ enum HomeEditError: LocalizedError {
     var errorDescription: String? {
         switch self {
         case .notFound: "Home not found."
+        }
+    }
+}
+
+enum HomeSyncError: LocalizedError {
+    case offline
+    case notSynced
+    case failed(String)
+    case photoUploadFailed(String)
+
+    var errorDescription: String? {
+        switch self {
+        case .offline:
+            "You're offline. Connect to the internet before uploading a photo."
+        case .notSynced:
+            "This home hasn't synced to Supabase yet. Pull to refresh on the dashboard, confirm Supabase is running (`supabase status`), then try again."
+        case .failed(let message):
+            message
+        case .photoUploadFailed(let message):
+            "Photo upload failed: \(message)"
         }
     }
 }

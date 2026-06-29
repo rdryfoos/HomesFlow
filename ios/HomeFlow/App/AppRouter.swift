@@ -40,6 +40,7 @@ struct RootView: View {
                 if let appEnvironment {
                     DashboardView()
                         .environment(\.appEnvironment, appEnvironment)
+                        .environmentObject(appEnvironment.syncEngine)
                 } else {
                     ProgressView()
                 }
