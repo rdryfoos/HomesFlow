@@ -25,6 +25,7 @@
 		567510031EA05B1113D6FC6B /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FD7A866773F9C47EAFBED1B /* DashboardView.swift */; };
 		59DBFDAE670BD9E8E0F6875D /* HomeConflictResolverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA433DFDC6F5CD99D427D78C /* HomeConflictResolverTests.swift */; };
 		5FF8919A11BADF5CCEF374EC /* SyncEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3BFD92FD120F1ABCD3DD57D /* SyncEngine.swift */; };
+		605EDF407675D470942F7983 /* Secrets.Release.xcconfig.example in Resources */ = {isa = PBXBuildFile; fileRef = 7B95B47C0C7A40048617B702 /* Secrets.Release.xcconfig.example */; };
 		6C825E505BECCFE0A496263F /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = 60FC5960D5740F386C342B50 /* Supabase */; };
 		6CB0E839149BBC53CCD9CB2C /* Secrets.xcconfig.example in Resources */ = {isa = PBXBuildFile; fileRef = B1DD90540655FA98347267C7 /* Secrets.xcconfig.example */; };
 		770573BEE85C53FE8F453F2C /* MemberRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6390873983914AE52C180D3D /* MemberRepository.swift */; };
@@ -75,11 +76,13 @@
 		60414CD441B73249944E83F4 /* AuthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthView.swift; sourceTree = "<group>"; };
 		60FE5FF84A8E6F82314D7297 /* MemberDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberDTO.swift; sourceTree = "<group>"; };
 		6390873983914AE52C180D3D /* MemberRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberRepository.swift; sourceTree = "<group>"; };
+		7B95B47C0C7A40048617B702 /* Secrets.Release.xcconfig.example */ = {isa = PBXFileReference; path = Secrets.Release.xcconfig.example; sourceTree = "<group>"; };
 		7D4B91998F226F2A6A692880 /* NetworkMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMonitor.swift; sourceTree = "<group>"; };
 		8085E2B49EE2ABC4C37EF2A9 /* Secrets.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Secrets.xcconfig; sourceTree = "<group>"; };
 		9ADD6A2E347D891C2C1B0E8D /* PermissionServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionServiceTests.swift; sourceTree = "<group>"; };
 		9BC05990017639DD3D616C1C /* HomeRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeRepository.swift; sourceTree = "<group>"; };
 		9CF9D16647D19E7853C52246 /* PermissionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionService.swift; sourceTree = "<group>"; };
+		9F6DFA717D62C6B87A211F00 /* Secrets.Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Secrets.Release.xcconfig; sourceTree = "<group>"; };
 		B1DD90540655FA98347267C7 /* Secrets.xcconfig.example */ = {isa = PBXFileReference; path = Secrets.xcconfig.example; sourceTree = "<group>"; };
 		B8EA1C0B8D56E94220543B63 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C1CD4F9264B8E65BF4B75240 /* HomeFlowApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeFlowApp.swift; sourceTree = "<group>"; };
@@ -220,6 +223,8 @@
 				B8EA1C0B8D56E94220543B63 /* Assets.xcassets */,
 				0A7B265F1408F64C1E951AD6 /* HomeFlow.entitlements */,
 				C68A188BA476640949CB88D1 /* Info.plist */,
+				9F6DFA717D62C6B87A211F00 /* Secrets.Release.xcconfig */,
+				7B95B47C0C7A40048617B702 /* Secrets.Release.xcconfig.example */,
 				8085E2B49EE2ABC4C37EF2A9 /* Secrets.xcconfig */,
 				B1DD90540655FA98347267C7 /* Secrets.xcconfig.example */,
 			);
@@ -428,6 +433,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B8B2DDB29BBC436B18FD38B8 /* Assets.xcassets in Resources */,
+				605EDF407675D470942F7983 /* Secrets.Release.xcconfig.example in Resources */,
 				6CB0E839149BBC53CCD9CB2C /* Secrets.xcconfig.example in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -501,7 +507,7 @@
 /* Begin XCBuildConfiguration section */
 		07307DE44AE6DC794D3863CD /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 8085E2B49EE2ABC4C37EF2A9 /* Secrets.xcconfig */;
+			baseConfigurationReference = 9F6DFA717D62C6B87A211F00 /* Secrets.Release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = HomeFlow/Resources/HomeFlow.entitlements;
