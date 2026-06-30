@@ -1,6 +1,18 @@
 # Implementation Plan: HomeFlow MVP
 
-**Branch**: `001-mvp` | **Date**: 2026-06-28 | **Spec**: [spec.md](./spec.md)
+**Branch**: `001-mvp` | **Date**: 2026-06-28 | **Spec**: [spec.md](./spec.md) | **Status**: [tasks.md](./tasks.md) · [dev-notes.md](./dev-notes.md)
+
+## Implementation status (2026-06-28)
+
+| Phase | Status | Notes |
+|-------|--------|-------|
+| 0 Foundation | **Done** | iOS project, Supabase schema, auth shell |
+| 1 P1 homes/users | **Partial** | Home CRUD, photos, People tab; Procedures not started |
+| 2 P2 procedures/providers | Not started | |
+| 3 P3 guest/docs | Not started | |
+| 4 Testing/hardening | Not started | |
+
+**Deployed path validated**: Supabase Cloud + Release build on physical iPhone (`com.rdryfoos.homeflow`). Local Docker + Debug Simulator also supported. See [quickstart.md](./quickstart.md).
 
 ## Summary
 
@@ -41,6 +53,7 @@ specs/001-mvp/
 ├── research.md
 ├── data-model.md
 ├── quickstart.md
+├── dev-notes.md         ← implementation / deploy gotchas (not product spec)
 ├── contracts/
 │   ├── sync-protocol.md
 │   └── rls-permissions.md
@@ -51,36 +64,45 @@ specs/001-mvp/
 
 ```text
 ios/
-├── HomeFlow.xcodeproj
+├── HomeFlow.xcodeproj      # generated via project.yml + xcodegen
+├── project.yml
 ├── HomeFlow/
 │   ├── App/
 │   │   ├── HomeFlowApp.swift
 │   │   └── AppRouter.swift
 │   ├── Features/
-│   │   ├── Auth/                 # @covers FR-AUTH-01
-│   │   ├── Dashboard/            # home list — US-ADMIN-01
-│   │   ├── HomeSetup/            # create/edit home — AC-HOME-*
-│   │   ├── Members/              # invites, roles — AC-USER-*
-│   │   ├── Procedures/           # lists + detail — AC-PROC-*, AC-GUEST-04/05
-│   │   ├── Providers/            # service directory — AC-HOME-04/05
-│   │   ├── Documents/            # visibility-scoped library
-│   │   └── Settings/             # account, FR-NOTIF-01 placeholder
+│   │   ├── Auth/
+│   │   ├── Dashboard/
+│   │   ├── HomeSetup/
+│   │   ├── HomeDetail/
+│   │   ├── Members/            # People tab — invites (partial)
+│   │   ├── Procedures/         # Phase 7 — not yet
+│   │   ├── Providers/          # Phase 8 — not yet
+│   │   ├── Documents/          # Phase 10 — not yet
+│   │   └── Settings/           # Phase 10 — not yet
 │   ├── Core/
-│   │   ├── Models/               # SwiftData + Codable DTOs
-│   │   ├── Supabase/             # client singleton, auth session
-│   │   ├── Sync/                 # outbox, pull, conflict — AC-SYNC-*
-│   │   ├── Permissions/          # role checks mirroring RLS
-│   │   └── ActivityLog/          # FR-LOG-01
+│   │   ├── AppEnvironment.swift
+│   │   ├── Models/
+│   │   ├── Supabase/
+│   │   ├── Sync/
+│   │   ├── Home/               # HomeRepository, DTOs, conflict resolver
+│   │   ├── Members/
+│   │   ├── Storage/            # HomePhotoService
+│   │   ├── Permissions/
+│   │   └── ActivityLog/
 │   └── Resources/
+│       ├── Secrets.xcconfig.example          # Debug / local
+│       ├── Secrets.Release.xcconfig.example  # Release / cloud
+│       └── HomeFlow.entitlements             # Apple Sign-In deferred
 ├── HomeFlowTests/
-│   └── Sync/                     # AC-SYNC-*, AC-PROC-03, etc.
 └── HomeFlowUITests/
 
 supabase/
 ├── config.toml
 ├── migrations/
-│   └── 001_initial_schema.sql
-└── seed.sql                      # optional dev fixtures
+│   ├── 001_initial_schema.sql
+│   └── 002_storage_profiles_invites.sql
+└── seed.sql
 ```
 
 **Structure Decision**: Single iOS app + Supabase backend folder. No separate API server — client talks to Supabase directly with RLS. Feature folders map to user stories for independent delivery.
@@ -137,9 +159,9 @@ supabase/
 
 **Authority**: PRD + spec. [Figma prototype](https://haze-rabbit-58180688.figma.site) is visual reference only — implement with native SwiftUI patterns, not as a web port.
 
-**iPhone**: `NavigationStack` — dashboard (home list) → home detail with segmented/tab bar: **Procedures | Contacts | Documents | People**. App-level Settings via toolbar or tab.
+**iPhone**: `NavigationStack` — dashboard (home list) → **push** via `NavigationLink` to home detail with segmented control: **Procedures | Contacts | Documents | People**. Do **not** bind `List(selection:)` on iPhone (blocks push). App-level Settings via toolbar or tab (Settings screen Phase 10).
 
-**iPad**: `NavigationSplitView` — column 1: home list / sidebar nav; column 2: section list (procedures, providers, etc.); column 3: detail (when applicable). Use `horizontalSizeClass` and `NavigationSplitView` column visibility APIs — optimize for iPad multi-column, iPhone stack.
+**iPad**: `NavigationSplitView` — sidebar uses `List(selection:)`; detail column shows selected home. Use `horizontalSizeClass == .regular` to branch layouts.
 
 **Home detail tab mapping**:
 
@@ -176,6 +198,8 @@ See [contracts/sync-protocol.md](./contracts/sync-protocol.md).
 | Offline + RLS complexity | Unit-test sync engine heavily; keep outbox logic pure Swift |
 | Scope creep | FR-NOTIF-01, SMS invites, deep links explicitly deferred |
 | SwiftData + Supabase drift | Single source schema in `data-model.md`; codegen DTOs from migrations |
+| Debug vs Release config drift | Separate `Secrets.xcconfig` / `Secrets.Release.xcconfig`; verify Build Settings before device deploy |
+| Personal Team signing | Bundle ID `com.rdryfoos.homeflow`; Apple Sign-In entitlement deferred until paid program |
 
 ## Complexity Tracking
 

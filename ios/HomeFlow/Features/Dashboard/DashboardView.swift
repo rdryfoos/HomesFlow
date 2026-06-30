@@ -69,25 +69,24 @@ struct DashboardView: View {
 
     private var iPhoneLayout: some View {
         NavigationStack {
-            homeList
+            homeList(useNavigationLink: true)
                 .navigationTitle("My Homes")
                 .toolbar { toolbarContent }
                 .navigationDestination(for: UUID.self) { homeId in
-                    if let home = viewModel.homes.first(where: { $0.id == homeId }) {
-                        HomeDetailView(home: home)
-                    }
+                    homeDetail(for: homeId)
                 }
         }
     }
 
     private var iPadLayout: some View {
         NavigationSplitView {
-            homeList
+            homeList(useNavigationLink: false)
                 .navigationTitle("My Homes")
                 .toolbar { toolbarContent }
         } detail: {
             if let home = viewModel.homes.first(where: { $0.id == selectedHomeId }) {
                 HomeDetailView(home: home)
+                    .environment(\.appEnvironment, appEnvironment)
             } else {
                 ContentUnavailableView(
                     "Select a home",
@@ -95,6 +94,20 @@ struct DashboardView: View {
                     description: Text("Choose a home from the sidebar")
                 )
             }
+        }
+    }
+
+    @ViewBuilder
+    private func homeDetail(for homeId: UUID) -> some View {
+        if let home = viewModel.homes.first(where: { $0.id == homeId }) {
+            HomeDetailView(home: home)
+                .environment(\.appEnvironment, appEnvironment)
+        } else {
+            ContentUnavailableView(
+                "Home not found",
+                systemImage: "house",
+                description: Text("Pull to refresh the home list.")
+            )
         }
     }
 
@@ -123,53 +136,89 @@ struct DashboardView: View {
         }
     }
 
-    private var homeList: some View {
-        List(selection: $selectedHomeId) {
-            if let message = syncEngine.lastNotification?.message {
-                Section {
-                    Label(message, systemImage: "exclamationmark.triangle.fill")
-                        .foregroundStyle(.orange)
-                        .font(.subheadline)
-                }
+    @ViewBuilder
+    private func homeList(useNavigationLink: Bool) -> some View {
+        if useNavigationLink {
+            List {
+                homeListSections(useNavigationLink: true)
             }
-
-            if viewModel.homes.contains(where: \.isPendingSync) {
-                Section {
-                    Label(
-                        "Some homes haven't synced to Supabase yet. Pull to refresh after confirming `supabase status` is running.",
-                        systemImage: "icloud.and.arrow.up"
-                    )
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                }
+            .homeListChrome(isLoading: viewModel.isLoading, isEmpty: viewModel.homes.isEmpty) {
+                await reload()
             }
+        } else {
+            List(selection: $selectedHomeId) {
+                homeListSections(useNavigationLink: false)
+            }
+            .homeListChrome(isLoading: viewModel.isLoading, isEmpty: viewModel.homes.isEmpty) {
+                await reload()
+            }
+        }
+    }
 
+    @ViewBuilder
+    private func homeListSections(useNavigationLink: Bool) -> some View {
+        if let message = syncEngine.lastNotification?.message {
             Section {
-                ForEach(viewModel.homes) { home in
+                Label(message, systemImage: "exclamationmark.triangle.fill")
+                    .foregroundStyle(.orange)
+                    .font(.subheadline)
+            }
+        }
+
+        if viewModel.homes.contains(where: \.isPendingSync) {
+            Section {
+                Label(
+                    "Some homes haven't synced to Supabase yet. Pull to refresh after confirming `supabase status` is running.",
+                    systemImage: "icloud.and.arrow.up"
+                )
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            }
+        }
+
+        Section {
+            ForEach(viewModel.homes) { home in
+                if useNavigationLink {
                     NavigationLink(value: home.id) {
-                        HStack {
-                            VStack(alignment: .leading, spacing: 4) {
-                                Text(home.name).font(.headline)
-                                Text(home.streetAddress)
-                                    .font(.subheadline)
-                                    .foregroundStyle(.secondary)
-                            }
-                            Spacer()
-                            if home.isPendingSync {
-                                Image(systemName: "icloud.and.arrow.up")
-                                    .foregroundStyle(.orange)
-                                    .accessibilityLabel("Not synced")
-                            }
-                        }
+                        homeRow(home)
                     }
-                    .tag(home.id)
+                } else {
+                    homeRow(home)
+                        .tag(home.id)
                 }
             }
         }
-        .overlay {
-            if viewModel.isLoading && viewModel.homes.isEmpty {
+    }
+
+    private func homeRow(_ home: HomeSummary) -> some View {
+        HStack {
+            VStack(alignment: .leading, spacing: 4) {
+                Text(home.name).font(.headline)
+                Text(home.streetAddress)
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+            }
+            Spacer()
+            if home.isPendingSync {
+                Image(systemName: "icloud.and.arrow.up")
+                    .foregroundStyle(.orange)
+                    .accessibilityLabel("Not synced")
+            }
+        }
+    }
+
+    private func reload() async {
+        guard let repo = appEnvironment?.homeRepository else { return }
+        await viewModel.load(using: repo)
+    }
+}
+
+private extension View {
+    func homeListChrome(isLoading: Bool, isEmpty: Bool, reload: @escaping () async -> Void) -> some View {
+        overlay {
+            if isLoading && isEmpty {
                 ProgressView("Loading homes…")
-            } else if viewModel.homes.isEmpty && !viewModel.isLoading {
+            } else if isEmpty && !isLoading {
                 ContentUnavailableView(
                     "No homes yet",
                     systemImage: "house",
@@ -178,11 +227,6 @@ struct DashboardView: View {
             }
         }
         .refreshable { await reload() }
-    }
-
-    private func reload() async {
-        guard let repo = appEnvironment?.homeRepository else { return }
-        await viewModel.load(using: repo)
     }
 }
 

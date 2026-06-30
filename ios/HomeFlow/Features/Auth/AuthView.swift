@@ -102,6 +102,14 @@ final class AuthViewModel: ObservableObject {
 
     private func friendlyAuthError(_ error: Error) -> String {
         let message = error.localizedDescription
+        if message.localizedCaseInsensitiveContains("could not connect")
+            || message.localizedCaseInsensitiveContains("network")
+            || message.localizedCaseInsensitiveContains("offline") {
+            let host = SupabaseConfig.url.host ?? "Supabase"
+            return """
+            Could not reach \(host). On a physical iPhone, use Release scheme with cloud URL in Secrets.Release.xcconfig, confirm the Supabase project is not paused, then Product → Clean Build Folder and run again.
+            """
+        }
         if message.localizedCaseInsensitiveContains("already registered")
             || message.localizedCaseInsensitiveContains("already exists") {
             return "That email is already registered. Sign in instead, or use a different email."

@@ -2,9 +2,22 @@
 
 **Input**: [spec.md](./spec.md) · [plan.md](./plan.md) · [data-model.md](./data-model.md) · [contracts/](./contracts/)
 
-**Feature**: `001-mvp` | **Date**: 2026-06-28
+**Feature**: `001-mvp` | **Updated**: 2026-06-28
 
 **UI reference** (non-authoritative): https://haze-rabbit-58180688.figma.site — SwiftUI-native iPhone/iPad only.
+
+## Implementation status
+
+| Phase | Progress | Blocker / next |
+|-------|----------|----------------|
+| 1–2 Setup + foundation | **Complete** | — |
+| 3–4 Auth, dashboard, homes | **Mostly complete** | XCUITest T017; procedure count placeholder optional |
+| 5 Invites & roles | **Partial** | Deep links T026; offline conflict T027; unit tests |
+| 6 Offline sync | **Partial** | Field merge T035; full sync tests |
+| 7–10 P2/P3 features | Not started | Procedures next |
+| 11 Hardening | Not started | Re-run analyze after P1 checkpoint |
+
+Partial deliverables documented in [dev-notes.md](./dev-notes.md). **Do not** encode implementation details in [spec.md](./spec.md).
 
 ## Format
 
@@ -18,9 +31,9 @@
 
 **Purpose**: Repo tooling and project skeleton
 
-- [ ] T001 Create `ios/HomeFlow.xcodeproj` — universal iOS 17+ SwiftUI app target + unit/UI test targets per plan.md — **Traces**: plan Phase 0 (infrastructure)
-- [ ] T002 [P] Initialize `supabase/` with `config.toml` and local dev setup per quickstart.md — **Traces**: plan Phase 0 (infrastructure)
-- [ ] T003 [P] Add `.gitignore` entries for `Secrets.xcconfig`, DerivedData (verify ios secrets not committed) — **Traces**: NFR-SEC-01
+- [x] T001 Create `ios/HomeFlow.xcodeproj` — universal iOS 17+ SwiftUI app target + unit/UI test targets per plan.md — **Traces**: plan Phase 0 (infrastructure)
+- [x] T002 [P] Initialize `supabase/` with `config.toml` and local dev setup per quickstart.md — **Traces**: plan Phase 0 (infrastructure)
+- [x] T003 [P] Add `.gitignore` entries for `Secrets.xcconfig`, DerivedData (verify ios secrets not committed) — **Traces**: NFR-SEC-01
 
 ---
 
@@ -28,18 +41,18 @@
 
 **Purpose**: Backend schema, auth, local cache, sync skeleton — **no user story UI until complete**
 
-- [ ] T004 Write `supabase/migrations/001_initial_schema.sql` from data-model.md (enums, tables, indexes) — **Traces**: FR-HOME-01, FR-USER-01, FR-PROC-01
-- [ ] T005 Implement RLS policies + `get_user_role()` per contracts/rls-permissions.md — **Traces**: FR-USER-01, FR-GUEST-01, AC-GUEST-02
-- [ ] T006 [P] Configure Supabase Auth: Apple + email/password providers — **Traces**: FR-AUTH-01
-- [ ] T007 [P] Create Supabase Storage buckets + policies (home-photos, documents, procedure-attachments) — **Traces**: FR-HOME-01, FR-HOME-03, FR-PROC-03
-- [ ] T008 Implement `ios/HomeFlow/Core/Supabase/SupabaseClientProvider.swift` + Keychain session — **Traces**: FR-AUTH-01, NFR-SEC-01
-- [ ] T009 Define SwiftData models mirroring server tables + `MutationOutbox` in `ios/HomeFlow/Core/Models/` — **Traces**: NFR-OFFL-01
-- [ ] T010 Implement `PermissionService` matching RLS matrix in `ios/HomeFlow/Core/Permissions/` — **Traces**: FR-USER-01, AC-PROC-02, AC-GUEST-02
-- [ ] T011 Implement `SyncEngine` skeleton (outbox enqueue, push, pull, revert-on-deny) in `ios/HomeFlow/Core/Sync/` — **Traces**: NFR-OFFL-01, AC-SYNC-01, AC-SYNC-02, AC-SYNC-03
-- [ ] T012 Implement `ActivityLogService` append + fetch in `ios/HomeFlow/Core/ActivityLog/` — **Traces**: FR-LOG-01
-- [ ] T013 Wire `AppRouter` + root auth gate in `ios/HomeFlow/App/` — **Traces**: FR-AUTH-01
+- [x] T004 Write `supabase/migrations/001_initial_schema.sql` from data-model.md (enums, tables, indexes) — **Traces**: FR-HOME-01, FR-USER-01, FR-PROC-01
+- [x] T005 Implement RLS policies + `get_user_role()` per contracts/rls-permissions.md — **Traces**: FR-USER-01, FR-GUEST-01, AC-GUEST-02
+- [x] T006 [P] Configure Supabase Auth: Apple + email/password providers — **Traces**: FR-AUTH-01 — *email/password done; Apple deferred (see dev-notes D12)*
+- [x] T007 [P] Create Supabase Storage buckets + policies (home-photos, documents, procedure-attachments) — **Traces**: FR-HOME-01, FR-HOME-03, FR-PROC-03 — *002_storage_profiles_invites.sql*
+- [x] T008 Implement `ios/HomeFlow/Core/Supabase/SupabaseClientProvider.swift` + Keychain session — **Traces**: FR-AUTH-01, NFR-SEC-01 — *supabase-swift session + authStateChanges*
+- [x] T009 Define SwiftData models mirroring server tables + `MutationOutbox` in `ios/HomeFlow/Core/Models/` — **Traces**: NFR-OFFL-01
+- [x] T010 Implement `PermissionService` matching RLS matrix in `ios/HomeFlow/Core/Permissions/` — **Traces**: FR-USER-01, AC-PROC-02, AC-GUEST-02
+- [x] T011 Implement `SyncEngine` skeleton (outbox enqueue, push, pull, revert-on-deny) in `ios/HomeFlow/Core/Sync/` — **Traces**: NFR-OFFL-01, AC-SYNC-01, AC-SYNC-02, AC-SYNC-03 — *homes push/pull; partial AC-SYNC-02*
+- [x] T012 Implement `ActivityLogService` append + fetch in `ios/HomeFlow/Core/ActivityLog/` — **Traces**: FR-LOG-01 — *append done; fetch UI pending*
+- [x] T013 Wire `AppRouter` + root auth gate in `ios/HomeFlow/App/` — **Traces**: FR-AUTH-01
 
-**Checkpoint**: Sign-in works; empty authenticated shell loads; migrations apply cleanly.
+**Checkpoint**: Sign-in works; empty authenticated shell loads; migrations apply cleanly. ✅
 
 ---
 
@@ -49,9 +62,9 @@
 
 ### Implementation
 
-- [ ] T014 [US-ADMIN-01] Auth screens: email/password sign-up, sign-in, Sign in with Apple in `ios/HomeFlow/Features/Auth/` — **Traces**: FR-AUTH-01
-- [ ] T015 [US-ADMIN-01] Dashboard home list view (SwiftUI) — cards with name, location, open-procedure count placeholder in `ios/HomeFlow/Features/Dashboard/` — **Traces**: FR-HOME-01
-- [ ] T016 [P] [US-ADMIN-01] Adaptive layout: iPhone `NavigationStack`, iPad `NavigationSplitView` shell for dashboard — **Traces**: NFR-PERF-01
+- [x] T014 [US-ADMIN-01] Auth screens: email/password sign-up, sign-in, Sign in with Apple in `ios/HomeFlow/Features/Auth/` — **Traces**: FR-AUTH-01 — *Apple placeholder only*
+- [x] T015 [US-ADMIN-01] Dashboard home list view (SwiftUI) — cards with name, location, open-procedure count placeholder in `ios/HomeFlow/Features/Dashboard/` — **Traces**: FR-HOME-01 — *procedure count placeholder not yet*
+- [x] T016 [P] [US-ADMIN-01] Adaptive layout: iPhone `NavigationStack`, iPad `NavigationSplitView` shell for dashboard — **Traces**: NFR-PERF-01
 
 ### Tests
 
@@ -65,16 +78,16 @@
 
 ### Implementation
 
-- [ ] T018 [US-ADMIN-01] Home create/edit form + validation in `ios/HomeFlow/Features/HomeSetup/` — **Traces**: AC-HOME-01, AC-HOME-02, FR-HOME-01
-- [ ] T019 [US-ADMIN-01] Home photo pick + upload to Supabase Storage — **Traces**: AC-HOME-01, FR-HOME-01
-- [ ] T020 [US-ADMIN-01] Home edit offline + sync conflict (timestamp wins + activity log) — **Traces**: AC-HOME-03, AC-SYNC-01, FR-LOG-01
-- [ ] T021 [P] [US-ADMIN-01] Home detail header (name, address) + tab bar shell (Procedures | Contacts | Documents | People) — **Traces**: FR-HOME-01
+- [x] T018 [US-ADMIN-01] Home create/edit form + validation in `ios/HomeFlow/Features/HomeSetup/` — **Traces**: AC-HOME-01, AC-HOME-02, FR-HOME-01
+- [x] T019 [US-ADMIN-01] Home photo pick + upload to Supabase Storage — **Traces**: AC-HOME-01, FR-HOME-01 — *sync-before-upload*
+- [x] T020 [US-ADMIN-01] Home edit offline + sync conflict (timestamp wins + activity log) — **Traces**: AC-HOME-03, AC-SYNC-01, FR-LOG-01 — *HomeConflictResolver + merge; full offline E2E pending*
+- [x] T021 [P] [US-ADMIN-01] Home detail header (name, address) + tab bar shell (Procedures | Contacts | Documents | People) — **Traces**: FR-HOME-01
 
 ### Tests
 
-- [ ] T022 [P] [US-ADMIN-01] Unit test `test_AC_HOME_01_valid_home_created` — **Traces**: AC-HOME-01
-- [ ] T023 [P] [US-ADMIN-01] Unit test `test_AC_HOME_02_invalid_home_rejected` — **Traces**: AC-HOME-02
-- [ ] T024 [US-ADMIN-01] Unit test `test_AC_HOME_03_offline_edit_conflict_logged` — **Traces**: AC-HOME-03
+- [ ] T022 [P] [US-ADMIN-01] Unit test `test_AC_HOME_01_valid_home_created` — **Traces**: AC-HOME-01 — *validator only; integration test pending*
+- [x] T023 [P] [US-ADMIN-01] Unit test `test_AC_HOME_02_invalid_home_rejected` — **Traces**: AC-HOME-02
+- [x] T024 [US-ADMIN-01] Unit test `test_AC_HOME_03_offline_edit_conflict_logged` — **Traces**: AC-HOME-03 — *HomeConflictResolverTests; activity log integration pending*
 
 ---
 
@@ -84,11 +97,11 @@
 
 ### Implementation
 
-- [ ] T025 [US-ADMIN-02] Invite flow: create/revoke invite token, email invite link in `ios/HomeFlow/Features/Members/` — **Traces**: AC-USER-01, AC-USER-02, FR-GUEST-02, FR-USER-02
-- [ ] T026 [US-ADMIN-02] Accept invite → create membership with role — **Traces**: AC-USER-01
+- [x] T025 [US-ADMIN-02] Invite flow: create/revoke invite token, email invite link in `ios/HomeFlow/Features/Members/` — **Traces**: AC-USER-01, AC-USER-02, FR-GUEST-02, FR-USER-02 — *share link; no email send*
+- [x] T026 [US-ADMIN-02] Accept invite → create membership with role — **Traces**: AC-USER-01 — *paste token + RPC; deep link pending*
 - [ ] T027 [US-ADMIN-02] Offline invite conflict resolution — **Traces**: AC-USER-03, AC-SYNC-01
-- [ ] T028 [US-ADMIN-03] Members list (People tab) + role assignment UI — **Traces**: AC-USER-04, AC-USER-05, AC-USER-06, FR-USER-02
-- [ ] T029 [US-ADMIN-03] Role change sync + audit entry for prior role — **Traces**: AC-USER-06, FR-LOG-01
+- [x] T028 [US-ADMIN-03] Members list (People tab) + role assignment UI — **Traces**: AC-USER-04, AC-USER-05, AC-USER-06, FR-USER-02
+- [x] T029 [US-ADMIN-03] Role change sync + audit entry for prior role — **Traces**: AC-USER-06, FR-LOG-01 — *activity log append; concurrent conflict partial*
 
 ### Tests
 
@@ -107,10 +120,10 @@
 
 ### Implementation
 
-- [ ] T034 [NFR-OFFL-01] Network reachability → trigger `SyncEngine.run()` on reconnect in `ios/HomeFlow/Core/Sync/` — **Traces**: AC-SYNC-01
+- [x] T034 [NFR-OFFL-01] Network reachability → trigger `SyncEngine.run()` on reconnect in `ios/HomeFlow/Core/Sync/` — **Traces**: AC-SYNC-01
 - [ ] T035 [NFR-OFFL-01] Field-level merge for non-conflicting offline edits — **Traces**: AC-SYNC-02
-- [ ] T036 [NFR-OFFL-01] Stale-permission revert + user-facing error — **Traces**: AC-SYNC-03
-- [ ] T037 [P] [NFR-OFFL-01] In-app conflict/overwrite notification banners — **Traces**: AC-SYNC-01, AC-PROC-03, AC-HOME-05
+- [x] T036 [NFR-OFFL-01] Stale-permission revert + user-facing error — **Traces**: AC-SYNC-03 — *revert + SyncNotification*
+- [x] T037 [P] [NFR-OFFL-01] In-app conflict/overwrite notification banners — **Traces**: AC-SYNC-01, AC-PROC-03, AC-HOME-05 — *dashboard sync banners*
 
 ### Tests
 
@@ -118,7 +131,7 @@
 - [ ] T039 [P] [NFR-OFFL-01] Unit test `test_AC_SYNC_02_disjoint_fields_merge` — **Traces**: AC-SYNC-02
 - [ ] T040 [NFR-OFFL-01] Unit test `test_AC_SYNC_03_stale_permission_reverts` — **Traces**: AC-SYNC-03
 
-**Checkpoint**: P1 stories independently testable.
+**Checkpoint**: P1 stories independently testable. ⏳ *Pending T027, sync tests, Procedures for full demo*
 
 ---
 
@@ -193,7 +206,7 @@
 
 - [ ] T065 [FR-HOME-03] Documents list + upload + visibility in `ios/HomeFlow/Features/Documents/` — **Traces**: FR-HOME-03, AC-GUEST-01
 - [ ] T066 [P] [FR-NOTIF-01] Settings screen: account, notification toggle disabled (“Coming soon”) in `ios/HomeFlow/Features/Settings/` — **Traces**: FR-NOTIF-01
-- [ ] T067 [P] Settings: sign out clears session — **Traces**: FR-AUTH-01
+- [ ] T067 [P] Settings: sign out clears session — **Traces**: FR-AUTH-01 — *sign out on dashboard today*
 - [ ] T068 Admin revoke member access → lose access on next sync — **Traces**: FR-USER-02
 
 ### Tests
@@ -210,7 +223,7 @@
 - [ ] T072a [P] Performance smoke: screen load & sync latency baselines — **Traces**: NFR-PERF-01, NFR-SYNC-01
 - [ ] T072b [P] Document NFR-SCALE-01 architecture assumptions in plan.md (no load test in MVP) — **Traces**: NFR-SCALE-01
 - [ ] T072c [P] Enable Xcode crash report collection / document NFR-REL-01 monitoring path — **Traces**: NFR-REL-01
-- [ ] T073 Update quickstart.md with any dev-setup deltas discovered during implement — **Traces**: plan Phase 0 (infrastructure)
+- [x] T073 Update quickstart.md with any dev-setup deltas discovered during implement — **Traces**: plan Phase 0 (infrastructure)
 
 ---
 

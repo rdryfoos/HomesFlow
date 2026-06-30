@@ -106,10 +106,46 @@
 
 ---
 
+### D11 — Debug vs Release Supabase targets (2026-06-28)
+
+**Decision**: Two gitignored xcconfig files — `Secrets.xcconfig` (Debug → local Docker) and `Secrets.Release.xcconfig` (Release → Supabase Cloud). Wired in `ios/project.yml` via XcodeGen.
+
+**Rationale**: Simulator dev stays on `127.0.0.1`; physical device / stakeholder demos require cloud URL (phone cannot reach Mac localhost). Prevents accidental shipping of local URL in Release builds.
+
+**Alternatives rejected**: Single xcconfig switched manually (error-prone); environment plists in repo (secret leakage risk).
+
+---
+
+### D12 — Apple Sign-In & entitlements for device demos (2026-06-28)
+
+**Decision**: Email/password only for current MVP device builds. Sign in with Apple entitlement **removed** from `HomeFlow.entitlements` temporarily so **Personal Team** (free Apple ID) code signing works. Apple Sign-In UI shows placeholder message.
+
+**Rationale**: Paid Apple Developer Program + Services ID setup required for production Sign in with Apple. Email auth sufficient for internal cloud demos.
+
+**Revisit before**: App Store submission (FR-AUTH-01 requires Apple when email is offered).
+
+---
+
+### D13 — Bundle identifier (2026-06-28)
+
+**Decision**: `com.rdryfoos.homeflow` (replaces planned `com.homeflow.app`).
+
+**Rationale**: Global bundle ID `com.homeflow.app` unavailable on Apple's registry for developer's team.
+
+---
+
+### D14 — Auth session handling (2026-06-28)
+
+**Decision**: `SupabaseClientProvider` sets session from sign-in/sign-up return value and subscribes to `authStateChanges`; do not rely solely on `try? await client.auth.session` immediately after sign-in.
+
+**Rationale**: Observed silent sign-in failure on device when refresh dropped session before `isAuthenticated` updated.
+
+---
+
 ## Open items (non-blocking for MVP)
 
 | Item | Notes |
 |------|-------|
 | SMS invites (FR-GUEST-02) | MVP: email invite via Supabase Auth magic link or invite token URL; SMS deferred |
-| Deep links (AC-GUEST-02) | Universal Links in v1.1; MVP uses in-app navigation only |
+| Deep links (AC-GUEST-02) | Universal Links in v1.1; MVP uses paste-token invite accept + `homeflow://` share link only |
 | Sentry / crash telemetry | Recommended before TestFlight; not blocking first implement pass |
