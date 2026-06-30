@@ -120,59 +120,6 @@ struct HomeSetupView: View {
     }
 }
 
-struct HomePhotoThumbnail: View {
-    @Environment(\.appEnvironment) private var appEnvironment
-
-    let photoData: Data?
-    let storagePath: String?
-    let homeId: UUID?
-
-    @State private var remoteURL: URL?
-
-    var body: some View {
-        Group {
-            if let photoData, let image = UIImage(data: photoData) {
-                Image(uiImage: image)
-                    .resizable()
-                    .scaledToFill()
-            } else if let remoteURL {
-                AsyncImage(url: remoteURL) { phase in
-                    switch phase {
-                    case .success(let image):
-                        image.resizable().scaledToFill()
-                    default:
-                        placeholder
-                    }
-                }
-            } else {
-                placeholder
-            }
-        }
-        .frame(width: 64, height: 64)
-        .clipShape(RoundedRectangle(cornerRadius: 8))
-        .task(id: storagePath) {
-            await loadRemoteURL()
-        }
-    }
-
-    private var placeholder: some View {
-        ZStack {
-            Color.secondary.opacity(0.15)
-            Image(systemName: "house")
-                .foregroundStyle(.secondary)
-        }
-    }
-
-    private func loadRemoteURL() async {
-        guard photoData == nil,
-              let path = storagePath,
-              let homeId,
-              let repo = appEnvironment?.homeRepository else { return }
-        let summary = HomeSummary(id: homeId, name: "", streetAddress: "", photoURL: path, isPendingSync: false)
-        remoteURL = try? await repo.signedPhotoURL(for: summary)
-    }
-}
-
 private extension Result where Success == Void, Failure == HomeValidationError {
     var isSuccess: Bool {
         if case .success = self { return true }

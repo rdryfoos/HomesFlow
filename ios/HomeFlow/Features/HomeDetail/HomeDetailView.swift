@@ -37,7 +37,7 @@ struct HomeDetailView: View {
             tabContent
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
-        .navigationTitle(displayedHome.name)
+        .navigationTitle("")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
@@ -57,26 +57,7 @@ struct HomeDetailView: View {
     }
 
     private var homeHeader: some View {
-        HStack(alignment: .top, spacing: 12) {
-            HomePhotoThumbnail(
-                photoData: nil,
-                storagePath: displayedHome.photoURL,
-                homeId: displayedHome.id
-            )
-            .frame(width: 72, height: 72)
-
-            VStack(alignment: .leading, spacing: 4) {
-                Text(displayedHome.name)
-                    .font(.title2.bold())
-                Text(displayedHome.streetAddress)
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-            }
-            Spacer(minLength: 0)
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding()
-        .background(.ultraThinMaterial)
+        HomeHeroCard(home: displayedHome, style: .detail)
     }
 
     @ViewBuilder
@@ -89,10 +70,8 @@ struct HomeDetailView: View {
         case .documents:
             ContentUnavailableView("Documents", systemImage: "doc", description: Text("Phase 3"))
         case .people:
-            NavigationStack {
-                MembersView(home: displayedHome)
-                    .environment(\.appEnvironment, appEnvironment)
-            }
+            MembersView(home: displayedHome)
+                .environment(\.appEnvironment, appEnvironment)
         }
     }
 }

@@ -23,6 +23,23 @@ struct HomeSummary: Identifiable, Sendable, Hashable {
     let streetAddress: String
     let photoURL: String?
     let isPendingSync: Bool
+    let currentUserRole: HomeRole?
+
+    init(
+        id: UUID,
+        name: String,
+        streetAddress: String,
+        photoURL: String? = nil,
+        isPendingSync: Bool = false,
+        currentUserRole: HomeRole? = nil
+    ) {
+        self.id = id
+        self.name = name
+        self.streetAddress = streetAddress
+        self.photoURL = photoURL
+        self.isPendingSync = isPendingSync
+        self.currentUserRole = currentUserRole
+    }
 }
 
 enum HomeValidationError: LocalizedError, Equatable {

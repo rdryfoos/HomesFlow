@@ -186,13 +186,38 @@ final class HomeRepository: ObservableObject {
     }
 
     private func summary(from cached: CachedHome) -> HomeSummary {
-        HomeSummary(
+        let userId = auth.session?.user.id
+        let homeId = cached.id
+        let currentUserRole = currentUserRole(for: homeId, createdBy: cached.createdBy, userId: userId)
+
+        return HomeSummary(
             id: cached.id,
             name: cached.name,
             streetAddress: cached.streetAddress,
             photoURL: cached.photoURL,
-            isPendingSync: cached.sync == .pending
+            isPendingSync: cached.sync == .pending,
+            currentUserRole: currentUserRole
         )
+    }
+
+    private func currentUserRole(for homeId: UUID, createdBy: UUID, userId: UUID?) -> HomeRole? {
+        guard let userId else { return nil }
+
+        let targetHomeId = homeId
+        let targetUserId = userId
+        if let membership = try? modelContext.fetch(FetchDescriptor<CachedMembership>(
+            predicate: #Predicate<CachedMembership> {
+                $0.homeId == targetHomeId && $0.userId == targetUserId
+            }
+        )).first {
+            return membership.homeRole
+        }
+
+        if createdBy == userId {
+            return .admin
+        }
+
+        return nil
     }
 }
 

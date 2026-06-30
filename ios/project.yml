@@ -57,3 +57,20 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.rdryfoos.homeflow.uitests
         GENERATE_INFOPLIST_FILE: YES
+schemes:
+  HomeFlow:
+    build:
+      targets:
+        HomeFlow: all
+    test:
+      targets:
+        - HomeFlowTests
+        - HomeFlowUITests
+    run:
+      config: Debug
+    profile:
+      config: Release
+    analyze:
+      config: Debug
+    archive:
+      config: Release

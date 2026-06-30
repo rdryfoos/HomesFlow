@@ -142,6 +142,8 @@ struct DashboardView: View {
             List {
                 homeListSections(useNavigationLink: true)
             }
+            .listStyle(.plain)
+            .contentMargins(.horizontal, 0, for: .scrollContent)
             .homeListChrome(isLoading: viewModel.isLoading, isEmpty: viewModel.homes.isEmpty) {
                 await reload()
             }
@@ -149,6 +151,8 @@ struct DashboardView: View {
             List(selection: $selectedHomeId) {
                 homeListSections(useNavigationLink: false)
             }
+            .listStyle(.plain)
+            .contentMargins(.horizontal, 0, for: .scrollContent)
             .homeListChrome(isLoading: viewModel.isLoading, isEmpty: viewModel.homes.isEmpty) {
                 await reload()
             }
@@ -179,30 +183,25 @@ struct DashboardView: View {
         Section {
             ForEach(viewModel.homes) { home in
                 if useNavigationLink {
-                    NavigationLink(value: home.id) {
-                        homeRow(home)
-                    }
-                } else {
-                    homeRow(home)
-                        .tag(home.id)
-                }
-            }
-        }
-    }
+                    ZStack {
+                        HomeHeroCard(home: home, style: .list, showsDisclosureIndicator: true)
 
-    private func homeRow(_ home: HomeSummary) -> some View {
-        HStack {
-            VStack(alignment: .leading, spacing: 4) {
-                Text(home.name).font(.headline)
-                Text(home.streetAddress)
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-            }
-            Spacer()
-            if home.isPendingSync {
-                Image(systemName: "icloud.and.arrow.up")
-                    .foregroundStyle(.orange)
-                    .accessibilityLabel("Not synced")
+                        NavigationLink(value: home.id) {
+                            EmptyView()
+                        }
+                        .opacity(0)
+                        .frame(maxWidth: .infinity, minHeight: 152)
+                    }
+                    .listRowInsets(EdgeInsets(top: 8, leading: 0, bottom: 8, trailing: 0))
+                    .listRowSeparator(.hidden)
+                    .listRowBackground(Color.clear)
+                } else {
+                    HomeHeroCard(home: home, style: .list)
+                        .tag(home.id)
+                        .listRowInsets(EdgeInsets(top: 8, leading: 0, bottom: 8, trailing: 0))
+                        .listRowSeparator(.hidden)
+                        .listRowBackground(Color.clear)
+                }
             }
         }
     }
