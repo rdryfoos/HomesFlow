@@ -1,24 +1,33 @@
 #!/usr/bin/env bash
 # Gate 2 — post-build traceability check (see traceability.md §6).
 #
-# Verifies the golden thread PRD → spec → tasks → code → tests is machine-checkable:
+# Modes:
+#   (no args)  Check the golden thread; exit non-zero on any violation.
+#   --matrix   Regenerate specs/001-mvp/coverage.md from the same extraction.
+#   --json     Print the per-ID coverage dataset as JSON to stdout.
+#
+# Checks (default mode):
 #   1. The ID registry (PRD) matches spec.md and tasks.md exactly (no drift).
 #   2. Every task in tasks.md declares a Traces field.
 #   3. No untraced scope: every @covers ID in source and every AC ID encoded in a
 #      test name exists in the PRD registry.
 #   4. No silent gaps: every AC in the registry either has a test that names it,
 #      or appears in an unchecked task in tasks.md (tracked debt).
-#
-# Exit code 0 = thread intact. Non-zero = at least one violation (printed to stderr).
 set -euo pipefail
 cd "$(dirname "$0")/.."
+
+# Deterministic sort/grep across macOS and Linux (CI regenerates and diffs the matrix).
+export LC_ALL=C
 
 ID_RE='(FR|NFR|AC|US)-[A-Z]{2,6}-[0-9]{2,}[a-z]?'
 PRD=HomeFlow.prd.md
 SPEC=specs/001-mvp/spec.md
 TASKS=specs/001-mvp/tasks.md
+MATRIX=specs/001-mvp/coverage.md
 SRC_DIRS=(ios/HomeFlow)
 TEST_DIRS=(ios/HomeFlowTests ios/HomeFlowUITests)
+
+MODE="${1:-check}"
 
 fail=0
 err() { echo "FAIL: $*" >&2; fail=1; }
@@ -26,9 +35,180 @@ err() { echo "FAIL: $*" >&2; fail=1; }
 tmp=$(mktemp -d)
 trap 'rm -rf "$tmp"' EXIT
 
+# ---------------------------------------------------------------------------
+# Extraction (shared by all modes)
+# ---------------------------------------------------------------------------
 grep -Eoh "$ID_RE" "$PRD"   | sort -u > "$tmp/prd.txt"
 grep -Eoh "$ID_RE" "$SPEC"  | sort -u > "$tmp/spec.txt"
 grep -Eoh "$ID_RE" "$TASKS" | sort -u > "$tmp/tasks.txt"
+
+grep -rEoh "@covers.*" "${SRC_DIRS[@]}" "${TEST_DIRS[@]}" --include='*.swift' 2>/dev/null \
+  | grep -Eo "$ID_RE" | sort -u > "$tmp/covers.txt" || true
+
+grep -rEoh 'func test_[A-Za-z0-9_]+' "${TEST_DIRS[@]}" --include='*.swift' 2>/dev/null \
+  | sed 's/^func //' | sort -u > "$tmp/test_names.txt" || true
+
+grep -Eo 'AC_[A-Z]{2,6}_[0-9]{2,}[a-z]?' "$tmp/test_names.txt" \
+  | tr '_' '-' | sort -u > "$tmp/test_acs.txt" || true
+
+grep -E '^- \[ \]' "$TASKS" | grep -Eo "$ID_RE" | sort -u > "$tmp/pending.txt" || true
+
+# status|taskId|traces — one line per task (Traces segment only)
+sed -nE 's/^- \[(x| )\] (T[0-9]+[a-z]?).*\*\*Traces\*\*: (.*)$/\1|\2|\3/p' "$TASKS" > "$tmp/task_map.txt"
+# status|taskId|full line — for US story labels like [US-EDIT-01]
+sed -nE 's/^- \[(x| )\] (T[0-9]+[a-z]?)(.*)$/\1|\2|\3/p' "$TASKS" > "$tmp/task_full.txt"
+
+# Per-ID facts. Word-edge match: an ID is never followed by another digit or
+# a lowercase suffix character unless it is a different (longer) ID.
+# US IDs associate via their story label anywhere in the task line; all other
+# types associate strictly via the Traces field.
+tasks_for() { # $1=id  $2=status(x or space)
+  local map="$tmp/task_map.txt"
+  case "$1" in US-*) map="$tmp/task_full.txt" ;; esac
+  awk -F'|' -v id="$1" -v st="$2" '$1==st && $3 ~ (id"([^0-9a-z]|$)") { printf "%s ", $2 }' "$map" | sed 's/ $//'
+}
+tests_for() { # $1=id (AC only)
+  local underscored; underscored=$(echo "$1" | tr '-' '_')
+  grep -E "test_${underscored}([^0-9a-z]|$)" "$tmp/test_names.txt" | paste -sd' ' - || true
+}
+is_covered() { grep -qx "$1" "$tmp/covers.txt"; }
+is_tested()  { grep -qx "$1" "$tmp/test_acs.txt"; }
+
+status_for() { # $1=id  $2=done_tasks  $3=pending_tasks
+  local id="$1" done_t="$2" pend_t="$3" type="${1%%-*}"
+  if [ "$type" = "AC" ]; then
+    if is_tested "$id"; then echo "verified"; return; fi
+    if is_covered "$id"; then
+      if [ -n "$pend_t" ]; then echo "implemented-test-pending"; else echo "gap"; fi
+      return
+    fi
+  else
+    if is_covered "$id"; then
+      if [ -n "$pend_t" ]; then echo "in-progress"; else echo "implemented"; fi
+      return
+    fi
+  fi
+  if [ -n "$pend_t" ]; then
+    if [ -n "$done_t" ]; then echo "in-progress"; else echo "planned"; fi
+    return
+  fi
+  if [ -n "$done_t" ]; then echo "done-no-covers"; return; fi
+  echo "unmapped"
+}
+
+# ---------------------------------------------------------------------------
+# Mode: --json
+# ---------------------------------------------------------------------------
+if [ "$MODE" = "--json" ]; then
+  echo "["
+  first=1
+  while IFS= read -r id; do
+    done_t=$(tasks_for "$id" "x")
+    pend_t=$(tasks_for "$id" " ")
+    tests=""
+    if [ "${id%%-*}" = "AC" ]; then tests=$(tests_for "$id"); fi
+    covered=false
+    if is_covered "$id"; then covered=true; fi
+    status=$(status_for "$id" "$done_t" "$pend_t")
+    domain=$(echo "$id" | cut -d- -f2)
+    json_list() { echo "$1" | tr ' ' '\n' | { grep -v '^$' || true; } | sed 's/.*/"&"/' | paste -sd',' - ; }
+    if [ $first -eq 0 ]; then echo ","; fi
+    first=0
+    printf '  {"id":"%s","type":"%s","domain":"%s","status":"%s","covered":%s,"doneTasks":[%s],"pendingTasks":[%s],"tests":[%s]}' \
+      "$id" "${id%%-*}" "$domain" "$status" "$covered" \
+      "$(json_list "$done_t")" "$(json_list "$pend_t")" "$(json_list "$tests")"
+  done < "$tmp/prd.txt"
+  echo
+  echo "]"
+  exit 0
+fi
+
+# ---------------------------------------------------------------------------
+# Mode: --matrix
+# ---------------------------------------------------------------------------
+if [ "$MODE" = "--matrix" ]; then
+  label_for() {
+    case "$1" in
+      verified)                 echo "Verified" ;;
+      implemented-test-pending) echo "Implemented — test pending" ;;
+      implemented)              echo "Implemented" ;;
+      in-progress)              echo "In progress" ;;
+      planned)                  echo "Planned" ;;
+      gap)                      echo "GAP — implemented, no test, untracked" ;;
+      done-no-covers)           echo "Tasks done — no @covers" ;;
+      unmapped)                 echo "Unmapped" ;;
+    esac
+  }
+
+  section() { # $1=type  $2=heading  $3=include tests column (yes/no)
+    local type="$1" heading="$2" with_tests="$3"
+    echo "## $heading"
+    echo
+    if [ "$with_tests" = "yes" ]; then
+      echo "| ID | Status | Done tasks | Pending tasks | Tests |"
+      echo "|----|--------|------------|---------------|-------|"
+    else
+      echo "| ID | Status | Done tasks | Pending tasks |"
+      echo "|----|--------|------------|---------------|"
+    fi
+    while IFS= read -r id; do
+      [ "${id%%-*}" = "$type" ] || continue
+      local done_t pend_t tests status
+      done_t=$(tasks_for "$id" "x")
+      pend_t=$(tasks_for "$id" " ")
+      status=$(label_for "$(status_for "$id" "$done_t" "$pend_t")")
+      if [ "$with_tests" = "yes" ]; then
+        tests=$(tests_for "$id" | tr ' ' '\n' | { grep -v '^$' || true; } | sed 's/.*/`&`/' \
+          | awk '{ printf "%s%s", (NR > 1 ? "<br>" : ""), $0 } END { print "" }')
+        echo "| $id | $status | ${done_t:-—} | ${pend_t:-—} | ${tests:-—} |"
+      else
+        echo "| $id | $status | ${done_t:-—} | ${pend_t:-—} |"
+      fi
+    done < "$tmp/prd.txt"
+    echo
+  }
+
+  total_ids=$(wc -l < "$tmp/prd.txt" | tr -d ' ')
+  total_acs=$(grep -c '^AC-' "$tmp/prd.txt")
+  verified=0; test_pending=0; planned_acs=0
+  while IFS= read -r id; do
+    done_t=$(tasks_for "$id" "x"); pend_t=$(tasks_for "$id" " ")
+    case "$(status_for "$id" "$done_t" "$pend_t")" in
+      verified) verified=$((verified+1)) ;;
+      implemented-test-pending) test_pending=$((test_pending+1)) ;;
+      planned) planned_acs=$((planned_acs+1)) ;;
+    esac
+  done < <(grep '^AC-' "$tmp/prd.txt")
+
+  {
+    echo "# Coverage Matrix: HomeFlow MVP"
+    echo
+    echo "**GENERATED FILE — do not edit.** Regenerate with \`bash scripts/check-traceability.sh --matrix\`."
+    echo "CI fails if this file is stale. Source of truth: \`HomeFlow.prd.md\` registry × \`tasks.md\` × \`@covers\` annotations × test names."
+    echo
+    echo "## Summary"
+    echo
+    echo "| Metric | Count |"
+    echo "|--------|-------|"
+    echo "| Registry IDs | $total_ids |"
+    echo "| Acceptance criteria | $total_acs |"
+    echo "| ACs verified (test passing in suite) | $verified |"
+    echo "| ACs implemented — test pending | $test_pending |"
+    echo "| ACs planned (tracked, not implemented) | $planned_acs |"
+    echo
+    section "AC"  "Acceptance criteria" "yes"
+    section "FR"  "Functional requirements" "no"
+    section "NFR" "Non-functional requirements" "no"
+    section "US"  "User stories" "no"
+  } > "$MATRIX"
+
+  echo "Wrote $MATRIX ($total_ids IDs; $verified/$total_acs ACs verified)."
+  exit 0
+fi
+
+# ---------------------------------------------------------------------------
+# Mode: check (default)
+# ---------------------------------------------------------------------------
 
 # --- 1. Registry drift ------------------------------------------------------
 for artifact in spec tasks; do
@@ -46,12 +226,6 @@ if [ -n "$untraced_tasks" ]; then
 fi
 
 # --- 3. Untraced scope (code/tests referencing unknown IDs) ------------------
-grep -rEoh "@covers.*" "${SRC_DIRS[@]}" "${TEST_DIRS[@]}" --include='*.swift' 2>/dev/null \
-  | grep -Eo "$ID_RE" | sort -u > "$tmp/covers.txt" || true
-
-grep -rEoh 'func test_[A-Za-z0-9_]+' "${TEST_DIRS[@]}" --include='*.swift' 2>/dev/null \
-  | grep -Eo 'AC_[A-Z]{2,6}_[0-9]{2,}[a-z]?' | tr '_' '-' | sort -u > "$tmp/test_acs.txt" || true
-
 orphan_covers=$(comm -13 "$tmp/prd.txt" "$tmp/covers.txt")
 if [ -n "$orphan_covers" ]; then
   err "@covers IDs not in the PRD registry (untraced scope):"
@@ -65,14 +239,10 @@ if [ -n "$orphan_tests" ]; then
 fi
 
 # --- 4. Gaps: AC with no test and no tracked (unchecked) task ----------------
-grep -E '^- \[ \]' "$TASKS" | grep -Eo "$ID_RE" | sort -u > "$tmp/pending.txt" || true
-
-gap_count=0
 while IFS= read -r ac; do
   if grep -qx "$ac" "$tmp/test_acs.txt"; then continue; fi   # tested
   if grep -qx "$ac" "$tmp/pending.txt"; then continue; fi    # tracked debt
   err "gap: $ac has no test and no pending task in $TASKS"
-  gap_count=$((gap_count + 1))
 done < <(grep '^AC-' "$tmp/prd.txt")
 
 # --- Summary -----------------------------------------------------------------

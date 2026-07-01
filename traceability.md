@@ -94,7 +94,7 @@ Each row is now one test.
 
 1. Parses the ID registry from the PRD/spec (the authoritative ID list).
 2. Scans test names for `AC-[A-Z]+-\d+` and source for `@covers <ID>`.
-3. Emits a coverage matrix and **fails the build** if either direction has an orphan:
+3. Emits a coverage matrix (`scripts/check-traceability.sh --matrix` → `specs/001-mvp/coverage.md`, freshness-checked in CI) and **fails the build** if either direction has an orphan:
    - an AC ID with no matching test → **gap**
    - a feature test / `@covers` ID not in the registry → **untraced scope** (your scope-creep tripwire — useful given this PRD already grew a log-book feature mid-stream).
 
