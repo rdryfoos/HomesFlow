@@ -144,14 +144,16 @@ Pending invitations before user accepts.
 |--------|------|-------|
 | id | uuid PK | |
 | procedure_id | uuid FK → procedures.id ON DELETE CASCADE | |
-| sort_order | int NOT NULL | |
-| title | text NOT NULL | |
+| sort_order | int NOT NULL | Stable ordering; reorder updates this column |
+| title | text NOT NULL | Editable by Admin/Edit via long-press Rename |
 | status | step_status DEFAULT 'not_started' | |
 | notes | text | Free-text per run |
 | created_at | timestamptz | |
 | updated_at | timestamptz | |
 
-**Covers**: FR-PROC-02, FR-PROC-03, AC-PROC-01…03, AC-GUEST-04…05
+**Covers**: FR-PROC-02, FR-PROC-03, AC-PROC-01…07, AC-GUEST-04…05
+
+**Client UX (Admin/Edit)**: tap step → toggle complete; long-press → Rename / Delete / Move Up / Move Down; Steps section **Add** → insert at end. Guest: read-only — no structure controls.
 
 ### `activity_log`
 
@@ -181,7 +183,7 @@ Append-only audit trail.
 | service_providers | CRUD | CRUD | Read if visibility=guest |
 | documents | CRUD | CRUD if visibility≤edit | Read if visibility=guest |
 | procedures | CRUD | CRUD if visibility≤edit | Read if visibility=guest |
-| procedure_steps | CRUD | Update status if visibility≤edit | Read only |
+| procedure_steps | CRUD | CRUD if parent procedure visibility≤edit | Read only |
 | activity_log | Read + insert | Read + insert | Read own home |
 
 Helper SQL function: `get_user_role(home_id uuid) returns home_role` — used in all policies.

@@ -51,9 +51,10 @@ HomeFlow is a responsive iOS app (iPhone and iPad) that empowers primary homeown
 * **FR-USER-02** (Priority: Critical) — Admins can add, edit, remove users and assign roles.
 * **FR-HOME-01** (Priority: High) — Add/edit home properties with address, photos (display-optimized at upload and cached locally for hero display), and key info.
 * **FR-HOME-02** (Priority: High) — Service provider directory (propane, electric, internet, lawn care, etc.) with contacts and notes.
-* **FR-HOME-03** (Priority: High) — Editable, categorized documents for important details.
+* **FR-HOME-03** (Priority: High) — Editable, categorized documents for important details (UI section label: **Files**).
+* **FR-NAV-01** (Priority: High) — Home detail MUST expose four sections labeled **Procedures**, **Contacts**, **Files**, and **People** with device-appropriate navigation (iPhone: hero + horizontal tabs; iPad: compact left-column hero + vertical icon tabs, content-only right column).
 * **FR-PROC-01** (Priority: High) — Add/edit procedure lists (e.g., winterizing, arrival prep) with persistent status (Not Started / In Progress / Complete / N/A).
-* **FR-PROC-02** (Priority: High) — Procedures contain steps, each with their own status.
+* **FR-PROC-02** (Priority: High) — Procedures contain ordered steps, each with its own status. Admin and Edit users can **create, rename, reorder, and delete** steps on procedures they can modify (per visibility). Guests have read-only access to step content and status.
 * **FR-PROC-03** (Priority: High) — Attach notes, photos, or documents to procedures.
 * **FR-GUEST-01** (Priority: Medium) — Guest users view only approved procedures and info.
 * **FR-GUEST-02** (Priority: Medium) — Quick guest onboarding via email or SMS invite.
@@ -77,10 +78,14 @@ HomeFlow is a responsive iOS app (iPhone and iPad) that empowers primary homeown
 * **Step 2:** Dashboard shows homes managed/accessible.
   * At-a-glance indicators for open tasks, updates.
 * **Step 3:** Tap into a home for detail view.
-  * Tabs or sections for Procedures, Service Providers, Documents.
+  * Four sections, always labeled **Procedures**, **Contacts**, **Files**, and **People** (Files is the user-facing name for the document library).
+  * **iPhone**: full-bleed home hero at top; horizontal segmented control for the four sections below.
+  * **iPad**: no large hero above main content. Leading column shows a **compact home hero** (photo, name, address) that sets which home is in focus, then **vertical icon tabs** for Procedures, Contacts, Files, and People. Trailing column shows only the selected section’s content — no duplicate hero and no top tab bar.
+  * Return to **My Homes** from iPad home detail to switch homes (sidebar is not a persistent home picker while viewing a home).
   * Procedures list shows statuses; tap to drill into steps, update status, add comments or files.
+  * On procedure detail: **tap** a step to toggle complete; **long-press** a step (Admin/Edit) to rename, delete, or reorder; **Add** on the Steps section to create a new step.
   * Service provider list is searchable and editable by permitted users.
-  * Document library holds house manuals, WiFi info, care instructions (segmented by visibility).
+  * Files library holds house manuals, WiFi info, care instructions (segmented by visibility).
 * **Step 4:** User administration (Admins only): manage house users/roles from settings.
   * Clear prompts for what each user can access/change.
 * **Step 5:** Share information (Admins/Editors): quick share/copy/forward useful info to guests.
@@ -91,12 +96,16 @@ HomeFlow is a responsive iOS app (iPhone and iPad) that empowers primary homeown
 
 * Admin can revoke access instantly if trust changes.
 * Steps within a procedure can be skipped/marked N/A (for flexibility).
+* Admin and Edit users can add, rename, reorder, or remove steps; changes sync and appear in the activity log.
 * If a user is removed, clarify what happens to associated procedures/notes.
 * Error handling: Unavailable features gracefully grayed out, clear messages if permissions are insufficient.
 
 **UI/UX Highlights**
 
-* Responsive adaptive UI for all iPhone/iPad orientations.
+* Responsive adaptive UI for all iPhone/iPad orientations; iPhone and iPad use the same four section labels with layout adapted per device class.
+* **Accessibility (first-class)**: UI MUST respect iOS system settings — especially **Dynamic Type / text size**, VoiceOver, Reduce Motion, and sufficient contrast. Layouts MUST reflow at larger text sizes without clipping essential controls or requiring horizontal scrolling for primary content.
+* Procedure steps use checklist gestures: tap to complete, long-press for structure edits (Admin/Edit only).
+* Home section tabs use friendly SF Symbol icons paired with labels; minimum 44×44 pt tap targets.
 * High-contrast text, large tap targets for accessibility.
 * Role-based UI: Users only see actions/features they're permitted for.
 * Large, visible status indicators for tasks.
@@ -125,6 +134,7 @@ Imagine Diane, a homeowner who spends most of her time in Florida, but owns a ch
 * **NFR-REL-01** — 99.9% crash-free sessions
 * **NFR-SYNC-01** — Time-to-sync for updates below 1 second
 * **NFR-PERF-01** — Sub-2s average screen load times (across devices)
+* **NFR-A11Y-01** — UI MUST respect iOS accessibility settings (Dynamic Type, VoiceOver, Reduce Motion, contrast) and remain usable at all supported content size categories
 
 ### Tracking Plan
 
@@ -199,6 +209,9 @@ Imagine Diane, a homeowner who spends most of her time in Florida, but owns a ch
 * **AC-HOME-06** — Given an Admin or Edit user uploads a home photo, when the photo is saved to Storage, then the client uploads a display-optimized JPEG bounded to a maximum pixel dimension (not full camera resolution).
 * **AC-HOME-07** — Given a user has previously loaded a home photo on this device, when they view the dashboard or home detail again, then the hero photo renders from local cache without re-downloading from Storage.
 * **AC-HOME-08** — Given a home record has not yet synced to the server, when an Admin or Edit user attempts to upload a photo, then the upload is blocked and the user sees actionable guidance to sync first (e.g., pull to refresh while online).
+* **AC-HOME-09** — Given a user views home detail on iPad (regular horizontal size class), when any section is selected, then the trailing (main) column shows section content only — no full-bleed hero and no horizontal section tab bar in that column.
+* **AC-HOME-10** — Given a user opens a home on iPad, when home detail is shown, then the leading column displays a compact home hero (photo, name, address) and, below it, vertically stacked tappable section entries with icon and label for Procedures, Contacts, Files, and People; the trailing column shows the selected section.
+* **AC-HOME-11** — Given a user views home detail on any device, when section navigation is shown, then section labels read Procedures, Contacts, Files, and People (Files implements the document library).
 
 ### US-ADMIN-02 / FR-USER-01 — Admin invites users
 
@@ -216,8 +229,12 @@ Imagine Diane, a homeowner who spends most of her time in Florida, but owns a ch
 ### US-EDIT-01 / FR-PROC-02 — Edit user updates maintenance tasks
 
 * **AC-PROC-01** — Given an Edit user views a procedure, when they mark a step Complete, then the step status updates for all users with appropriate visibility and an activity log entry is created.
-* **AC-PROC-02** — Given an Edit user attempts to update a step beyond their permission (e.g., another home's admin-only step), when they submit the change, then the app blocks the update and shows a permission error.
+* **AC-PROC-02** — Given an Edit user attempts to update a step beyond their permission (e.g., another home's admin-only procedure or step), when they submit the change, then the app blocks the update and shows a permission error.
 * **AC-PROC-03** — Given an Edit user updates a step while offline and another user updates the same step before sync, when both devices reconnect, then the update with the most recent timestamp is persisted and the other user receives a notification about the overwritten change with reference to the activity log.
+* **AC-PROC-04** — Given an Admin or Edit user long-presses a step on a procedure they can modify, when the context menu appears, then Rename, Delete, Move Up, and Move Down are available.
+* **AC-PROC-05** — Given an Admin or Edit user taps Add on the Steps section, when they enter a title and save, then a new step is appended at the next sort order and appears for permitted users after sync.
+* **AC-PROC-06** — Given an Admin or Edit user creates, renames, reorders, or deletes a step, when the change syncs, then it persists for permitted users and an activity log entry is created.
+* **AC-PROC-07** — Given a Guest views a procedure, when they interact with steps, then step structure controls (long-press menu, Add step) are not available and step status remains read-only.
 
 ### US-EDIT-02 / FR-HOME-02 — Edit user manages service providers
 
@@ -242,6 +259,12 @@ Imagine Diane, a homeowner who spends most of her time in Florida, but owns a ch
 * **AC-SYNC-03** — Given a user attempts an action that depends on stale permissions cached offline, when syncing, then if the server denies the action, the client reverts the change and shows a permission error with guidance to retry.
 * **AC-SYNC-04** — Given local changes or homes are pending sync to the server, when the user views the dashboard, then unsynced homes are visibly indicated and the user can pull to refresh to retry sync while online.
 
+### Cross-cutting / NFR-A11Y-01 — Accessibility
+
+* **AC-A11Y-01** — Given the user has increased text size via iOS Settings (Dynamic Type / Accessibility sizes), when they view dashboard, home detail, or procedure screens, then primary text and controls scale, layouts reflow without clipping essential actions, and primary reading content does not require horizontal scrolling.
+* **AC-A11Y-02** — Given VoiceOver is enabled, when the user navigates home section tabs (horizontal on iPhone, vertical on iPad), then each tab exposes a combined accessibility label (section name + role), selected state is announced, and interactive controls have meaningful hints where non-obvious.
+* **AC-A11Y-03** — Given Reduce Motion is enabled in iOS Settings, when the user navigates between sections or primary screens, then non-essential motion animations are omitted or reduced per system preference.
+
 ---
 
 ## ID Registry (authoritative)
@@ -260,9 +283,10 @@ Imagine Diane, a homeowner who spends most of her time in Florida, but owns a ch
 | FR-USER-02 | FR | Admin user management |
 | FR-HOME-01 | FR | Home CRUD |
 | FR-HOME-02 | FR | Service provider directory |
-| FR-HOME-03 | FR | Document library |
+| FR-HOME-03 | FR | Document library (UI: Files) |
+| FR-NAV-01 | FR | Home section navigation shell |
 | FR-PROC-01 | FR | Procedure lists with status |
-| FR-PROC-02 | FR | Procedure steps with status |
+| FR-PROC-02 | FR | Procedure steps: status + CRUD/reorder |
 | FR-PROC-03 | FR | Procedure attachments |
 | FR-GUEST-01 | FR | Guest visibility scope |
 | FR-GUEST-02 | FR | Guest invite onboarding |
@@ -274,8 +298,10 @@ Imagine Diane, a homeowner who spends most of her time in Florida, but owns a ch
 | NFR-REL-01 | NFR | 99.9% crash-free sessions |
 | NFR-SEC-01 | NFR | Encrypted storage |
 | NFR-SCALE-01 | NFR | 100k concurrent users |
-| AC-HOME-01 … AC-HOME-08 | AC | Home & provider scenarios |
+| NFR-A11Y-01 | NFR | iOS accessibility compliance |
+| AC-HOME-01 … AC-HOME-11 | AC | Home, provider & navigation scenarios |
 | AC-USER-01 … AC-USER-07 | AC | User invite & role scenarios |
-| AC-PROC-01 … AC-PROC-03 | AC | Procedure step scenarios |
+| AC-PROC-01 … AC-PROC-07 | AC | Procedure step scenarios |
 | AC-GUEST-01 … AC-GUEST-05 | AC | Guest access scenarios |
 | AC-SYNC-01 … AC-SYNC-04 | AC | Offline sync scenarios |
+| AC-A11Y-01 … AC-A11Y-03 | AC | Accessibility scenarios |

@@ -1,6 +1,6 @@
 # RLS Permissions Contract
 
-**Feature**: `001-mvp` | **Covers**: FR-USER-01, FR-GUEST-01, AC-USER-04, AC-USER-05, AC-GUEST-01, AC-GUEST-02
+**Feature**: `001-mvp` | **Covers**: FR-USER-01, FR-GUEST-01, FR-PROC-02, AC-USER-04, AC-USER-05, AC-PROC-02, AC-PROC-07, AC-GUEST-01, AC-GUEST-02, AC-GUEST-04
 
 ## Role capabilities matrix
 
@@ -13,7 +13,8 @@
 | CRUD service providers | ✓ | ✓ | Read† |
 | CRUD documents | ✓ | ✓‡ | Read† |
 | CRUD procedures | ✓ | ✓‡ | Read† |
-| Update step status | ✓ | ✓‡ | — |
+| CRUD procedure steps (create, rename, reorder, delete) | ✓ | ✓‡ | — |
+| Update step status / notes | ✓ | ✓‡ | — |
 | View activity log | ✓ | ✓ | — |
 | Settings / sign out | ✓ | ✓ | ✓ |
 
@@ -56,7 +57,11 @@ Guest role has SELECT only policy filtered by `procedures.visibility = 'guest'`.
 
 ## Client mirror
 
-`PermissionService.can(_ action: Action, on entity: Entity, role: HomeRole)` must match RLS rules so UI hides/disabled controls before a doomed API call (**AC-PROC-02**, **AC-GUEST-02**).
+`PermissionService.can(_ action: Action, on entity: Entity, role: HomeRole)` must match RLS rules so UI hides/disabled controls before a doomed API call (**AC-PROC-02**, **AC-PROC-07**, **AC-GUEST-02**).
+
+### Procedure step structure (client)
+
+Admin and Edit users who can `.update` a procedure (per visibility) MUST also be allowed to create, rename, reorder, and delete its steps. The UI exposes this via long-press context menu and an Add control on the Steps section (**AC-PROC-04**, **AC-PROC-05**). Guest users MUST NOT see structure controls (**AC-PROC-07**).
 
 ## Deep link / navigation guard
 

@@ -2,7 +2,7 @@
 
 **Input**: [spec.md](./spec.md) · [plan.md](./plan.md) · [data-model.md](./data-model.md) · [contracts/](./contracts/)
 
-**Feature**: `001-mvp` | **Updated**: 2026-06-28
+**Feature**: `001-mvp` | **Updated**: 2026-07-01
 
 **UI reference** (non-authoritative): https://haze-rabbit-58180688.figma.site — SwiftUI-native iPhone/iPad only.
 
@@ -11,10 +11,11 @@
 | Phase | Progress | Blocker / next |
 |-------|----------|----------------|
 | 1–2 Setup + foundation | **Complete** | — |
-| 3–4 Auth, dashboard, homes | **Mostly complete** | XCUITest T017; procedure count placeholder optional |
+| 3–4 Auth, dashboard, homes | **Mostly complete** | iPad nav shell T021a–c; Files tab label T021b; XCUITest T017 |
 | 5 Invites & roles | **Partial** | Deep links T026; offline conflict T027; unit tests |
 | 6 Offline sync | **Partial** | Field merge T035; full sync tests |
-| 7–10 P2/P3 features | Not started | Procedures next |
+| 7 Procedures | **Mostly complete** | Step structure CRUD (AC-PROC-04…07); photo attach T043 |
+| 8–10 P2/P3 features | Not started | Contacts tab next |
 | 11 Hardening | Not started | Re-run analyze after P1 checkpoint |
 
 Partial deliverables documented in [dev-notes.md](./dev-notes.md). **Do not** encode implementation details in [spec.md](./spec.md).
@@ -82,7 +83,10 @@ Partial deliverables documented in [dev-notes.md](./dev-notes.md). **Do not** en
 - [x] T019 [US-ADMIN-01] Home photo pick + upload to Supabase Storage — **Traces**: AC-HOME-01, AC-HOME-08, FR-HOME-01 — *sync-before-upload*
 - [x] T019a [P] [US-ADMIN-01] Home photo display optimization: resize on upload, disk/memory cache, signed-URL reuse, dashboard prefetch in `ios/HomeFlow/Core/Storage/` — **Traces**: AC-HOME-06, AC-HOME-07, FR-HOME-01, NFR-PERF-01
 - [x] T020 [US-ADMIN-01] Home edit offline + sync conflict (timestamp wins + activity log) — **Traces**: AC-HOME-03, AC-SYNC-01, FR-LOG-01 — *HomeConflictResolver + merge; full offline E2E pending*
-- [x] T021 [P] [US-ADMIN-01] Home detail full-bleed photo hero header + tab bar shell (Procedures | Contacts | Documents | People) — **Traces**: FR-HOME-01
+- [x] T021 [P] [US-ADMIN-01] Home detail full-bleed photo hero header + tab bar shell (Procedures | Contacts | Documents | People) — **Traces**: FR-HOME-01 — *superseded by T021a–b for Files label + iPad shell*
+- [ ] T021a [P] [US-ADMIN-01] iPad home detail: compact left-column hero + vertical icon tabs; trailing column content-only (no hero, no top tabs) in `ios/HomeFlow/Features/HomeDetail/` — **Traces**: FR-NAV-01, AC-HOME-09, AC-HOME-10
+- [ ] T021b [P] [US-ADMIN-01] Rename Documents UI tab to **Files**; add SF Symbol icons to all four section tabs (iPhone segmented + iPad vertical list) — **Traces**: FR-NAV-01, AC-HOME-11
+- [ ] T021c [P] [US-ADMIN-01] iPad: **All Homes** navigation from home detail back to dashboard (sidebar not persistent home picker) — **Traces**: AC-HOME-10, FR-NAV-01
 
 ### Tests
 
@@ -92,6 +96,7 @@ Partial deliverables documented in [dev-notes.md](./dev-notes.md). **Do not** en
 - [ ] T024a [P] [US-ADMIN-01] Unit test `test_AC_HOME_06_upload_resizes_before_storage` — **Traces**: AC-HOME-06
 - [ ] T024b [P] [US-ADMIN-01] Unit test `test_AC_HOME_07_hero_renders_from_local_cache` — **Traces**: AC-HOME-07
 - [ ] T024c [P] [US-ADMIN-01] Unit test `test_AC_HOME_08_photo_blocked_until_home_synced` — **Traces**: AC-HOME-08
+- [ ] T024d [P] [US-ADMIN-01] Snapshot or UI test: iPad home detail trailing column has no hero/segmented tabs — **Traces**: AC-HOME-09
 
 ---
 
@@ -143,23 +148,29 @@ Partial deliverables documented in [dev-notes.md](./dev-notes.md). **Do not** en
 
 ## Phase 7: User Story — Edit user procedures (P2)
 
-**Goal**: Procedure list, steps, status updates — **US-EDIT-01**
+**Goal**: Procedure list, steps, status updates, step structure editing — **US-EDIT-01**
 
 ### Implementation
 
-- [ ] T041 [US-EDIT-01] Procedures list with progress (e.g. 2/6) in `ios/HomeFlow/Features/Procedures/` — **Traces**: FR-PROC-01, FR-PROC-02
-- [ ] T042 [US-EDIT-01] Procedure detail: step checklist, status toggle, N/A option — **Traces**: FR-PROC-02, AC-PROC-01
-- [ ] T043 [US-EDIT-01] Step notes + photo attach (Storage) — **Traces**: FR-PROC-03
-- [ ] T044 [US-EDIT-01] Block step update when permission insufficient — **Traces**: AC-PROC-02
-- [ ] T045 [US-EDIT-01] Offline step conflict + notification — **Traces**: AC-PROC-03, AC-SYNC-01
-- [ ] T046 [P] [US-EDIT-01] Recent activity section on procedure detail — **Traces**: FR-LOG-01, AC-PROC-01
-- [ ] T047 [P] [US-EDIT-01] iPad: procedure list + detail columns — **Traces**: NFR-PERF-01
+- [x] T041 [US-EDIT-01] Procedures list with progress (e.g. 2/6) in `ios/HomeFlow/Features/Procedures/` — **Traces**: FR-PROC-01, FR-PROC-02
+- [x] T042 [US-EDIT-01] Procedure detail: step checklist, status toggle, N/A option — **Traces**: FR-PROC-02, AC-PROC-01
+- [ ] T043 [US-EDIT-01] Step notes + photo attach (Storage) — **Traces**: FR-PROC-03 — *notes done; photos pending*
+- [x] T044 [US-EDIT-01] Block step update when permission insufficient — **Traces**: AC-PROC-02
+- [x] T045 [US-EDIT-01] Offline step conflict + notification — **Traces**: AC-PROC-03, AC-SYNC-01
+- [x] T046 [P] [US-EDIT-01] Recent activity section on procedure detail — **Traces**: FR-LOG-01, AC-PROC-01
+- [x] T047 [P] [US-EDIT-01] iPad: procedure list + detail columns — **Traces**: NFR-PERF-01
+- [ ] T047a [US-EDIT-01] Step structure sync: create, rename, delete, reorder in `ProcedureRepository` + `SyncEngine` — **Traces**: FR-PROC-02, AC-PROC-06
+- [ ] T047b [US-EDIT-01] Long-press step context menu (rename, delete, move up/down) + Add step on Steps section — **Traces**: AC-PROC-04, AC-PROC-05
+- [ ] T047c [US-EDIT-01] Hide step structure controls for Guest (read-only) — **Traces**: AC-PROC-07, AC-GUEST-04
 
 ### Tests
 
-- [ ] T048 [P] [US-EDIT-01] Unit test `test_AC_PROC_01_step_complete_creates_log` — **Traces**: AC-PROC-01
-- [ ] T049 [P] [US-EDIT-01] Unit test `test_AC_PROC_02_permission_denied_blocks_update` — **Traces**: AC-PROC-02
-- [ ] T050 [US-EDIT-01] Unit test `test_AC_PROC_03_offline_step_conflict` — **Traces**: AC-PROC-03
+- [x] T048 [P] [US-EDIT-01] Unit test `test_AC_PROC_01_step_complete_creates_log` — **Traces**: AC-PROC-01 — *ProcedureAggregatorTests*
+- [x] T049 [P] [US-EDIT-01] Unit test `test_AC_PROC_02_permission_denied_blocks_update` — **Traces**: AC-PROC-02
+- [x] T050 [US-EDIT-01] Unit test `test_AC_PROC_03_offline_step_conflict` — **Traces**: AC-PROC-03
+- [ ] T050a [P] [US-EDIT-01] Unit test `test_AC_PROC_04_edit_can_manage_step_structure` — **Traces**: AC-PROC-04, AC-PROC-05
+- [ ] T050b [P] [US-EDIT-01] Unit test `test_AC_PROC_06_step_structure_change_logged` — **Traces**: AC-PROC-06
+- [ ] T050c [P] [US-EDIT-01] Unit test `test_AC_PROC_07_guest_no_step_structure_controls` — **Traces**: AC-PROC-07
 
 ---
 
@@ -204,20 +215,22 @@ Partial deliverables documented in [dev-notes.md](./dev-notes.md). **Do not** en
 
 ---
 
-## Phase 10: Documents, settings, polish (P3)
+## Phase 10: Files, settings, polish (P3)
 
-**Goal**: Document library, settings, deferred push UI — **FR-HOME-03**, **FR-NOTIF-01**
+**Goal**: Files library (document entity), settings, deferred push UI — **FR-HOME-03**, **FR-NOTIF-01**
 
 ### Implementation
 
-- [ ] T065 [FR-HOME-03] Documents list + upload + visibility in `ios/HomeFlow/Features/Documents/` — **Traces**: FR-HOME-03, AC-GUEST-01
+- [ ] T065 [FR-HOME-03] Files tab: documents list + upload + visibility in `ios/HomeFlow/Features/Documents/` — **Traces**: FR-HOME-03, AC-GUEST-01, AC-HOME-11
 - [ ] T066 [P] [FR-NOTIF-01] Settings screen: account, notification toggle disabled (“Coming soon”) in `ios/HomeFlow/Features/Settings/` — **Traces**: FR-NOTIF-01
+- [ ] T066a [P] Accessibility baseline: Dynamic Type layouts, VoiceOver labels on section tabs, Reduce Motion, 44pt targets across dashboard/home/procedures — **Traces**: NFR-A11Y-01, AC-A11Y-01, AC-A11Y-02, AC-A11Y-03
 - [x] T067 [P] Sign out clears session — **Traces**: FR-AUTH-01 — *dashboard toolbar today; Settings screen Phase 10*
 - [ ] T068 Admin revoke member access → lose access on next sync — **Traces**: FR-USER-02
 
 ### Tests
 
 - [ ] T069 [P] XCUITest end-to-end: sign-in → create home → invite → update step → guest read-only — **Traces**: SC-01, SC-02, SC-03
+- [ ] T069a [P] Manual accessibility pass: largest Dynamic Type + VoiceOver on dashboard, home sections, procedure checklist — **Traces**: AC-A11Y-01, AC-A11Y-02, AC-A11Y-03
 
 ---
 
@@ -246,5 +259,8 @@ All → Phase 11
 
 - No step assignees
 - Contacts tab = service providers (FR-HOME-02) only
+- Files tab = document library (FR-HOME-03); UI label **Files**, not Documents
+- Section labels: Procedures | Contacts | Files | People (**FR-NAV-01**)
+- Accessibility (Dynamic Type, VoiceOver, Reduce Motion) is MVP scope (**NFR-A11Y-01**), not post-launch polish
 - Figma = visual reference; SwiftUI-native layouts
 - Push notifications UI-only

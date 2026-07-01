@@ -17,26 +17,28 @@ All blocking violations resolved in `tasks.md` during this analyze run.
 | III. Offline sync | ✅ | SyncEngine, outbox, AC-SYNC-* tasks |
 | IV. Role-based access | ✅ | RLS contract + PermissionService tasks |
 | V. Traceability | ✅ | All ACs have impl + test tasks; Traces on all tasks |
+| VI. Accessibility | ✅ | NFR-A11Y-01, AC-A11Y-* in spec; T066a, T069a |
 
 ---
 
 ## Traceability matrix
 
-### Acceptance criteria (22)
+### Acceptance criteria (31)
 
 | AC | Spec | Impl task(s) | Test task(s) |
 |----|------|--------------|--------------|
-| AC-HOME-01…05 | ✅ | T018–T021, T051–T053 | T022–T024, T055–T056 |
-| AC-USER-01…06 | ✅ | T025–T029, T028 | T030–T033, T033a, T033b |
-| AC-PROC-01…03 | ✅ | T041–T045 | T048–T050 |
+| AC-HOME-01…11 | ✅ | T018–T021c, T051–T053 | T022–T024d, T055–T056 |
+| AC-USER-01…07 | ✅ | T025–T029, T028 | T030–T033, T033a, T033b |
+| AC-PROC-01…07 | ✅ | T041–T047c | T048–T050c |
 | AC-GUEST-01…05 | ✅ | T057–T061 | T062–T064, T063a–T063c |
-| AC-SYNC-01…03 | ✅ | T011, T034–T037 | T038–T040, T072 |
+| AC-SYNC-01…04 | ✅ | T011, T015, T034–T037 | T038–T040, T072 |
+| AC-A11Y-01…03 | ✅ | T066a | T069a |
 
-### Functional requirements (13)
+### Functional requirements (14)
 
-All FR-* IDs traced in at least one task.
+All FR-* IDs traced in at least one task (includes **FR-NAV-01**).
 
-### Non-functional requirements (6)
+### Non-functional requirements (7)
 
 | NFR | Status | Task(s) |
 |-----|--------|---------|
@@ -46,6 +48,7 @@ All FR-* IDs traced in at least one task.
 | NFR-SYNC-01 | ✅ | T072, T072a |
 | NFR-REL-01 | ✅ | T072c (monitoring path) |
 | NFR-SCALE-01 | ✅ | T072b (documented; no load test) |
+| NFR-A11Y-01 | ✅ | T066a, T069a |
 
 ### User stories (7)
 

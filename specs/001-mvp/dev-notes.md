@@ -78,12 +78,25 @@ Safari visiting `https://<ref>.supabase.co` and seeing `{"error":"requested path
 
 ## Navigation (SwiftUI)
 
-| Device | Pattern | Home list behavior |
-|--------|---------|-------------------|
-| iPhone | `NavigationStack` + `NavigationLink(value:)` | Push to home detail |
-| iPad | `NavigationSplitView` + `List(selection:)` | Selection updates detail column |
+| Device | Dashboard | Home detail |
+|--------|-------------|---------------|
+| iPhone | `NavigationStack` + `NavigationLink(value:)` push | Full-bleed hero + horizontal segmented tabs: Procedures \| Contacts \| Files \| People |
+| iPad | Home list (select home to enter detail) | `NavigationSplitView`: **leading** = compact hero + vertical icon tabs; **trailing** = section content only (**AC-HOME-09…10**) |
 
 **Do not** use `List(selection:)` on iPhone with `NavigationLink` — selection mode blocks push navigation.
+
+iPad home detail leading column is **not** a persistent home picker. Use **All Homes** (or equivalent) to return to dashboard and switch homes (**FR-NAV-01**).
+
+Section UI label **Files** implements document library (FR-HOME-03); code folder may remain `Documents/`.
+
+---
+
+## Accessibility
+
+- **NFR-A11Y-01**: Respect Dynamic Type, VoiceOver, Reduce Motion, contrast.
+- Test primary flows at largest Accessibility text sizes before release (**AC-A11Y-01**).
+- Section tabs need clear `accessibilityLabel` + selected state (**AC-A11Y-02**).
+- Minimum 44×44 pt tap targets on tabs and primary actions.
 
 ---
 
@@ -104,7 +117,7 @@ Safari visiting `https://<ref>.supabase.co` and seeing `{"error":"requested path
 - XCUITests T017, T069
 - Offline invite conflict T027; full sync matrix Phase 6
 - Member/invite unit tests T030–T033b
-- Documents, Settings, guest read-only views
+- Files tab (Phase 10), Settings, guest read-only views
 
 ---
 

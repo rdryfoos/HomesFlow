@@ -7,9 +7,9 @@
 | Phase | Status | Notes |
 |-------|--------|-------|
 | 0 Foundation | **Done** | iOS project, Supabase schema, auth shell |
-| 1 P1 homes/users | **Partial** | Home CRUD, photos, People tab; Procedures not started |
-| 2 P2 procedures/providers | Not started | |
-| 3 P3 guest/docs | Not started | |
+| 1 P1 homes/users | **Partial** | Home CRUD, photos, People tab; Procedures mostly done; iPad nav shell + accessibility pending |
+| 2 P2 procedures/providers | **Partial** | Procedures UI; step structure T047a–c; Contacts tab next |
+| 3 P3 guest/docs | Not started | Files tab (UI label), Settings, guest views |
 | 4 Testing/hardening | Not started | |
 
 **Deployed path validated**: Supabase Cloud + Release build on physical iPhone (`com.rdryfoos.homeflow`). Local Docker + Debug Simulator also supported. See [quickstart.md](./quickstart.md).
@@ -27,7 +27,7 @@ Build a native iOS 17+ app (SwiftUI) backed by Supabase for second-home manageme
 **Target Platform**: iPhone and iPad (adaptive SwiftUI)  
 **Project Type**: Mobile app + managed backend (Supabase)  
 **Performance Goals**: Screen load < 2s (NFR-PERF-01); sync round-trip < 1s when online (NFR-SYNC-01)  
-**Constraints**: Offline-capable from day one (NFR-OFFL-01); RLS-enforced permissions; traceability IDs in tests  
+**Constraints**: Offline-capable from day one (NFR-OFFL-01); RLS-enforced permissions; traceability IDs in tests; accessibility first-class (**NFR-A11Y-01**)  
 **Scale/Scope**: MVP ~15–20 screens; 1 feature spec; 7 user stories; 26 acceptance criteria
 
 ## Constitution Check
@@ -38,6 +38,7 @@ Build a native iOS 17+ app (SwiftUI) backed by Supabase for second-home manageme
 | Native iOS | SwiftUI universal app in `ios/` |
 | Offline sync | SwiftData + outbox + sync engine (see research D4) |
 | Role-based access | Supabase RLS + client-side UI gating |
+| Accessibility | Dynamic Type, VoiceOver, Reduce Motion per **NFR-A11Y-01** |
 | Traceability | Tests named `test_AC_*`; modules annotated `@covers` |
 
 **Gate**: Pass — no violations requiring complexity tracking.
@@ -74,11 +75,11 @@ ios/
 │   │   ├── Auth/
 │   │   ├── Dashboard/
 │   │   ├── HomeSetup/
-│   │   ├── HomeDetail/
+│   │   ├── HomeDetail/         # Section shell (FR-NAV-01)
 │   │   ├── Members/            # People tab — invites (partial)
-│   │   ├── Procedures/         # Phase 7 — not yet
-│   │   ├── Providers/          # Phase 8 — not yet
-│   │   ├── Documents/          # Phase 10 — not yet
+│   │   ├── Procedures/         # Phase 7
+│   │   ├── Providers/          # Phase 8 — Contacts tab
+│   │   ├── Documents/          # Phase 10 — Files tab (UI label)
 │   │   └── Settings/           # Phase 10 — not yet
 │   ├── Core/
 │   │   ├── AppEnvironment.swift
@@ -123,7 +124,7 @@ supabase/
 
 | Story | Key deliverables | AC IDs |
 |-------|------------------|--------|
-| US-ADMIN-01 | Home CRUD, dashboard, photo upload | AC-HOME-01…03 |
+| US-ADMIN-01 | Home CRUD, dashboard, photo upload, home section navigation | AC-HOME-01…03, AC-HOME-09…11, FR-NAV-01 |
 | US-ADMIN-02/03 | Invites, membership roles, member list | AC-USER-01…06 |
 | NFR-OFFL-01 | Outbox, pull sync, conflict handler | AC-SYNC-01…03 |
 
@@ -133,7 +134,7 @@ supabase/
 
 | Story | Key deliverables | AC IDs |
 |-------|------------------|--------|
-| US-EDIT-01 | Procedure list, step checklist, status updates | AC-PROC-01…03 |
+| US-EDIT-01 | Procedure list, step checklist, status + structure updates | AC-PROC-01…07 |
 | US-EDIT-02 | Provider directory, search, edit | AC-HOME-04…05 |
 
 **Exit criteria**: Edit user updates step; Admin sees change after sync; provider edit/delete conflict handled.
@@ -143,7 +144,7 @@ supabase/
 | Story | Key deliverables | AC IDs |
 |-------|------------------|--------|
 | US-GUEST-01/02 | Guest-scoped views, read-only procedures | AC-GUEST-01…05 |
-| FR-HOME-03 | Document library with visibility | AC-GUEST-01…03 |
+| FR-HOME-03 | Files library (document entity) with visibility | AC-GUEST-01…03 |
 | FR-NOTIF-01 | Settings toggle (disabled, “Coming soon”) | deferred |
 | FR-LOG-01 | Activity log screen for Admin | all audit ACs |
 
@@ -154,25 +155,74 @@ supabase/
 - XCTest: sync conflict matrix (SC-04 — 95% scripted scenarios)
 - XCUITest: sign-in → create home → invite → update step → guest read-only
 - RLS policy verification against `contracts/rls-permissions.md`
+- Accessibility: Dynamic Type, VoiceOver, Reduce Motion manual pass (**AC-A11Y-01…03**)
 
 ## UI Architecture
 
 **Authority**: PRD + spec. [Figma prototype](https://haze-rabbit-58180688.figma.site) is visual reference only — implement with native SwiftUI patterns, not as a web port.
 
-**iPhone**: `NavigationStack` — dashboard (home list) → **push** via `NavigationLink` to home detail with segmented control: **Procedures | Contacts | Documents | People**. Do **not** bind `List(selection:)` on iPhone (blocks push). App-level Settings via toolbar or tab (Settings screen Phase 10).
+### Home section labels (all devices — **FR-NAV-01**, **AC-HOME-11**)
 
-**iPad**: `NavigationSplitView` — sidebar uses `List(selection:)`; detail column shows selected home. Use `horizontalSizeClass == .regular` to branch layouts.
+| UI label | Spec term | FR | Suggested SF Symbol |
+|----------|-----------|-----|---------------------|
+| Procedures | Procedures | FR-PROC-* | `checklist` |
+| Contacts | Service providers | FR-HOME-02 | `person.crop.circle` |
+| Files | Documents | FR-HOME-03 | `folder` |
+| People | Memberships | FR-USER-02 | `person.2` |
 
-**Home list & detail**: Full-bleed photo hero with gradient overlay; home name and address on the image (FR-HOME-01). Dashboard indicates unsynced homes (AC-SYNC-04).
+Icons are illustrative; choose equivalent symbols if accessibility labels remain clear (**AC-A11Y-02**).
 
-**Home detail tab mapping**:
+### iPhone layout
 
-| UI label | Spec term | FR |
-|----------|-----------|-----|
-| Procedures | Procedures | FR-PROC-* |
-| Contacts | Service providers | FR-HOME-02 |
-| Documents | Documents | FR-HOME-03 |
-| People | Members | FR-USER-* |
+```text
+NavigationStack
+  My Homes — full-bleed hero cards → push to home detail
+    Home detail
+      ├─ Full-bleed home hero (photo, name, address)
+      ├─ Segmented control: Procedures | Contacts | Files | People
+      └─ Section content
+```
+
+Do **not** bind `List(selection:)` on iPhone with `NavigationLink` (blocks push). App-level Settings via toolbar (Phase 10).
+
+### iPad layout (**AC-HOME-09**, **AC-HOME-10**)
+
+```text
+My Homes (dashboard) — home list; select a home to enter home detail
+
+Home detail — NavigationSplitView (regular horizontal size class)
+  Leading column
+    ├─ Compact home hero (photo, name, address, sync badge) — sets home context
+    ├─ "All Homes" control → returns to dashboard to switch homes
+    └─ Vertical section list below hero (icon + label, tappable, selected state)
+         Procedures / Contacts / Files / People
+
+  Trailing column (main content)
+    └─ Selected section ONLY — no full-bleed hero, no horizontal tab bar
+```
+
+The leading column is **not** a persistent home picker while viewing home detail. Nested splits (e.g. Procedures list | detail) live in the **trailing** column only (**NFR-PERF-01**, T047).
+
+**Dashboard**: Full-bleed photo hero cards with name/address overlay (FR-HOME-01). Unsynced homes indicated (AC-SYNC-04).
+
+### Procedure detail (trailing column on iPad; below tabs on iPhone)
+
+| Gesture / control | Action | Roles |
+|-------------------|--------|-------|
+| Tap step row | Toggle complete ↔ not started | Admin, Edit |
+| Long-press step | Context menu: Rename, Delete, Move Up, Move Down | Admin, Edit |
+| Note icon | Edit step notes | Admin, Edit |
+| ⋯ menu | Set status (In progress, N/A, etc.) | Admin, Edit |
+| Steps section **Add** | Create new step at end | Admin, Edit |
+| (none) | Read-only steps and status | Guest |
+
+### Accessibility (**NFR-A11Y-01**)
+
+- Dynamic Type–friendly fonts; `@ScaledMetric` for fixed layout elements where needed.
+- Test at **Extra Large** and largest **Accessibility** content sizes (**AC-A11Y-01**).
+- Section tabs: meaningful `accessibilityLabel` + selected state (**AC-A11Y-02**).
+- Minimum **44×44 pt** hit targets for tabs and primary actions.
+- Honor `@Environment(\.accessibilityReduceMotion)` (**AC-A11Y-03**).
 
 **MVP exclusions**: step assignees; separate key-contacts entity.
 

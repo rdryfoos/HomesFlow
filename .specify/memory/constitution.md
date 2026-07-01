@@ -26,6 +26,10 @@ Every FR, NFR, and AC carries a durable ID assigned at the PRD level (`<TYPE>-<D
 
 Full mechanics: `traceability.md`.
 
+### VI. Accessible by Design
+
+UI MUST respect iOS accessibility settings — especially Dynamic Type, VoiceOver, Reduce Motion, and sufficient contrast. Layouts MUST remain usable at all supported content size categories (**NFR-A11Y-01**). Accessibility is MVP scope, not post-launch polish.
+
 ## Technology Constraints
 
 - **Client**: Swift / SwiftUI (iOS)
@@ -48,4 +52,4 @@ When documents conflict, higher layers win:
 
 Amendments require a version bump and brief rationale. Process thinking lives in `README Architectural & Process Decisions.rtf` — it informs but does not override this file or the PRD.
 
-**Version**: 1.0.0 | **Ratified**: 2026-06-28 | **Last Amended**: 2026-06-28
+**Version**: 1.1.0 | **Ratified**: 2026-06-28 | **Last Amended**: 2026-07-01

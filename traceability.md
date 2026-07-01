@@ -41,7 +41,7 @@ Add this as an article in `constitution.md` (or feed it to `/speckit.constitutio
 **Grammar:** `<TYPE>-<DOMAIN>-<NN>` — regex `^(FR|NFR|AC|US)-[A-Z]{2,6}-\d{2,}$`
 
 - **TYPE** — `US` user story · `FR` functional requirement · `NFR` non-functional requirement · `AC` acceptance criterion.
-- **DOMAIN** — short uppercase area code. Suggested for HomeFlow: `AUTH`, `USER`, `HOME`, `PROC`, `LOG`, `GUEST`, `NOTIF`, `OFFL`, `SYNC`.
+- **DOMAIN** — short uppercase area code. Suggested for HomeFlow: `AUTH`, `USER`, `HOME`, `PROC`, `LOG`, `GUEST`, `NOTIF`, `OFFL`, `SYNC`, `A11Y`, `NAV`.
 - **NN** — zero-padded sequence within (TYPE, DOMAIN), starting `01`.
 
 **Rules**

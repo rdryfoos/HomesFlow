@@ -77,8 +77,12 @@
 |----------------|------------|-------|
 | Procedures | FR-PROC-* | Figma “Tasks” → Procedures in spec |
 | Contacts | FR-HOME-02 | Service providers directory only |
-| Documents | FR-HOME-03 | Visibility-scoped library |
+| Files | FR-HOME-03 | Document library; UI label **Files** (not Documents) |
 | People | FR-USER-* | Members, invites, roles (Admin) |
+
+**iPad home detail (D10b)**: Leading column = compact home hero + vertical icon tabs (Procedures, Contacts, Files, People). Trailing column = section content only — no duplicate hero, no horizontal tabs (**AC-HOME-09…10**, **FR-NAV-01**). Return to **My Homes** dashboard to switch homes.
+
+**Accessibility (D11)**: Dynamic Type, VoiceOver, Reduce Motion, and 44pt tap targets are MVP requirements (**NFR-A11Y-01**), not deferred polish.
 
 **Out of MVP UI scope from prototype**: per-step assignees.
 

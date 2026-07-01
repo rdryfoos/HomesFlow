@@ -99,7 +99,7 @@ supabase db shell --command "select id, name from public.homes;"
 
 1. Sign in / create account
 2. **My Homes** → Add Home
-3. Tap home → detail with **Procedures | Contacts | Documents | People** tabs
+3. Tap home → detail with **Procedures | Contacts | Files | People** sections (iPhone: horizontal tabs below hero; iPad: vertical icon tabs in leading column)
 4. Edit home → add photo (requires cloud sync + online)
 
 ---
