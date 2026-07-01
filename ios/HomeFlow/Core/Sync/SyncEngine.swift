@@ -51,6 +51,10 @@ final class SyncEngine: ObservableObject {
         lastNotification = nil
     }
 
+    func postNotification(_ message: String) {
+        lastNotification = SyncNotification(message: message)
+    }
+
     func isHomeSynced(_ homeId: UUID) -> Bool {
         let targetId = homeId
         guard let home = try? modelContext.fetch(FetchDescriptor<CachedHome>(

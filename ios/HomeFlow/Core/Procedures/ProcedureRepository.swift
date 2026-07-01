@@ -2,7 +2,7 @@ import Foundation
 import SwiftData
 import Supabase
 
-// @covers FR-PROC-01, FR-PROC-02, AC-PROC-01, AC-PROC-02
+// @covers FR-PROC-01, FR-PROC-02, FR-PROC-03, AC-PROC-01, AC-PROC-02, AC-PROC-03
 
 @MainActor
 final class ProcedureRepository: ObservableObject {
@@ -248,7 +248,7 @@ final class ProcedureRepository: ObservableObject {
         }
 
         mergeCachedProcedures(homeId: homeId, rows: procedures)
-        mergeCachedSteps(procedureIds: procedureIds, rows: steps)
+        mergeCachedSteps(homeId: homeId, procedureIds: procedureIds, rows: steps)
         try modelContext.save()
     }
 
@@ -289,10 +289,14 @@ final class ProcedureRepository: ObservableObject {
         }
     }
 
-    private func mergeCachedSteps(procedureIds: [UUID], rows: [ProcedureStepDTO]) {
+    private func mergeCachedSteps(homeId: UUID, procedureIds: [UUID], rows: [ProcedureStepDTO]) {
         let idSet = Set(procedureIds)
         for procedureId in procedureIds {
             let procTarget = procedureId
+            let procedure = try? modelContext.fetch(FetchDescriptor<CachedProcedure>(
+                predicate: #Predicate<CachedProcedure> { $0.id == procTarget }
+            )).first
+
             let existing = (try? modelContext.fetch(FetchDescriptor<CachedProcedureStep>(
                 predicate: #Predicate<CachedProcedureStep> { $0.procedureId == procTarget }
             ))) ?? []
@@ -305,12 +309,22 @@ final class ProcedureRepository: ObservableObject {
 
             for row in incoming {
                 if let cached = existing.first(where: { $0.id == row.id }) {
-                    if cached.sync == .pending { continue }
-                    cached.sortOrder = row.sortOrder
-                    cached.title = row.title
-                    cached.stepStatus = row.status
-                    cached.notes = row.notes
-                    cached.serverUpdatedAt = row.updatedAt
+                    if cached.sync == .pending {
+                        if HomeConflictResolver.shouldApplyServer(
+                            localPending: true,
+                            localUpdatedAt: cached.localUpdatedAt,
+                            serverUpdatedAt: row.updatedAt
+                        ) {
+                            resolveStepConflict(
+                                homeId: homeId,
+                                procedureTitle: procedure?.title ?? "Procedure",
+                                server: row,
+                                local: cached
+                            )
+                        }
+                        continue
+                    }
+                    applyServerStep(row, to: cached)
                 } else {
                     modelContext.insert(CachedProcedureStep(
                         id: row.id,
@@ -324,12 +338,72 @@ final class ProcedureRepository: ObservableObject {
                     ))
                 }
             }
+
+            if let procedure {
+                refreshProcedureAggregateStatus(procedure)
+            }
         }
 
         // Remove orphaned steps if procedure was deleted elsewhere
         let allSteps = (try? modelContext.fetch(FetchDescriptor<CachedProcedureStep>())) ?? []
         for step in allSteps where !idSet.contains(step.procedureId) {
             modelContext.delete(step)
+        }
+    }
+
+    private func resolveStepConflict(
+        homeId: UUID,
+        procedureTitle: String,
+        server: ProcedureStepDTO,
+        local: CachedProcedureStep
+    ) {
+        applyServerStep(server, to: local)
+        removeOutboxEntry(for: local.id)
+
+        if let userId = auth.session?.user.id {
+            activityLog.append(
+                homeId: homeId,
+                actorId: userId,
+                entityType: "procedure_step",
+                entityId: server.id,
+                action: "conflict_resolved",
+                summary: "Step conflict — server version kept for \"\(server.title)\" in \(procedureTitle)"
+            )
+        }
+
+        syncEngine.postNotification(
+            "Your offline change to \"\(server.title)\" was overwritten by a newer update."
+        )
+    }
+
+    private func applyServerStep(_ row: ProcedureStepDTO, to cached: CachedProcedureStep) {
+        cached.sortOrder = row.sortOrder
+        cached.title = row.title
+        cached.stepStatus = row.status
+        cached.notes = row.notes
+        cached.serverUpdatedAt = row.updatedAt
+        cached.sync = .synced
+    }
+
+    private func refreshProcedureAggregateStatus(_ procedure: CachedProcedure) {
+        let procTarget = procedure.id
+        let steps = (try? modelContext.fetch(FetchDescriptor<CachedProcedureStep>(
+            predicate: #Predicate<CachedProcedureStep> { $0.procedureId == procTarget },
+            sortBy: [SortDescriptor(\.sortOrder)]
+        ))) ?? []
+        let summaries = steps.map(stepSummary(from:))
+        procedure.procedureStatus = ProcedureAggregator.aggregateStatus(for: summaries)
+        if procedure.sync != .pending {
+            procedure.sync = .synced
+        }
+    }
+
+    private func removeOutboxEntry(for stepId: UUID) {
+        let targetId = stepId
+        let stepEntity = EntityType.procedureStep.rawValue
+        guard let entries = try? modelContext.fetch(FetchDescriptor<MutationOutboxEntry>()) else { return }
+        for entry in entries where entry.entityId == targetId && entry.entityType == stepEntity {
+            modelContext.delete(entry)
         }
     }
 

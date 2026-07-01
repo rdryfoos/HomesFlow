@@ -23,4 +23,24 @@ final class PermissionServiceTests: XCTestCase {
             )
         )
     }
+
+    func test_AC_PROC_02_edit_cannot_update_admin_only_step() {
+        XCTAssertFalse(
+            permissions.can(
+                .updateStepStatus,
+                entity: .procedureStep(procedureVisibility: .admin),
+                role: .edit
+            )
+        )
+    }
+
+    func test_AC_PROC_02_guest_cannot_update_guest_visible_step() {
+        XCTAssertFalse(
+            permissions.can(
+                .updateStepStatus,
+                entity: .procedureStep(procedureVisibility: .guest),
+                role: .guest
+            )
+        )
+    }
 }

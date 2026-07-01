@@ -40,6 +40,7 @@
 		B8B2DDB29BBC436B18FD38B8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B8EA1C0B8D56E94220543B63 /* Assets.xcassets */; };
 		C66085F8C146521809D6E671 /* DomainEnums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53C5D96F41A0A87D10BD1AF6 /* DomainEnums.swift */; };
 		C825A3509D94B360ED7184C0 /* ActivityLogService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8233B3D385B58C52FAC3D9E /* ActivityLogService.swift */; };
+		CC9D432BCACD6BEBE748B66B /* ProcedureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A6207638303AF182C7C316A /* ProcedureTests.swift */; };
 		CCA37724D9C0870EE62062C5 /* AppRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 065E11DA60C5236E9094516D /* AppRouter.swift */; };
 		DF97B3DA56D40B5043E53A74 /* HomeHeroCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24584D4D48852644D6901B29 /* HomeHeroCard.swift */; };
 		EFDD81EA5F10127E3496161A /* SupabaseClientProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A55055DFB89B27A44EE4537 /* SupabaseClientProvider.swift */; };
@@ -86,6 +87,7 @@
 		60414CD441B73249944E83F4 /* AuthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthView.swift; sourceTree = "<group>"; };
 		60FE5FF84A8E6F82314D7297 /* MemberDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberDTO.swift; sourceTree = "<group>"; };
 		6390873983914AE52C180D3D /* MemberRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberRepository.swift; sourceTree = "<group>"; };
+		7A6207638303AF182C7C316A /* ProcedureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProcedureTests.swift; sourceTree = "<group>"; };
 		7B95B47C0C7A40048617B702 /* Secrets.Release.xcconfig.example */ = {isa = PBXFileReference; path = Secrets.Release.xcconfig.example; sourceTree = "<group>"; };
 		7D4B91998F226F2A6A692880 /* NetworkMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMonitor.swift; sourceTree = "<group>"; };
 		8085E2B49EE2ABC4C37EF2A9 /* Secrets.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Secrets.xcconfig; sourceTree = "<group>"; };
@@ -226,6 +228,7 @@
 				CA433DFDC6F5CD99D427D78C /* HomeConflictResolverTests.swift */,
 				504099625C1A94B14A9E029F /* HomeValidatorTests.swift */,
 				9ADD6A2E347D891C2C1B0E8D /* PermissionServiceTests.swift */,
+				7A6207638303AF182C7C316A /* ProcedureTests.swift */,
 			);
 			path = HomeFlowTests;
 			sourceTree = "<group>";
@@ -530,6 +533,7 @@
 				59DBFDAE670BD9E8E0F6875D /* HomeConflictResolverTests.swift in Sources */,
 				B0E473DEA8305285F5BA7000 /* HomeValidatorTests.swift in Sources */,
 				2DD10E22B53C7F762C0C8E24 /* PermissionServiceTests.swift in Sources */,
+				CC9D432BCACD6BEBE748B66B /* ProcedureTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

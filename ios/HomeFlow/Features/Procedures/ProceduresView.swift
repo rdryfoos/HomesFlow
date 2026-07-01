@@ -1,26 +1,26 @@
 import SwiftUI
 
-// @covers FR-PROC-01, FR-PROC-02
+// @covers FR-PROC-01, FR-PROC-02, NFR-PERF-01
 
 struct ProceduresView: View {
     let home: HomeSummary
     @Environment(\.appEnvironment) private var appEnvironment
+    @Environment(\.horizontalSizeClass) private var sizeClass
+    @EnvironmentObject private var syncEngine: SyncEngine
     @StateObject private var viewModel = ProceduresViewModel()
+    @State private var selectedProcedureId: UUID?
+    @State private var showSyncAlert = false
+
+    private var userRole: HomeRole {
+        home.currentUserRole ?? .guest
+    }
 
     var body: some View {
         Group {
-            if viewModel.procedures.isEmpty && !viewModel.isLoading {
-                ContentUnavailableView(
-                    "No procedures",
-                    systemImage: "checklist",
-                    description: Text("Procedures for this home will appear here.")
-                )
+            if sizeClass == .regular {
+                iPadLayout
             } else {
-                List(viewModel.procedures) { procedure in
-                    NavigationLink(value: procedure) {
-                        ProcedureRow(procedure: procedure)
-                    }
-                }
+                iPhoneLayout
             }
         }
         .overlay {
@@ -31,11 +31,12 @@ struct ProceduresView: View {
         .refreshable {
             await reload()
         }
-        .navigationDestination(for: ProcedureSummary.self) { procedure in
-            ProcedureDetailView(home: home, procedureId: procedure.id)
-                .environment(\.appEnvironment, appEnvironment)
-        }
         .task { await reload() }
+        .onChange(of: viewModel.procedures.map(\.id)) { _, ids in
+            guard sizeClass == .regular else { return }
+            if let selectedProcedureId, ids.contains(selectedProcedureId) { return }
+            selectedProcedureId = ids.first
+        }
         .alert("Error", isPresented: Binding(
             get: { viewModel.errorMessage != nil },
             set: { if !$0 { viewModel.errorMessage = nil } }
@@ -44,13 +45,71 @@ struct ProceduresView: View {
         } message: {
             Text(viewModel.errorMessage ?? "")
         }
+        .alert("Sync Issue", isPresented: $showSyncAlert) {
+            Button("OK", role: .cancel) {
+                syncEngine.clearNotification()
+            }
+        } message: {
+            Text(syncEngine.lastNotification?.message ?? "")
+        }
+        .onChange(of: syncEngine.lastNotification?.id) { _, _ in
+            showSyncAlert = syncEngine.lastNotification != nil
+        }
+    }
+
+    private var iPadLayout: some View {
+        NavigationSplitView {
+            procedureList(useSelection: true)
+        } detail: {
+            if let procedureId = selectedProcedureId ?? viewModel.procedures.first?.id,
+               viewModel.procedures.contains(where: { $0.id == procedureId }) {
+                ProcedureDetailView(home: home, procedureId: procedureId)
+                    .environment(\.appEnvironment, appEnvironment)
+            } else {
+                ContentUnavailableView(
+                    "Select a procedure",
+                    systemImage: "checklist",
+                    description: Text("Choose a procedure from the list.")
+                )
+            }
+        }
+    }
+
+    private var iPhoneLayout: some View {
+        procedureList(useSelection: false)
+            .navigationDestination(for: ProcedureSummary.self) { procedure in
+                ProcedureDetailView(home: home, procedureId: procedure.id)
+                    .environment(\.appEnvironment, appEnvironment)
+            }
+    }
+
+    @ViewBuilder
+    private func procedureList(useSelection: Bool) -> some View {
+        if viewModel.procedures.isEmpty && !viewModel.isLoading {
+            ContentUnavailableView(
+                "No procedures",
+                systemImage: "checklist",
+                description: Text("Procedures for this home will appear here.")
+            )
+        } else if useSelection {
+            List(viewModel.procedures, selection: $selectedProcedureId) { procedure in
+                ProcedureRow(procedure: procedure)
+                    .tag(procedure.id)
+            }
+        } else {
+            List(viewModel.procedures) { procedure in
+                NavigationLink(value: procedure) {
+                    ProcedureRow(procedure: procedure)
+                }
+            }
+        }
     }
 
     private func reload() async {
         guard let repo = appEnvironment?.procedureRepository else { return }
         await viewModel.load(
             homeId: home.id,
-            userRole: home.currentUserRole ?? .guest,
+            userRole: userRole,
             using: repo
         )
     }
