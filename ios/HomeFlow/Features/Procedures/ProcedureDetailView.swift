@@ -78,19 +78,30 @@ private struct ProcedureStepRow: View {
     let canEdit: Bool
     let onStatusChange: (StepStatus) -> Void
 
+    private var isStruckThrough: Bool {
+        step.status == .complete || step.status == .na
+    }
+
     var body: some View {
         HStack(alignment: .top, spacing: 12) {
             StepStatusIcon(status: step.status)
+                .frame(width: 28, height: 28)
+
             VStack(alignment: .leading, spacing: 4) {
                 Text(step.title)
                     .font(.body)
+                    .strikethrough(isStruckThrough, color: .secondary)
+                    .foregroundStyle(isStruckThrough ? .secondary : .primary)
                 if let notes = step.notes, !notes.isEmpty {
                     Text(notes)
                         .font(.caption)
                         .foregroundStyle(.secondary)
+                        .strikethrough(isStruckThrough, color: .secondary)
                 }
             }
-            Spacer()
+
+            Spacer(minLength: 8)
+
             if canEdit {
                 Menu {
                     ForEach(StepStatus.allCases, id: \.self) { status in
@@ -105,19 +116,37 @@ private struct ProcedureStepRow: View {
                         }
                     }
                 } label: {
-                    Text(statusLabel(step.status))
-                        .font(.caption.weight(.medium))
-                        .padding(.horizontal, 8)
-                        .padding(.vertical, 4)
-                        .background(Color.accentColor.opacity(0.12), in: Capsule())
+                    Image(systemName: "ellipsis.circle")
+                        .font(.body)
+                        .foregroundStyle(.secondary)
+                        .frame(width: 28, height: 28)
                 }
-            } else {
+                .buttonStyle(.plain)
+                .accessibilityLabel("More status options for \(step.title)")
+            } else if step.status != .notStarted {
                 Text(statusLabel(step.status))
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
         }
-        .padding(.vertical, 2)
+        .padding(.vertical, 4)
+        .contentShape(Rectangle())
+        .onTapGesture {
+            guard canEdit else { return }
+            onStatusChange(toggledStatus)
+        }
+        .accessibilityElement(children: .combine)
+        .accessibilityAddTraits(canEdit ? .isButton : [])
+        .accessibilityHint(canEdit ? "Double tap to mark complete or not started. N/A steps clear to not started." : "")
+    }
+
+    private var toggledStatus: StepStatus {
+        switch step.status {
+        case .complete, .na:
+            return .notStarted
+        case .notStarted, .inProgress:
+            return .complete
+        }
     }
 
     private func statusLabel(_ status: StepStatus) -> String {
@@ -135,8 +164,10 @@ private struct StepStatusIcon: View {
 
     var body: some View {
         Image(systemName: iconName)
+            .font(.title3)
             .foregroundStyle(iconColor)
-            .frame(width: 22)
+            .symbolRenderingMode(.hierarchical)
+            .accessibilityHidden(true)
     }
 
     private var iconName: String {
