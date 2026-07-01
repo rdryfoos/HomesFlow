@@ -1,6 +1,6 @@
 import SwiftUI
 
-// @covers FR-HOME-01, US-ADMIN-01
+// @covers FR-HOME-01, US-ADMIN-01, AC-HOME-08, AC-SYNC-04
 
 struct DashboardView: View {
     @Environment(\.horizontalSizeClass) private var sizeClass

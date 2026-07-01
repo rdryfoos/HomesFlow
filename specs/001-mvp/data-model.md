@@ -51,7 +51,7 @@ Extends Supabase `auth.users`. One row per authenticated user.
 | created_at | timestamptz | |
 | updated_at | timestamptz | |
 
-**Covers**: FR-HOME-01, AC-HOME-01…03
+**Covers**: FR-HOME-01, AC-HOME-01…03, AC-HOME-06, AC-HOME-07, AC-HOME-08
 
 ### `memberships`
 
@@ -213,7 +213,7 @@ Cache tables mirror server schema plus:
 
 | Bucket | Path pattern | Access |
 |--------|--------------|--------|
-| home-photos | `{home_id}/{uuid}.jpg` | Members read; Admin/Edit write |
+| home-photos | `{home_id}/{uuid}.jpg` | Members read; Admin/Edit write; client uploads display-optimized JPEG (AC-HOME-06) |
 | documents | `{home_id}/{uuid}` | Per document visibility |
 | procedure-attachments | `{home_id}/{procedure_id}/{uuid}` | Per procedure visibility |
 

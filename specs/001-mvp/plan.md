@@ -163,6 +163,8 @@ supabase/
 
 **iPad**: `NavigationSplitView` — sidebar uses `List(selection:)`; detail column shows selected home. Use `horizontalSizeClass == .regular` to branch layouts.
 
+**Home list & detail**: Full-bleed photo hero with gradient overlay; home name and address on the image (FR-HOME-01). Dashboard indicates unsynced homes (AC-SYNC-04).
+
 **Home detail tab mapping**:
 
 | UI label | Spec term | FR |
@@ -196,7 +198,7 @@ See [contracts/sync-protocol.md](./contracts/sync-protocol.md).
 | Risk | Mitigation |
 |------|------------|
 | Offline + RLS complexity | Unit-test sync engine heavily; keep outbox logic pure Swift |
-| Scope creep | FR-NOTIF-01, SMS invites, deep links explicitly deferred |
+| Scope creep | FR-NOTIF-01, SMS invites, deep links explicitly deferred; MVP invites = share link + token paste (AC-USER-07) |
 | SwiftData + Supabase drift | Single source schema in `data-model.md`; codegen DTOs from migrations |
 | Debug vs Release config drift | Separate `Secrets.xcconfig` / `Secrets.Release.xcconfig`; verify Build Settings before device deploy |
 | Personal Team signing | Bundle ID `com.rdryfoos.homeflow`; Apple Sign-In entitlement deferred until paid program |

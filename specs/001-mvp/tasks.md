@@ -63,7 +63,7 @@ Partial deliverables documented in [dev-notes.md](./dev-notes.md). **Do not** en
 ### Implementation
 
 - [x] T014 [US-ADMIN-01] Auth screens: email/password sign-up, sign-in, Sign in with Apple in `ios/HomeFlow/Features/Auth/` — **Traces**: FR-AUTH-01 — *Apple placeholder only*
-- [x] T015 [US-ADMIN-01] Dashboard home list view (SwiftUI) — cards with name, location, open-procedure count placeholder in `ios/HomeFlow/Features/Dashboard/` — **Traces**: FR-HOME-01 — *procedure count placeholder not yet*
+- [x] T015 [US-ADMIN-01] Dashboard home list view (SwiftUI) — full-bleed photo hero cards with name/address in `ios/HomeFlow/Features/Dashboard/` — **Traces**: FR-HOME-01, AC-SYNC-04 — *procedure count placeholder not yet*
 - [x] T016 [P] [US-ADMIN-01] Adaptive layout: iPhone `NavigationStack`, iPad `NavigationSplitView` shell for dashboard — **Traces**: NFR-PERF-01
 
 ### Tests
@@ -79,15 +79,19 @@ Partial deliverables documented in [dev-notes.md](./dev-notes.md). **Do not** en
 ### Implementation
 
 - [x] T018 [US-ADMIN-01] Home create/edit form + validation in `ios/HomeFlow/Features/HomeSetup/` — **Traces**: AC-HOME-01, AC-HOME-02, FR-HOME-01
-- [x] T019 [US-ADMIN-01] Home photo pick + upload to Supabase Storage — **Traces**: AC-HOME-01, FR-HOME-01 — *sync-before-upload*
+- [x] T019 [US-ADMIN-01] Home photo pick + upload to Supabase Storage — **Traces**: AC-HOME-01, AC-HOME-08, FR-HOME-01 — *sync-before-upload*
+- [x] T019a [P] [US-ADMIN-01] Home photo display optimization: resize on upload, disk/memory cache, signed-URL reuse, dashboard prefetch in `ios/HomeFlow/Core/Storage/` — **Traces**: AC-HOME-06, AC-HOME-07, FR-HOME-01, NFR-PERF-01
 - [x] T020 [US-ADMIN-01] Home edit offline + sync conflict (timestamp wins + activity log) — **Traces**: AC-HOME-03, AC-SYNC-01, FR-LOG-01 — *HomeConflictResolver + merge; full offline E2E pending*
-- [x] T021 [P] [US-ADMIN-01] Home detail header (name, address) + tab bar shell (Procedures | Contacts | Documents | People) — **Traces**: FR-HOME-01
+- [x] T021 [P] [US-ADMIN-01] Home detail full-bleed photo hero header + tab bar shell (Procedures | Contacts | Documents | People) — **Traces**: FR-HOME-01
 
 ### Tests
 
 - [ ] T022 [P] [US-ADMIN-01] Unit test `test_AC_HOME_01_valid_home_created` — **Traces**: AC-HOME-01 — *validator only; integration test pending*
 - [x] T023 [P] [US-ADMIN-01] Unit test `test_AC_HOME_02_invalid_home_rejected` — **Traces**: AC-HOME-02
 - [x] T024 [US-ADMIN-01] Unit test `test_AC_HOME_03_offline_edit_conflict_logged` — **Traces**: AC-HOME-03 — *HomeConflictResolverTests; activity log integration pending*
+- [ ] T024a [P] [US-ADMIN-01] Unit test `test_AC_HOME_06_upload_resizes_before_storage` — **Traces**: AC-HOME-06
+- [ ] T024b [P] [US-ADMIN-01] Unit test `test_AC_HOME_07_hero_renders_from_local_cache` — **Traces**: AC-HOME-07
+- [ ] T024c [P] [US-ADMIN-01] Unit test `test_AC_HOME_08_photo_blocked_until_home_synced` — **Traces**: AC-HOME-08
 
 ---
 
@@ -97,8 +101,8 @@ Partial deliverables documented in [dev-notes.md](./dev-notes.md). **Do not** en
 
 ### Implementation
 
-- [x] T025 [US-ADMIN-02] Invite flow: create/revoke invite token, email invite link in `ios/HomeFlow/Features/Members/` — **Traces**: AC-USER-01, AC-USER-02, FR-GUEST-02, FR-USER-02 — *share link; no email send*
-- [x] T026 [US-ADMIN-02] Accept invite → create membership with role — **Traces**: AC-USER-01 — *paste token + RPC; deep link pending*
+- [x] T025 [US-ADMIN-02] Invite flow: create/revoke invite token, share invite link in `ios/HomeFlow/Features/Members/` — **Traces**: AC-USER-01, AC-USER-02, AC-USER-07, FR-GUEST-02, FR-USER-02 — *share sheet; no email/SMS send*
+- [x] T026 [US-ADMIN-02] Accept invite → create membership with role — **Traces**: AC-USER-01, AC-USER-07 — *paste token + RPC; deep link pending*
 - [ ] T027 [US-ADMIN-02] Offline invite conflict resolution — **Traces**: AC-USER-03, AC-SYNC-01
 - [x] T028 [US-ADMIN-03] Members list (People tab) + role assignment UI — **Traces**: AC-USER-04, AC-USER-05, AC-USER-06, FR-USER-02
 - [x] T029 [US-ADMIN-03] Role change sync + audit entry for prior role — **Traces**: AC-USER-06, FR-LOG-01 — *activity log append; concurrent conflict partial*
@@ -111,6 +115,7 @@ Partial deliverables documented in [dev-notes.md](./dev-notes.md). **Do not** en
 - [ ] T033 [US-ADMIN-03] Unit test `test_AC_USER_05_guest_role_read_only` — **Traces**: AC-USER-05
 - [ ] T033a [P] [US-ADMIN-02] Unit test `test_AC_USER_03_offline_invite_conflict` — **Traces**: AC-USER-03
 - [ ] T033b [US-ADMIN-03] Unit test `test_AC_USER_06_concurrent_role_change_audit` — **Traces**: AC-USER-06
+- [ ] T033c [P] [US-ADMIN-02] Unit test `test_AC_USER_07_paste_token_accepts_invite` — **Traces**: AC-USER-07
 
 ---
 
@@ -123,13 +128,14 @@ Partial deliverables documented in [dev-notes.md](./dev-notes.md). **Do not** en
 - [x] T034 [NFR-OFFL-01] Network reachability → trigger `SyncEngine.run()` on reconnect in `ios/HomeFlow/Core/Sync/` — **Traces**: AC-SYNC-01
 - [ ] T035 [NFR-OFFL-01] Field-level merge for non-conflicting offline edits — **Traces**: AC-SYNC-02
 - [x] T036 [NFR-OFFL-01] Stale-permission revert + user-facing error — **Traces**: AC-SYNC-03 — *revert + SyncNotification*
-- [x] T037 [P] [NFR-OFFL-01] In-app conflict/overwrite notification banners — **Traces**: AC-SYNC-01, AC-PROC-03, AC-HOME-05 — *dashboard sync banners*
+- [x] T037 [P] [NFR-OFFL-01] In-app conflict/overwrite notification banners + pending-sync dashboard indicators — **Traces**: AC-SYNC-01, AC-SYNC-04, AC-PROC-03, AC-HOME-05 — *dashboard sync banners, cloud icons, pull-to-refresh*
 
 ### Tests
 
 - [ ] T038 [P] [NFR-OFFL-01] Unit test `test_AC_SYNC_01_offline_overwrite_notifies_loser` — **Traces**: AC-SYNC-01
 - [ ] T039 [P] [NFR-OFFL-01] Unit test `test_AC_SYNC_02_disjoint_fields_merge` — **Traces**: AC-SYNC-02
 - [ ] T040 [NFR-OFFL-01] Unit test `test_AC_SYNC_03_stale_permission_reverts` — **Traces**: AC-SYNC-03
+- [ ] T040a [P] [NFR-OFFL-01] Unit test `test_AC_SYNC_04_pending_sync_visible_on_dashboard` — **Traces**: AC-SYNC-04
 
 **Checkpoint**: P1 stories independently testable. ⏳ *Pending T027, sync tests, Procedures for full demo*
 
@@ -206,7 +212,7 @@ Partial deliverables documented in [dev-notes.md](./dev-notes.md). **Do not** en
 
 - [ ] T065 [FR-HOME-03] Documents list + upload + visibility in `ios/HomeFlow/Features/Documents/` — **Traces**: FR-HOME-03, AC-GUEST-01
 - [ ] T066 [P] [FR-NOTIF-01] Settings screen: account, notification toggle disabled (“Coming soon”) in `ios/HomeFlow/Features/Settings/` — **Traces**: FR-NOTIF-01
-- [ ] T067 [P] Settings: sign out clears session — **Traces**: FR-AUTH-01 — *sign out on dashboard today*
+- [x] T067 [P] Sign out clears session — **Traces**: FR-AUTH-01 — *dashboard toolbar today; Settings screen Phase 10*
 - [ ] T068 Admin revoke member access → lose access on next sync — **Traces**: FR-USER-02
 
 ### Tests

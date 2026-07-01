@@ -58,6 +58,7 @@ Safari visiting `https://<ref>.supabase.co` and seeing `{"error":"requested path
 
 ## Auth implementation
 
+- **MVP scope (FR-AUTH-01)**: Email/password only on device builds; Apple Sign-In deferred — see spec Assumptions + research D12
 - `SupabaseClientProvider` applies session from sign-in response + listens to `authStateChanges` (do not rely on `try? await client.auth.session` alone after sign-in)
 - Local Supabase: `auth.external.apple.enabled = false` in `config.toml` for email-only dev
 - Cloud: enable **Email** provider; Apple deferred for MVP device demos
@@ -66,8 +67,10 @@ Safari visiting `https://<ref>.supabase.co` and seeing `{"error":"requested path
 
 ## Sync & photos
 
-- Homes sync to server **before** photo upload (storage RLS requires membership)
-- Dashboard shows sync errors, pending-sync cloud icons, pull-to-refresh
+- Homes sync to server **before** photo upload (storage RLS requires membership) — **AC-HOME-08**
+- **AC-HOME-06**: uploads resized to max 1280px long edge (~82% JPEG) before Storage write
+- **AC-HOME-07**: hero cards load from disk/memory cache keyed by storage path; signed URLs cached ~55 min; dashboard prefetches after home list load
+- **AC-SYNC-04**: pending-sync cloud icons on home heroes, sync issue banners, pull-to-refresh on dashboard
 - `HomeConflictResolver` + activity log on home edit conflicts (timestamp wins)
 - Full field-level merge (AC-SYNC-02) and invite offline conflicts **not yet implemented**
 
@@ -86,7 +89,7 @@ Safari visiting `https://<ref>.supabase.co` and seeing `{"error":"requested path
 
 ## Invites (partial)
 
-- Admin: People tab → Invite → share `homeflow://invite?token=…` link
+- Admin: People tab → Invite → share `homeflow://invite?token=…` link (**AC-USER-07**)
 - Invitee: Dashboard → Join with Invite → paste token; must sign in with **invited email**
 - `accept_invite(token)` RPC in migration `002`
 - Deep link / Universal Links **not wired** — manual token paste only

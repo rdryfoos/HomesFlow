@@ -49,7 +49,7 @@ HomeFlow is a responsive iOS app (iPhone and iPad) that empowers primary homeown
 * **FR-USER-01** (Priority: Critical) — Multi-role (Admin, Edit, Guest) invitation and access logic, scoped per home.
 * **FR-AUTH-01** (Priority: Critical) — Secure user authentication via OAuth or Apple ID sign-in.
 * **FR-USER-02** (Priority: Critical) — Admins can add, edit, remove users and assign roles.
-* **FR-HOME-01** (Priority: High) — Add/edit home properties with address, photos, and key info.
+* **FR-HOME-01** (Priority: High) — Add/edit home properties with address, photos (display-optimized at upload and cached locally for hero display), and key info.
 * **FR-HOME-02** (Priority: High) — Service provider directory (propane, electric, internet, lawn care, etc.) with contacts and notes.
 * **FR-HOME-03** (Priority: High) — Editable, categorized documents for important details.
 * **FR-PROC-01** (Priority: High) — Add/edit procedure lists (e.g., winterizing, arrival prep) with persistent status (Not Started / In Progress / Complete / N/A).
@@ -196,10 +196,14 @@ Imagine Diane, a homeowner who spends most of her time in Florida, but owns a ch
 * **AC-HOME-01** — Given an authenticated Admin on a connected device, when they submit valid home details and photos, then the home is created and visible in their dashboard with correct data.
 * **AC-HOME-02** — Given an Admin submits incomplete/invalid home details, when they attempt to save, then validation errors are shown and the home is not created.
 * **AC-HOME-03** — Given an Admin edits home details while offline and another device edits the same home before sync, when both devices reconnect, then the version with the most recent timestamp is applied and a conflict log entry is created for audit.
+* **AC-HOME-06** — Given an Admin or Edit user uploads a home photo, when the photo is saved to Storage, then the client uploads a display-optimized JPEG bounded to a maximum pixel dimension (not full camera resolution).
+* **AC-HOME-07** — Given a user has previously loaded a home photo on this device, when they view the dashboard or home detail again, then the hero photo renders from local cache without re-downloading from Storage.
+* **AC-HOME-08** — Given a home record has not yet synced to the server, when an Admin or Edit user attempts to upload a photo, then the upload is blocked and the user sees actionable guidance to sync first (e.g., pull to refresh while online).
 
 ### US-ADMIN-02 / FR-USER-01 — Admin invites users
 
 * **AC-USER-01** — Given an Admin provides an email/phone and role and sends an invite, when the invite is accepted, then the invitee is added to the home with the assigned role and receives appropriate permissions immediately.
+* **AC-USER-07** — Given an Admin creates an invite in MVP, when the invitee receives the shared invite link or token and signs in with the invited email, then they can accept the invite (paste token or open link) and join the home with the assigned role.
 * **AC-USER-02** — Given an Admin re-sends or revokes an invite before acceptance, when they revoke, then the invite token becomes invalid and the invitee cannot join with that token.
 * **AC-USER-03** — Given an Admin invites a user while offline and the invite is processed on another device first, when sync occurs, then the most recent action (invite or revoke) by timestamp determines invite state and the Admin receives a notification of the resolved outcome.
 
@@ -236,6 +240,7 @@ Imagine Diane, a homeowner who spends most of her time in Florida, but owns a ch
 * **AC-SYNC-01** — Given any user makes an update while offline, when the device reconnects, then the client syncs changes and the server resolves conflicts with most-recent timestamp wins; the client surfaces a notification when their offline change was overwritten.
 * **AC-SYNC-02** — Given two users modify different fields of the same entity while offline, when sync occurs, then both non-conflicting changes are merged and persisted, and an audit record notes the combined update.
 * **AC-SYNC-03** — Given a user attempts an action that depends on stale permissions cached offline, when syncing, then if the server denies the action, the client reverts the change and shows a permission error with guidance to retry.
+* **AC-SYNC-04** — Given local changes or homes are pending sync to the server, when the user views the dashboard, then unsynced homes are visibly indicated and the user can pull to refresh to retry sync while online.
 
 ---
 
@@ -269,8 +274,8 @@ Imagine Diane, a homeowner who spends most of her time in Florida, but owns a ch
 | NFR-REL-01 | NFR | 99.9% crash-free sessions |
 | NFR-SEC-01 | NFR | Encrypted storage |
 | NFR-SCALE-01 | NFR | 100k concurrent users |
-| AC-HOME-01 … AC-HOME-05 | AC | Home & provider scenarios |
-| AC-USER-01 … AC-USER-06 | AC | User invite & role scenarios |
+| AC-HOME-01 … AC-HOME-08 | AC | Home & provider scenarios |
+| AC-USER-01 … AC-USER-07 | AC | User invite & role scenarios |
 | AC-PROC-01 … AC-PROC-03 | AC | Procedure step scenarios |
 | AC-GUEST-01 … AC-GUEST-05 | AC | Guest access scenarios |
-| AC-SYNC-01 … AC-SYNC-03 | AC | Offline sync scenarios |
+| AC-SYNC-01 … AC-SYNC-04 | AC | Offline sync scenarios |

@@ -1,7 +1,7 @@
 import SwiftUI
 import UIKit
 
-// @covers FR-HOME-01
+// @covers FR-HOME-01, AC-HOME-07
 
 struct HomeHeroCard: View {
     let home: HomeSummary
@@ -117,30 +117,25 @@ struct HomePhotoFillView: View {
     let storagePath: String?
     let homeId: UUID?
 
-    @State private var remoteURL: URL?
+    @State private var loadedImage: UIImage?
 
     var body: some View {
         Group {
-            if let photoData, let image = UIImage(data: photoData) {
+            if let loadedImage {
+                Image(uiImage: loadedImage)
+                    .resizable()
+                    .scaledToFill()
+            } else if let photoData, let image = UIImage(data: photoData) {
                 Image(uiImage: image)
                     .resizable()
                     .scaledToFill()
-            } else if let remoteURL {
-                AsyncImage(url: remoteURL) { phase in
-                    switch phase {
-                    case .success(let image):
-                        image.resizable().scaledToFill()
-                    default:
-                        placeholder
-                    }
-                }
             } else {
                 placeholder
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .task(id: loadKey) {
-            await loadRemoteURL()
+            await loadPhotoIfNeeded()
         }
     }
 
@@ -164,16 +159,29 @@ struct HomePhotoFillView: View {
         }
     }
 
-    private func loadRemoteURL() async {
-        guard photoData == nil,
-              let path = storagePath,
-              let homeId,
-              let repo = appEnvironment?.homeRepository else {
-            remoteURL = nil
+    private func loadPhotoIfNeeded() async {
+        if photoData != nil {
+            loadedImage = photoData.flatMap(UIImage.init(data:))
             return
         }
-        let summary = HomeSummary(id: homeId, name: "", streetAddress: "", photoURL: path)
-        remoteURL = try? await repo.signedPhotoURL(for: summary)
+
+        guard let path = storagePath else {
+            loadedImage = nil
+            return
+        }
+
+        if let repo = appEnvironment?.homeRepository,
+           let cached = repo.cachedPhoto(for: path) {
+            loadedImage = cached
+            return
+        }
+
+        guard let repo = appEnvironment?.homeRepository else {
+            loadedImage = nil
+            return
+        }
+
+        loadedImage = try? await repo.loadPhoto(storagePath: path)
     }
 }
 

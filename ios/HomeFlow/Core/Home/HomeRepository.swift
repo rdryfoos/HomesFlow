@@ -1,8 +1,9 @@
 import Foundation
 import SwiftData
 import Supabase
+import UIKit
 
-// @covers FR-HOME-01, AC-HOME-01, AC-HOME-02
+// @covers FR-HOME-01, AC-HOME-01, AC-HOME-02, AC-HOME-08
 
 @MainActor
 final class HomeRepository: ObservableObject {
@@ -32,7 +33,9 @@ final class HomeRepository: ObservableObject {
         }
         let descriptor = FetchDescriptor<CachedHome>(sortBy: [SortDescriptor(\.name)])
         let cached = try modelContext.fetch(descriptor)
-        return cached.map(summary(from:))
+        let homes = cached.map(summary(from:))
+        homePhotoService.prefetch(storagePaths: homes.compactMap(\.photoURL))
+        return homes
     }
 
     func createHome(name: String, streetAddress: String, photoData: Data? = nil) async throws -> HomeSummary {
@@ -138,6 +141,14 @@ final class HomeRepository: ObservableObject {
     func signedPhotoURL(for home: HomeSummary) async throws -> URL? {
         guard let path = home.photoURL else { return nil }
         return try await homePhotoService.signedURL(for: path)
+    }
+
+    func cachedPhoto(for storagePath: String) -> UIImage? {
+        homePhotoService.cachedImage(storagePath: storagePath)
+    }
+
+    func loadPhoto(storagePath: String) async throws -> UIImage {
+        try await homePhotoService.loadImage(storagePath: storagePath)
     }
 
     func home(for id: UUID) -> HomeSummary? {

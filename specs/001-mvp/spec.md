@@ -31,6 +31,9 @@ An Admin creates a home profile with address, photos, and key info, then sees it
 1. **AC-HOME-01** — Given authenticated Admin on connected device, when valid home details and photos submitted, then home created and visible on dashboard with correct data.
 2. **AC-HOME-02** — Given incomplete/invalid home details, when Admin saves, then validation errors shown and home not created.
 3. **AC-HOME-03** — Given Admin edits home offline while another device edits same home, when both reconnect, then most recent timestamp wins and conflict log entry created.
+4. **AC-HOME-06** — Given Admin or Edit user uploads home photo, when saved to Storage, then client uploads display-optimized JPEG bounded to a maximum pixel dimension (not full camera resolution).
+5. **AC-HOME-07** — Given user previously loaded home photo on this device, when they view dashboard or home detail again, then hero photo renders from local cache without re-downloading from Storage.
+6. **AC-HOME-08** — Given home not yet synced to server, when Admin or Edit user attempts photo upload, then upload blocked with actionable guidance to sync first.
 
 ---
 
@@ -47,11 +50,12 @@ Admin invites collaborators by email/phone, assigns Edit or Guest roles, and man
 **Acceptance Scenarios**:
 
 1. **AC-USER-01** — Given Admin sends invite with role, when invitee accepts, then added to home with assigned role and permissions.
-2. **AC-USER-02** — Given Admin revokes pending invite, when revoked, then invite token invalid and invitee cannot join.
-3. **AC-USER-03** — Given offline invite conflict, when sync occurs, then latest timestamp action wins and Admin notified.
-4. **AC-USER-04** — Given Edit role assigned, when user signs in, then can create/modify procedures and service providers.
-5. **AC-USER-05** — Given Guest role assigned, when guest signs in, then guest-appropriate fields only and edit disabled.
-6. **AC-USER-06** — Given concurrent role changes on multiple devices, when sync occurs, then latest timestamp wins and audit entry records prior role.
+2. **AC-USER-07** — Given Admin creates invite in MVP, when invitee receives shared link or token and signs in with invited email, then invitee can accept (paste token or open link) and join with assigned role.
+3. **AC-USER-02** — Given Admin revokes pending invite, when revoked, then invite token invalid and invitee cannot join.
+4. **AC-USER-03** — Given offline invite conflict, when sync occurs, then latest timestamp action wins and Admin notified.
+5. **AC-USER-04** — Given Edit role assigned, when user signs in, then can create/modify procedures and service providers.
+6. **AC-USER-05** — Given Guest role assigned, when guest signs in, then guest-appropriate fields only and edit disabled.
+7. **AC-USER-06** — Given concurrent role changes on multiple devices, when sync occurs, then latest timestamp wins and audit entry records prior role.
 
 ---
 
@@ -125,6 +129,7 @@ All roles can read and write while offline; sync on reconnect with deterministic
 1. **AC-SYNC-01** — Given offline update, when reconnect, then sync runs with timestamp-wins rule and overwrite notification if applicable.
 2. **AC-SYNC-02** — Given non-conflicting field edits offline, when sync, then changes merged and audit record created.
 3. **AC-SYNC-03** — Given stale cached permissions offline, when sync denied by server, then change reverted and permission error shown.
+4. **AC-SYNC-04** — Given local changes or homes pending sync, when user views dashboard, then unsynced homes are visibly indicated and user can pull to refresh while online.
 
 ---
 
@@ -140,17 +145,17 @@ All roles can read and write while offline; sync on reconnect with deterministic
 
 ### Functional Requirements
 
-- **FR-AUTH-01**: System MUST authenticate users via Apple Sign-In and/or OAuth.
+- **FR-AUTH-01**: System MUST authenticate users via Apple Sign-In and/or OAuth (MVP device builds: email/password only until Apple Sign-In entitlement restored — see Assumptions).
 - **FR-USER-01**: System MUST enforce Admin / Edit / Guest roles scoped per home.
 - **FR-USER-02**: Admins MUST be able to add, edit, remove users and assign roles.
-- **FR-HOME-01**: System MUST support add/edit home properties with address, photos, and key info.
+- **FR-HOME-01**: System MUST support add/edit home properties with address, photos (display-optimized at upload, locally cached for hero display), and key info.
 - **FR-HOME-02**: System MUST provide a searchable service provider directory with contacts and notes.
 - **FR-HOME-03**: System MUST provide categorized documents with visibility controls.
 - **FR-PROC-01**: System MUST support procedure lists with status (Not Started / In Progress / Complete / N/A).
 - **FR-PROC-02**: Procedures MUST contain steps, each with independent status.
 - **FR-PROC-03**: Procedures MUST support notes, photos, and document attachments.
 - **FR-GUEST-01**: Guest users MUST see only approved procedures and info.
-- **FR-GUEST-02**: System MUST support guest onboarding via email or SMS invite.
+- **FR-GUEST-02**: System MUST support guest onboarding via email or SMS invite (MVP: shareable invite link + manual token accept — see Assumptions).
 - **FR-NOTIF-01**: System SHOULD support optional push notifications for status changes (MVP: defer wiring if needed; UI placeholder acceptable).
 - **FR-LOG-01**: System MUST record an activity log of significant changes.
 
@@ -186,11 +191,15 @@ All roles can read and write while offline; sync on reconnect with deterministic
 
 - MVP targets iOS 17+ on iPhone and iPad; no Android/web/desktop.
 - **Backend**: Supabase (PostgreSQL, Auth, Storage, Realtime).
-- **Auth**: Apple Sign-In + email/password via Supabase Auth.
+- **Auth (MVP)**: Email/password via Supabase Auth only on current device builds. Sign in with Apple UI is placeholder; entitlement deferred until paid Apple Developer Program (required before App Store — see [research.md](./research.md) D12). Full **FR-AUTH-01** satisfied at App Store submission.
+- **Invites (MVP)**: Admin shares `homeflow://invite?token=…` via system share sheet; invitee uses **Join with Invite** and pastes token while signed in with invited email (**AC-USER-07**). Automated email/SMS delivery, Universal Links, and deep-link auto-accept are **Out of Scope** for MVP.
 - **Push notifications (FR-NOTIF-01)**: Deferred in MVP — Settings UI placeholder only; no APNs wiring.
 - Document upload uses standard iOS file/photo pickers; files stored in Supabase Storage.
+- Home photos: client resizes before upload (AC-HOME-06); dashboard and home-detail hero cards use disk/memory cache (AC-HOME-07); photo upload requires home synced first (AC-HOME-08). Signed URLs may be cached for the session; full-resolution originals are not required for hero display in MVP.
+- **Dashboard UX**: Home list and detail use full-bleed photo hero with name/address overlay (visual pattern under FR-HOME-01; not pixel-specified).
+- **App branding**: Branded app icon and static launch screen with automatic light/dark appearance (App Store readiness; not a functional feature).
 - "Most recent timestamp wins" uses server `updated_at` at sync acceptance time.
-- Offline: local SwiftData cache + outbox queue; sync on reconnect.
+- Offline: local SwiftData cache + outbox queue; sync on reconnect; pending-sync homes indicated on dashboard (AC-SYNC-04).
 - **Step assignees**: Out of MVP scope (prototype shows assignees; ignore for v1).
 - **Contacts tab**: Implements **service providers** only (FR-HOME-02); no separate key-contacts entity.
 - **UI reference**: [Figma prototype](https://haze-rabbit-58180688.figma.site) — layout inspiration only; SwiftUI-native iPhone/iPad layouts per plan, PRD wins on behavior.
@@ -203,3 +212,6 @@ All roles can read and write while offline; sync on reconnect with deterministic
 - Export to Apple Notes/Reminders (future integration)
 - Per-step assignees
 - Separate key-contacts entity (use service providers)
+- Automated invite email/SMS delivery (MVP uses manual share + token paste per AC-USER-07)
+- Universal Links / deep-link auto-accept for invites (`homeflow://` scheme only; paste fallback)
+- Sign in with Apple on device builds until paid developer program + entitlement (see research D12)

@@ -146,6 +146,6 @@
 
 | Item | Notes |
 |------|-------|
-| SMS invites (FR-GUEST-02) | MVP: email invite via Supabase Auth magic link or invite token URL; SMS deferred |
+| SMS invites (FR-GUEST-02) | MVP: shareable invite link + manual token paste (**AC-USER-07**); automated email/SMS deferred |
 | Deep links (AC-GUEST-02) | Universal Links in v1.1; MVP uses paste-token invite accept + `homeflow://` share link only |
 | Sentry / crash telemetry | Recommended before TestFlight; not blocking first implement pass |
