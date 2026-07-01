@@ -1,6 +1,6 @@
 import SwiftUI
 
-// @covers FR-HOME-01, US-ADMIN-01, AC-HOME-08, AC-SYNC-04
+// @covers FR-HOME-01, US-ADMIN-01, AC-HOME-08, AC-SYNC-04, FR-NAV-01
 
 struct DashboardView: View {
     @Environment(\.horizontalSizeClass) private var sizeClass
@@ -79,21 +79,13 @@ struct DashboardView: View {
     }
 
     private var iPadLayout: some View {
-        NavigationSplitView {
-            homeList(useNavigationLink: false)
+        NavigationStack {
+            homeList(useNavigationLink: true)
                 .navigationTitle("My Homes")
                 .toolbar { toolbarContent }
-        } detail: {
-            if let home = viewModel.homes.first(where: { $0.id == selectedHomeId }) {
-                HomeDetailView(home: home)
-                    .environment(\.appEnvironment, appEnvironment)
-            } else {
-                ContentUnavailableView(
-                    "Select a home",
-                    systemImage: "house",
-                    description: Text("Choose a home from the sidebar")
-                )
-            }
+                .navigationDestination(for: UUID.self) { homeId in
+                    homeDetail(for: homeId)
+                }
         }
     }
 

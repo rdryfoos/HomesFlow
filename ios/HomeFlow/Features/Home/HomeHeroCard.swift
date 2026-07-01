@@ -11,11 +11,13 @@ struct HomeHeroCard: View {
     enum Style {
         case list
         case detail
+        case sidebar
 
         var height: CGFloat {
             switch self {
             case .list: 152
             case .detail: 220
+            case .sidebar: 120
             }
         }
 
@@ -23,6 +25,7 @@ struct HomeHeroCard: View {
             switch self {
             case .list: 0
             case .detail: 0
+            case .sidebar: 12
             }
         }
 
@@ -30,6 +33,7 @@ struct HomeHeroCard: View {
             switch self {
             case .list: .title3.bold()
             case .detail: .title2.bold()
+            case .sidebar: .headline.bold()
             }
         }
     }
@@ -58,7 +62,7 @@ struct HomeHeroCard: View {
                 } icon: {
                     Image(systemName: "mappin.and.ellipse")
                 }
-                .font(.subheadline)
+                .font(style == .sidebar ? .caption : .subheadline)
                 .foregroundStyle(.white.opacity(0.92))
             }
             .padding(16)
