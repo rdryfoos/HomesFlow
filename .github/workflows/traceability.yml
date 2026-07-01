@@ -1,0 +1,21 @@
+name: Traceability (Gate 2)
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  golden-thread:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check golden thread (PRD → spec → tasks → code → tests)
+        run: bash scripts/check-traceability.sh
+      - name: Verify coverage matrix is fresh
+        run: |
+          bash scripts/check-traceability.sh --matrix
+          git diff --exit-code specs/001-mvp/coverage.md || {
+            echo "::error::specs/001-mvp/coverage.md is stale. Run 'bash scripts/check-traceability.sh --matrix' and commit the result."
+            exit 1
+          }
