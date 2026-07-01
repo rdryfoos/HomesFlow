@@ -197,7 +197,7 @@ All roles can read and write while offline; sync on reconnect with deterministic
 - Document upload uses standard iOS file/photo pickers; files stored in Supabase Storage.
 - Home photos: client resizes before upload (AC-HOME-06); dashboard and home-detail hero cards use disk/memory cache (AC-HOME-07); photo upload requires home synced first (AC-HOME-08). Signed URLs may be cached for the session; full-resolution originals are not required for hero display in MVP.
 - **Dashboard UX**: Home list and detail use full-bleed photo hero with name/address overlay (visual pattern under FR-HOME-01; not pixel-specified).
-- **App branding**: Branded app icon and static launch screen with automatic light/dark appearance (App Store readiness; not a functional feature).
+- **App branding**: Branded app icon and static launch screen (black background, green house + white wordmark; @1x/@2x/@3x launch assets).
 - "Most recent timestamp wins" uses server `updated_at` at sync acceptance time.
 - Offline: local SwiftData cache + outbox queue; sync on reconnect; pending-sync homes indicated on dashboard (AC-SYNC-04).
 - **Step assignees**: Out of MVP scope (prototype shows assignees; ignore for v1).
