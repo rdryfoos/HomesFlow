@@ -1,6 +1,6 @@
 import SwiftUI
 
-// @covers FR-PROC-02, FR-PROC-03, FR-LOG-01, AC-PROC-01, AC-PROC-02, AC-GUEST-04
+// @covers FR-PROC-02, FR-PROC-03, FR-LOG-01, AC-PROC-01, AC-PROC-02, AC-PROC-04, AC-PROC-05, AC-PROC-07, AC-GUEST-04
 
 struct ProcedureDetailView: View {
     let home: HomeSummary
@@ -8,6 +8,11 @@ struct ProcedureDetailView: View {
     @Environment(\.appEnvironment) private var appEnvironment
     @StateObject private var viewModel = ProcedureDetailViewModel()
     @State private var notesStep: ProcedureStepSummary?
+    @State private var isAddingStep = false
+    @State private var newStepTitle = ""
+    @State private var renameTarget: ProcedureStepSummary?
+    @State private var renameTitle = ""
+    @State private var deleteTarget: ProcedureStepSummary?
 
     private var userRole: HomeRole {
         home.currentUserRole ?? .guest
@@ -24,8 +29,8 @@ struct ProcedureDetailView: View {
                     }
                 }
 
-                Section("Steps") {
-                    ForEach(detail.steps) { step in
+                Section {
+                    ForEach(Array(detail.steps.enumerated()), id: \.element.id) { index, step in
                         ProcedureStepRow(
                             step: step,
                             canEdit: viewModel.canEdit,
@@ -45,6 +50,55 @@ struct ProcedureDetailView: View {
                                 notesStep = step
                             }
                         )
+                        .contextMenu {
+                            // Long-press step structure actions — Admin/Edit only (AC-PROC-04, AC-PROC-07)
+                            if viewModel.canManageStructure {
+                                Button {
+                                    renameTitle = step.title
+                                    renameTarget = step
+                                } label: {
+                                    Label("Rename", systemImage: "pencil")
+                                }
+                                Button {
+                                    moveStep(step, direction: .up)
+                                } label: {
+                                    Label("Move Up", systemImage: "arrow.up")
+                                }
+                                .disabled(index == 0)
+                                Button {
+                                    moveStep(step, direction: .down)
+                                } label: {
+                                    Label("Move Down", systemImage: "arrow.down")
+                                }
+                                .disabled(index == detail.steps.count - 1)
+                                Divider()
+                                Button(role: .destructive) {
+                                    deleteTarget = step
+                                } label: {
+                                    Label("Delete", systemImage: "trash")
+                                }
+                            }
+                        }
+                    }
+                } header: {
+                    HStack {
+                        Text("Steps")
+                        Spacer()
+                        if viewModel.canManageStructure {
+                            Button {
+                                newStepTitle = ""
+                                isAddingStep = true
+                            } label: {
+                                Label("Add step", systemImage: "plus")
+                                    .labelStyle(.iconOnly)
+                                    .frame(width: 28, height: 28)
+                            }
+                            .accessibilityLabel("Add step")
+                        }
+                    }
+                } footer: {
+                    if viewModel.canManageStructure {
+                        Text("Touch and hold a step to rename, reorder, or delete it.")
                     }
                 }
 
@@ -92,6 +146,71 @@ struct ProcedureDetailView: View {
                 }
             )
         }
+        .alert("Add Step", isPresented: $isAddingStep) {
+            TextField("Step title", text: $newStepTitle)
+            Button("Cancel", role: .cancel) {}
+            Button("Add") {
+                let title = newStepTitle
+                Task {
+                    await viewModel.createStep(
+                        homeId: home.id,
+                        procedureId: procedureId,
+                        title: title,
+                        userRole: userRole,
+                        using: appEnvironment?.procedureRepository
+                    )
+                }
+            }
+        } message: {
+            Text("The new step is added at the end of the list.")
+        }
+        .alert(
+            "Rename Step",
+            isPresented: Binding(
+                get: { renameTarget != nil },
+                set: { if !$0 { renameTarget = nil } }
+            )
+        ) {
+            TextField("Step title", text: $renameTitle)
+            Button("Cancel", role: .cancel) {}
+            Button("Save") {
+                guard let step = renameTarget else { return }
+                let title = renameTitle
+                Task {
+                    await viewModel.renameStep(
+                        homeId: home.id,
+                        procedureId: procedureId,
+                        stepId: step.id,
+                        title: title,
+                        userRole: userRole,
+                        using: appEnvironment?.procedureRepository
+                    )
+                }
+            }
+        }
+        .confirmationDialog(
+            "Delete \"\(deleteTarget?.title ?? "step")\"?",
+            isPresented: Binding(
+                get: { deleteTarget != nil },
+                set: { if !$0 { deleteTarget = nil } }
+            ),
+            titleVisibility: .visible
+        ) {
+            Button("Delete Step", role: .destructive) {
+                guard let step = deleteTarget else { return }
+                Task {
+                    await viewModel.deleteStep(
+                        homeId: home.id,
+                        procedureId: procedureId,
+                        stepId: step.id,
+                        userRole: userRole,
+                        using: appEnvironment?.procedureRepository
+                    )
+                }
+            }
+        } message: {
+            Text("This removes the step for everyone in this home.")
+        }
         .alert("Error", isPresented: Binding(
             get: { viewModel.errorMessage != nil },
             set: { if !$0 { viewModel.errorMessage = nil } }
@@ -99,6 +218,19 @@ struct ProcedureDetailView: View {
             Button("OK", role: .cancel) {}
         } message: {
             Text(viewModel.errorMessage ?? "")
+        }
+    }
+
+    private func moveStep(_ step: ProcedureStepSummary, direction: StepMoveDirection) {
+        Task {
+            await viewModel.moveStep(
+                homeId: home.id,
+                procedureId: procedureId,
+                stepId: step.id,
+                direction: direction,
+                userRole: userRole,
+                using: appEnvironment?.procedureRepository
+            )
         }
     }
 
@@ -308,6 +440,7 @@ final class ProcedureDetailViewModel: ObservableObject {
     @Published var detail: ProcedureDetail?
     @Published var activity: [ActivityLogSummary] = []
     @Published var canEdit = false
+    @Published var canManageStructure = false
     @Published var canViewActivity = false
     @Published var isLoading = false
     @Published var errorMessage: String?
@@ -328,6 +461,7 @@ final class ProcedureDetailViewModel: ObservableObject {
             )
             if let detail {
                 canEdit = repository.canUpdateSteps(for: detail, userRole: userRole)
+                canManageStructure = repository.canManageStepStructure(for: detail, userRole: userRole)
             }
             canViewActivity = repository.canViewActivityLog(userRole: userRole)
             activity = try await repository.fetchProcedureActivity(
@@ -399,6 +533,118 @@ final class ProcedureDetailViewModel: ObservableObject {
         }
     }
 
+    func createStep(
+        homeId: UUID,
+        procedureId: UUID,
+        title: String,
+        userRole: HomeRole,
+        using repository: ProcedureRepository?
+    ) async {
+        guard let repository else { return }
+        do {
+            try await repository.createStep(
+                homeId: homeId,
+                procedureId: procedureId,
+                title: title,
+                userRole: userRole
+            )
+            await refreshAfterMutation(
+                procedureId: procedureId,
+                homeId: homeId,
+                userRole: userRole,
+                using: repository
+            )
+            errorMessage = nil
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
+
+    func renameStep(
+        homeId: UUID,
+        procedureId: UUID,
+        stepId: UUID,
+        title: String,
+        userRole: HomeRole,
+        using repository: ProcedureRepository?
+    ) async {
+        guard let repository else { return }
+        do {
+            try await repository.renameStep(
+                homeId: homeId,
+                procedureId: procedureId,
+                stepId: stepId,
+                title: title,
+                userRole: userRole
+            )
+            await refreshAfterMutation(
+                procedureId: procedureId,
+                homeId: homeId,
+                userRole: userRole,
+                using: repository
+            )
+            errorMessage = nil
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
+
+    func deleteStep(
+        homeId: UUID,
+        procedureId: UUID,
+        stepId: UUID,
+        userRole: HomeRole,
+        using repository: ProcedureRepository?
+    ) async {
+        guard let repository else { return }
+        do {
+            try await repository.deleteStep(
+                homeId: homeId,
+                procedureId: procedureId,
+                stepId: stepId,
+                userRole: userRole
+            )
+            await refreshAfterMutation(
+                procedureId: procedureId,
+                homeId: homeId,
+                userRole: userRole,
+                using: repository
+            )
+            errorMessage = nil
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
+
+    func moveStep(
+        homeId: UUID,
+        procedureId: UUID,
+        stepId: UUID,
+        direction: StepMoveDirection,
+        userRole: HomeRole,
+        using repository: ProcedureRepository?
+    ) async {
+        guard let repository else { return }
+        do {
+            try await repository.moveStep(
+                homeId: homeId,
+                procedureId: procedureId,
+                stepId: stepId,
+                direction: direction,
+                userRole: userRole
+            )
+            await refreshAfterMutation(
+                procedureId: procedureId,
+                homeId: homeId,
+                userRole: userRole,
+                using: repository
+            )
+            errorMessage = nil
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
+
     private func refreshAfterMutation(
         procedureId: UUID,
         homeId: UUID,
@@ -412,6 +658,7 @@ final class ProcedureDetailViewModel: ObservableObject {
         )
         if let detail {
             canEdit = repository.canUpdateSteps(for: detail, userRole: userRole)
+            canManageStructure = repository.canManageStepStructure(for: detail, userRole: userRole)
         }
         activity = (try? await repository.fetchProcedureActivity(
             procedureId: procedureId,

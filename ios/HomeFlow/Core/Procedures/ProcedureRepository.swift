@@ -2,7 +2,7 @@ import Foundation
 import SwiftData
 import Supabase
 
-// @covers FR-PROC-01, FR-PROC-02, FR-PROC-03, AC-PROC-01, AC-PROC-02, AC-PROC-03
+// @covers FR-PROC-01, FR-PROC-02, FR-PROC-03, AC-PROC-01, AC-PROC-02, AC-PROC-03, AC-PROC-04, AC-PROC-05, AC-PROC-06, AC-PROC-07
 
 @MainActor
 final class ProcedureRepository: ObservableObject {
@@ -54,6 +54,269 @@ final class ProcedureRepository: ObservableObject {
 
     func canViewActivityLog(userRole: HomeRole) -> Bool {
         permissions.can(.read, entity: .activityLog, role: userRole)
+    }
+
+    // @covers AC-PROC-07
+    func canManageStepStructure(for procedure: ProcedureDetail, userRole: HomeRole) -> Bool {
+        permissions.can(
+            .create,
+            entity: .procedureStep(procedureVisibility: procedure.visibility),
+            role: userRole
+        )
+    }
+
+    // MARK: - Step structure (create, rename, reorder, delete) — AC-PROC-04…06
+
+    func createStep(
+        homeId: UUID,
+        procedureId: UUID,
+        title: String,
+        userRole: HomeRole
+    ) async throws {
+        let trimmed = title.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return }
+
+        let (userId, detail) = try authorizedStructureContext(
+            action: .create,
+            procedureId: procedureId,
+            userRole: userRole
+        )
+
+        let sortOrder = StepStructure.nextSortOrder(existing: detail.steps.map(\.sortOrder))
+        let step = CachedProcedureStep(
+            procedureId: procedureId,
+            sortOrder: sortOrder,
+            title: trimmed,
+            syncStatus: .pending
+        )
+        modelContext.insert(step)
+
+        syncEngine.enqueue(
+            entityType: .procedureStep,
+            entityId: step.id,
+            operation: .insert,
+            payload: ["procedure_id": procedureId.uuidString]
+        )
+
+        refreshAggregateAfterStructureChange(procedureId: procedureId)
+        try modelContext.save()
+
+        logStructureChange(
+            .created,
+            homeId: homeId,
+            actorId: userId,
+            stepId: step.id,
+            stepTitle: trimmed,
+            procedureTitle: detail.title
+        )
+
+        if NetworkMonitor.shared.isConnected {
+            _ = await syncEngine.run()
+        }
+    }
+
+    func renameStep(
+        homeId: UUID,
+        procedureId: UUID,
+        stepId: UUID,
+        title: String,
+        userRole: HomeRole
+    ) async throws {
+        let trimmed = title.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return }
+
+        let (userId, detail) = try authorizedStructureContext(
+            action: .update,
+            procedureId: procedureId,
+            userRole: userRole
+        )
+
+        guard let cachedStep = cachedStep(stepId) else { throw ProcedureError.notFound }
+        guard cachedStep.title != trimmed else { return }
+
+        cachedStep.title = trimmed
+        cachedStep.localUpdatedAt = .now
+        cachedStep.sync = .pending
+
+        syncEngine.enqueue(
+            entityType: .procedureStep,
+            entityId: stepId,
+            operation: .update,
+            payload: ["procedure_id": procedureId.uuidString]
+        )
+
+        try modelContext.save()
+
+        logStructureChange(
+            .renamed,
+            homeId: homeId,
+            actorId: userId,
+            stepId: stepId,
+            stepTitle: trimmed,
+            procedureTitle: detail.title
+        )
+
+        if NetworkMonitor.shared.isConnected {
+            _ = await syncEngine.run()
+        }
+    }
+
+    func deleteStep(
+        homeId: UUID,
+        procedureId: UUID,
+        stepId: UUID,
+        userRole: HomeRole
+    ) async throws {
+        let (userId, detail) = try authorizedStructureContext(
+            action: .delete,
+            procedureId: procedureId,
+            userRole: userRole
+        )
+
+        guard let cachedStep = cachedStep(stepId) else { throw ProcedureError.notFound }
+        let stepTitle = cachedStep.title
+        let existedOnServer = cachedStep.serverUpdatedAt != nil
+
+        removeOutboxEntry(for: stepId)
+        modelContext.delete(cachedStep)
+
+        if existedOnServer {
+            syncEngine.enqueue(
+                entityType: .procedureStep,
+                entityId: stepId,
+                operation: .delete,
+                payload: ["procedure_id": procedureId.uuidString]
+            )
+        }
+
+        refreshAggregateAfterStructureChange(procedureId: procedureId)
+        try modelContext.save()
+
+        logStructureChange(
+            .deleted,
+            homeId: homeId,
+            actorId: userId,
+            stepId: stepId,
+            stepTitle: stepTitle,
+            procedureTitle: detail.title
+        )
+
+        if NetworkMonitor.shared.isConnected {
+            _ = await syncEngine.run()
+        }
+    }
+
+    func moveStep(
+        homeId: UUID,
+        procedureId: UUID,
+        stepId: UUID,
+        direction: StepMoveDirection,
+        userRole: HomeRole
+    ) async throws {
+        let (userId, detail) = try authorizedStructureContext(
+            action: .update,
+            procedureId: procedureId,
+            userRole: userRole
+        )
+
+        guard let neighbor = StepStructure.swapTarget(
+            for: stepId,
+            direction: direction,
+            in: detail.steps
+        ) else { return }
+
+        guard
+            let movingStep = cachedStep(stepId),
+            let neighborStep = cachedStep(neighbor.id)
+        else { throw ProcedureError.notFound }
+
+        let movingOrder = movingStep.sortOrder
+        movingStep.sortOrder = neighborStep.sortOrder
+        neighborStep.sortOrder = movingOrder
+
+        for step in [movingStep, neighborStep] {
+            step.localUpdatedAt = .now
+            step.sync = .pending
+            syncEngine.enqueue(
+                entityType: .procedureStep,
+                entityId: step.id,
+                operation: .update,
+                payload: ["procedure_id": procedureId.uuidString]
+            )
+        }
+
+        try modelContext.save()
+
+        logStructureChange(
+            .reordered,
+            homeId: homeId,
+            actorId: userId,
+            stepId: stepId,
+            stepTitle: movingStep.title,
+            procedureTitle: detail.title
+        )
+
+        if NetworkMonitor.shared.isConnected {
+            _ = await syncEngine.run()
+        }
+    }
+
+    private func authorizedStructureContext(
+        action: PermissionAction,
+        procedureId: UUID,
+        userRole: HomeRole
+    ) throws -> (userId: UUID, detail: ProcedureDetail) {
+        guard let userId = auth.session?.user.id else { throw AuthError.notSignedIn }
+        guard let detail = cachedDetail(procedureId: procedureId, userRole: userRole) else {
+            throw ProcedureError.notFound
+        }
+        guard permissions.can(
+            action,
+            entity: .procedureStep(procedureVisibility: detail.visibility),
+            role: userRole
+        ) else {
+            throw ProcedureError.notAuthorized
+        }
+        return (userId, detail)
+    }
+
+    private func logStructureChange(
+        _ action: StepStructureAction,
+        homeId: UUID,
+        actorId: UUID,
+        stepId: UUID,
+        stepTitle: String,
+        procedureTitle: String
+    ) {
+        activityLog.append(
+            homeId: homeId,
+            actorId: actorId,
+            entityType: "procedure_step",
+            entityId: stepId,
+            action: action.rawValue,
+            summary: StepStructure.activitySummary(
+                action: action,
+                stepTitle: stepTitle,
+                procedureTitle: procedureTitle
+            )
+        )
+    }
+
+    private func refreshAggregateAfterStructureChange(procedureId: UUID) {
+        let procTarget = procedureId
+        guard let procedure = try? modelContext.fetch(FetchDescriptor<CachedProcedure>(
+            predicate: #Predicate<CachedProcedure> { $0.id == procTarget }
+        )).first else { return }
+        let summaries = cachedSteps(for: procedureId).map(stepSummary(from:))
+        procedure.procedureStatus = ProcedureAggregator.aggregateStatus(for: summaries)
+        procedure.sync = .pending
+    }
+
+    private func cachedStep(_ stepId: UUID) -> CachedProcedureStep? {
+        let stepTarget = stepId
+        return try? modelContext.fetch(FetchDescriptor<CachedProcedureStep>(
+            predicate: #Predicate<CachedProcedureStep> { $0.id == stepTarget }
+        )).first
     }
 
     func fetchProcedureActivity(
@@ -291,6 +554,7 @@ final class ProcedureRepository: ObservableObject {
 
     private func mergeCachedSteps(homeId: UUID, procedureIds: [UUID], rows: [ProcedureStepDTO]) {
         let idSet = Set(procedureIds)
+        let pendingDeletes = pendingStepDeleteIds()
         for procedureId in procedureIds {
             let procTarget = procedureId
             let procedure = try? modelContext.fetch(FetchDescriptor<CachedProcedure>(
@@ -304,10 +568,14 @@ final class ProcedureRepository: ObservableObject {
             let incoming = rows.filter { $0.procedureId == procedureId }
             let incomingIds = Set(incoming.map(\.id))
             for stale in existing where !incomingIds.contains(stale.id) {
+                // Keep locally created steps that haven't been pushed yet.
+                if stale.sync == .pending { continue }
                 modelContext.delete(stale)
             }
 
             for row in incoming {
+                // Skip rows the user deleted locally while the delete is still queued.
+                if pendingDeletes.contains(row.id) { continue }
                 if let cached = existing.first(where: { $0.id == row.id }) {
                     if cached.sync == .pending {
                         if HomeConflictResolver.shouldApplyServer(
@@ -396,6 +664,17 @@ final class ProcedureRepository: ObservableObject {
         if procedure.sync != .pending {
             procedure.sync = .synced
         }
+    }
+
+    private func pendingStepDeleteIds() -> Set<UUID> {
+        let stepEntity = EntityType.procedureStep.rawValue
+        let deleteOp = OutboxOperation.delete.rawValue
+        let entries = (try? modelContext.fetch(FetchDescriptor<MutationOutboxEntry>())) ?? []
+        return Set(
+            entries
+                .filter { $0.entityType == stepEntity && $0.operation == deleteOp }
+                .map(\.entityId)
+        )
     }
 
     private func removeOutboxEntry(for stepId: UUID) {

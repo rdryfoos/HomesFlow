@@ -79,11 +79,17 @@ final class SyncEngine: ObservableObject {
                     }
                     try await pushHome(entry)
                 case .procedureStep:
-                    guard entry.op == .update else {
+                    switch entry.op {
+                    case .insert:
+                        try await insertProcedureStep(entry)
+                    case .update:
+                        try await pushProcedureStep(entry)
+                    case .delete:
+                        try await deleteProcedureStep(entry)
+                    case nil:
                         modelContext.delete(entry)
                         continue
                     }
-                    try await pushProcedureStep(entry)
                 default:
                     continue
                 }
@@ -131,6 +137,54 @@ final class SyncEngine: ObservableObject {
         try? modelContext.save()
     }
 
+    private func insertProcedureStep(_ entry: MutationOutboxEntry) async throws {
+        let stepId = entry.entityId
+        guard
+            let step = try? modelContext.fetch(FetchDescriptor<CachedProcedureStep>(
+                predicate: #Predicate<CachedProcedureStep> { $0.id == stepId }
+            )).first
+        else { return }
+
+        struct NewStepRow: Encodable {
+            let id: UUID
+            let procedure_id: UUID
+            let sort_order: Int
+            let title: String
+            let status: StepStatus
+            let notes: String?
+        }
+
+        try await client
+            .from("procedure_steps")
+            .insert(NewStepRow(
+                id: step.id,
+                procedure_id: step.procedureId,
+                sort_order: step.sortOrder,
+                title: step.title,
+                status: step.stepStatus,
+                notes: step.notes
+            ))
+            .execute()
+
+        step.sync = .synced
+        step.serverUpdatedAt = .now
+        try await refreshAggregateStatus(procedureId: step.procedureId)
+        try? modelContext.save()
+    }
+
+    private func deleteProcedureStep(_ entry: MutationOutboxEntry) async throws {
+        try await client
+            .from("procedure_steps")
+            .delete()
+            .eq("id", value: entry.entityId.uuidString)
+            .execute()
+
+        if let procedureId = UUID(uuidString: entry.payload["procedure_id"] ?? "") {
+            try await refreshAggregateStatus(procedureId: procedureId)
+        }
+        try? modelContext.save()
+    }
+
     private func pushProcedureStep(_ entry: MutationOutboxEntry) async throws {
         let stepId = entry.entityId
         guard
@@ -140,13 +194,20 @@ final class SyncEngine: ObservableObject {
         else { return }
 
         struct StepRow: Encodable {
+            let sort_order: Int
+            let title: String
             let status: StepStatus
             let notes: String?
         }
 
         try await client
             .from("procedure_steps")
-            .update(StepRow(status: step.stepStatus, notes: step.notes))
+            .update(StepRow(
+                sort_order: step.sortOrder,
+                title: step.title,
+                status: step.stepStatus,
+                notes: step.notes
+            ))
             .eq("id", value: step.id.uuidString)
             .execute()
 
@@ -154,42 +215,45 @@ final class SyncEngine: ObservableObject {
         step.serverUpdatedAt = .now
 
         let procedureId = UUID(uuidString: entry.payload["procedure_id"] ?? "") ?? step.procedureId
+        try await refreshAggregateStatus(procedureId: procedureId)
+        try? modelContext.save()
+    }
+
+    private func refreshAggregateStatus(procedureId: UUID) async throws {
         let procTarget = procedureId
-        if let procedure = try? modelContext.fetch(FetchDescriptor<CachedProcedure>(
+        guard let procedure = try? modelContext.fetch(FetchDescriptor<CachedProcedure>(
             predicate: #Predicate<CachedProcedure> { $0.id == procTarget }
-        )).first {
-            let steps = (try? modelContext.fetch(FetchDescriptor<CachedProcedureStep>(
-                predicate: #Predicate<CachedProcedureStep> { $0.procedureId == procTarget },
-                sortBy: [SortDescriptor(\.sortOrder)]
-            ))) ?? []
-            let summaries = steps.map {
-                ProcedureStepSummary(
-                    id: $0.id,
-                    procedureId: $0.procedureId,
-                    sortOrder: $0.sortOrder,
-                    title: $0.title,
-                    status: $0.stepStatus,
-                    notes: $0.notes
-                )
-            }
-            let aggregate = ProcedureAggregator.aggregateStatus(for: summaries)
+        )).first else { return }
 
-            struct ProcedureRow: Encodable {
-                let status: ProcedureStatus
-            }
+        let steps = (try? modelContext.fetch(FetchDescriptor<CachedProcedureStep>(
+            predicate: #Predicate<CachedProcedureStep> { $0.procedureId == procTarget },
+            sortBy: [SortDescriptor(\.sortOrder)]
+        ))) ?? []
+        let summaries = steps.map {
+            ProcedureStepSummary(
+                id: $0.id,
+                procedureId: $0.procedureId,
+                sortOrder: $0.sortOrder,
+                title: $0.title,
+                status: $0.stepStatus,
+                notes: $0.notes
+            )
+        }
+        let aggregate = ProcedureAggregator.aggregateStatus(for: summaries)
 
-            try await client
-                .from("procedures")
-                .update(ProcedureRow(status: aggregate))
-                .eq("id", value: procedure.id.uuidString)
-                .execute()
-
-            procedure.procedureStatus = aggregate
-            procedure.sync = SyncStatus.synced
-            procedure.serverUpdatedAt = Date.now
+        struct ProcedureRow: Encodable {
+            let status: ProcedureStatus
         }
 
-        try? modelContext.save()
+        try await client
+            .from("procedures")
+            .update(ProcedureRow(status: aggregate))
+            .eq("id", value: procedure.id.uuidString)
+            .execute()
+
+        procedure.procedureStatus = aggregate
+        procedure.sync = SyncStatus.synced
+        procedure.serverUpdatedAt = Date.now
     }
 
     private func pullChanges() async {
@@ -272,7 +336,12 @@ final class SyncEngine: ObservableObject {
             if let step = try? modelContext.fetch(FetchDescriptor<CachedProcedureStep>(
                 predicate: #Predicate<CachedProcedureStep> { $0.id == targetId }
             )).first {
-                step.sync = .synced
+                if entry.op == .insert {
+                    // Local-only step that the server rejected — discard it.
+                    modelContext.delete(step)
+                } else {
+                    step.sync = .synced
+                }
             }
         default:
             break

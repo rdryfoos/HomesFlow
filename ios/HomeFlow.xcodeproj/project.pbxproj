@@ -13,6 +13,7 @@
 		16B0967312FC459C46CF3788 /* HomeDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F98B33798192E84DF26BF0A /* HomeDTO.swift */; };
 		1722B1ACE322FE2FA06754B8 /* AuthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60414CD441B73249944E83F4 /* AuthView.swift */; };
 		22C4DB5844C270556B1C7E3A /* HomeDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2BF3FC894DC970479F1FCA4 /* HomeDetailView.swift */; };
+		25C17813674CCC5579D4CDFF /* StepStructureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B473D8EF4DA4BB50AC1B691 /* StepStructureTests.swift */; };
 		270FC4BFF6C19BF842DFD03E /* ProcedureDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A8B51F014C45340EA18A53 /* ProcedureDTO.swift */; };
 		28823AE37B1CE81801551FF0 /* MemberDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60FE5FF84A8E6F82314D7297 /* MemberDTO.swift */; };
 		2A02F0FC48E56B2DD0627BB2 /* NetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D4B91998F226F2A6A692880 /* NetworkMonitor.swift */; };
@@ -90,6 +91,7 @@
 		60414CD441B73249944E83F4 /* AuthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthView.swift; sourceTree = "<group>"; };
 		60FE5FF84A8E6F82314D7297 /* MemberDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberDTO.swift; sourceTree = "<group>"; };
 		6390873983914AE52C180D3D /* MemberRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberRepository.swift; sourceTree = "<group>"; };
+		6B473D8EF4DA4BB50AC1B691 /* StepStructureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StepStructureTests.swift; sourceTree = "<group>"; };
 		7A6207638303AF182C7C316A /* ProcedureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProcedureTests.swift; sourceTree = "<group>"; };
 		7B95B47C0C7A40048617B702 /* Secrets.Release.xcconfig.example */ = {isa = PBXFileReference; path = Secrets.Release.xcconfig.example; sourceTree = "<group>"; };
 		7D4B91998F226F2A6A692880 /* NetworkMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMonitor.swift; sourceTree = "<group>"; };
@@ -256,6 +258,7 @@
 				504099625C1A94B14A9E029F /* HomeValidatorTests.swift */,
 				9ADD6A2E347D891C2C1B0E8D /* PermissionServiceTests.swift */,
 				7A6207638303AF182C7C316A /* ProcedureTests.swift */,
+				6B473D8EF4DA4BB50AC1B691 /* StepStructureTests.swift */,
 			);
 			path = HomeFlowTests;
 			sourceTree = "<group>";
@@ -566,6 +569,7 @@
 				B0E473DEA8305285F5BA7000 /* HomeValidatorTests.swift in Sources */,
 				2DD10E22B53C7F762C0C8E24 /* PermissionServiceTests.swift in Sources */,
 				CC9D432BCACD6BEBE748B66B /* ProcedureTests.swift in Sources */,
+				25C17813674CCC5579D4CDFF /* StepStructureTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

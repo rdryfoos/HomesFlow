@@ -14,7 +14,7 @@
 | 3–4 Auth, dashboard, homes | **Mostly complete** | XCUITest T017 |
 | 5 Invites & roles | **Partial** | Deep links T026; offline conflict T027; unit tests |
 | 6 Offline sync | **Partial** | Field merge T035; full sync tests |
-| 7 Procedures | **Mostly complete** | Step structure CRUD (AC-PROC-04…07); photo attach T043 |
+| 7 Procedures | **Mostly complete** | Photo attach T043 |
 | 8–10 P2/P3 features | Not started | Contacts tab next |
 | 11 Hardening | Not started | Re-run analyze after P1 checkpoint |
 
@@ -159,18 +159,18 @@ Partial deliverables documented in [dev-notes.md](./dev-notes.md). **Do not** en
 - [x] T045 [US-EDIT-01] Offline step conflict + notification — **Traces**: AC-PROC-03, AC-SYNC-01
 - [x] T046 [P] [US-EDIT-01] Recent activity section on procedure detail — **Traces**: FR-LOG-01, AC-PROC-01
 - [x] T047 [P] [US-EDIT-01] iPad: procedure list + detail columns — **Traces**: NFR-PERF-01
-- [ ] T047a [US-EDIT-01] Step structure sync: create, rename, delete, reorder in `ProcedureRepository` + `SyncEngine` — **Traces**: FR-PROC-02, AC-PROC-06
-- [ ] T047b [US-EDIT-01] Long-press step context menu (rename, delete, move up/down) + Add step on Steps section — **Traces**: AC-PROC-04, AC-PROC-05
-- [ ] T047c [US-EDIT-01] Hide step structure controls for Guest (read-only) — **Traces**: AC-PROC-07, AC-GUEST-04
+- [x] T047a [US-EDIT-01] Step structure sync: create, rename, delete, reorder in `ProcedureRepository` + `SyncEngine` — **Traces**: FR-PROC-02, AC-PROC-06
+- [x] T047b [US-EDIT-01] Long-press step context menu (rename, delete, move up/down) + Add step on Steps section — **Traces**: AC-PROC-04, AC-PROC-05
+- [x] T047c [US-EDIT-01] Hide step structure controls for Guest (read-only) — **Traces**: AC-PROC-07, AC-GUEST-04
 
 ### Tests
 
 - [x] T048 [P] [US-EDIT-01] Unit test `test_AC_PROC_01_step_complete_creates_log` — **Traces**: AC-PROC-01 — *ProcedureAggregatorTests*
 - [x] T049 [P] [US-EDIT-01] Unit test `test_AC_PROC_02_permission_denied_blocks_update` — **Traces**: AC-PROC-02
 - [x] T050 [US-EDIT-01] Unit test `test_AC_PROC_03_offline_step_conflict` — **Traces**: AC-PROC-03
-- [ ] T050a [P] [US-EDIT-01] Unit test `test_AC_PROC_04_edit_can_manage_step_structure` — **Traces**: AC-PROC-04, AC-PROC-05
-- [ ] T050b [P] [US-EDIT-01] Unit test `test_AC_PROC_06_step_structure_change_logged` — **Traces**: AC-PROC-06
-- [ ] T050c [P] [US-EDIT-01] Unit test `test_AC_PROC_07_guest_no_step_structure_controls` — **Traces**: AC-PROC-07
+- [x] T050a [P] [US-EDIT-01] Unit test `test_AC_PROC_04_edit_can_manage_step_structure` — **Traces**: AC-PROC-04, AC-PROC-05 — *StepStructureTests*
+- [x] T050b [P] [US-EDIT-01] Unit test `test_AC_PROC_06_step_structure_change_logged` — **Traces**: AC-PROC-06 — *StepStructureTests*
+- [x] T050c [P] [US-EDIT-01] Unit test `test_AC_PROC_07_guest_no_step_structure_controls` — **Traces**: AC-PROC-07 — *StepStructureTests*
 
 ---
 

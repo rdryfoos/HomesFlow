@@ -72,6 +72,56 @@ struct ProcedureStepSummary: Identifiable, Sendable, Hashable {
     let notes: String?
 }
 
+enum StepMoveDirection: Sendable {
+    case up
+    case down
+}
+
+enum StepStructureAction: String, Sendable {
+    case created = "step_created"
+    case renamed = "step_renamed"
+    case deleted = "step_deleted"
+    case reordered = "step_reordered"
+}
+
+/// Pure helpers for step structure changes (create, rename, reorder, delete).
+/// @covers AC-PROC-05, AC-PROC-06
+enum StepStructure {
+    /// New steps append at the end of the list.
+    static func nextSortOrder(existing: [Int]) -> Int {
+        (existing.max() ?? 0) + 1
+    }
+
+    /// Returns the neighbor a step swaps sort order with, or nil at a boundary.
+    static func swapTarget(
+        for stepId: UUID,
+        direction: StepMoveDirection,
+        in steps: [ProcedureStepSummary]
+    ) -> ProcedureStepSummary? {
+        let ordered = steps.sorted { $0.sortOrder < $1.sortOrder }
+        guard let index = ordered.firstIndex(where: { $0.id == stepId }) else { return nil }
+        switch direction {
+        case .up:
+            return index > 0 ? ordered[index - 1] : nil
+        case .down:
+            return index < ordered.count - 1 ? ordered[index + 1] : nil
+        }
+    }
+
+    static func activitySummary(
+        action: StepStructureAction,
+        stepTitle: String,
+        procedureTitle: String
+    ) -> String {
+        switch action {
+        case .created: "Added step \"\(stepTitle)\" to \(procedureTitle)"
+        case .renamed: "Renamed step to \"\(stepTitle)\" in \(procedureTitle)"
+        case .deleted: "Deleted step \"\(stepTitle)\" from \(procedureTitle)"
+        case .reordered: "Moved step \"\(stepTitle)\" in \(procedureTitle)"
+        }
+    }
+}
+
 enum ProcedureAggregator {
     static func completedCount(for steps: [ProcedureStepSummary]) -> Int {
         steps.filter { $0.status == .complete || $0.status == .na }.count

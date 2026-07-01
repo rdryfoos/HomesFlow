@@ -81,7 +81,7 @@ Safari visiting `https://<ref>.supabase.co` and seeing `{"error":"requested path
 | Device | Dashboard | Home detail |
 |--------|-------------|---------------|
 | iPhone | `NavigationStack` push; hero cards **~152pt** | Full-bleed hero + horizontal tabs; single-column section content |
-| iPad | `NavigationStack` push; hero cards **~280pt**, top-aligned photo, name + address/`locationLabel` | **Three-panel**: leading sidebar (compact hero + vertical tabs) + trailing nested split (section list \| section detail) for **all** sections (**AC-HOME-09…10**) |
+| iPad | `NavigationStack` push; hero cards **~480pt**, top-aligned photo, name + address/`locationLabel` | **Three-panel**: leading sidebar (compact hero + vertical tabs) + trailing nested split (section list \| section detail) for **all** sections (**AC-HOME-09…10**) |
 
 **Do not** use `List(selection:)` on iPhone with `NavigationLink` — selection mode blocks push navigation.
 
@@ -122,7 +122,7 @@ Section UI label **Files** implements document library (FR-HOME-03); code folder
 
 ## Known gaps (next spec-aligned work)
 
-- Step structure CRUD T047a–c (AC-PROC-04…07)
+- Procedure step photo attach T043 (notes done)
 - Apple Sign-In (App Store requirement before public release)
 - XCUITests T017, T069
 - Offline invite conflict T027; full sync matrix Phase 6

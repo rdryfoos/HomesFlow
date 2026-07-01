@@ -1,6 +1,6 @@
 import Foundation
 
-// @covers FR-USER-01, FR-GUEST-01, AC-PROC-02, AC-GUEST-02
+// @covers FR-USER-01, FR-GUEST-01, AC-PROC-02, AC-PROC-04, AC-PROC-07, AC-GUEST-02
 
 struct PermissionService: Sendable {
     func can(_ action: PermissionAction, entity: PermissionEntity, role: HomeRole) -> Bool {
@@ -56,6 +56,20 @@ struct PermissionService: Sendable {
         case (.updateStepStatus, .procedureStep(let vis), .edit):
             return visibilityAllows(role: .edit, visibility: vis)
         case (.updateStepStatus, .procedureStep, .guest):
+            return false
+
+        // Step structure (create/rename/reorder/delete) — AC-PROC-04…07
+        case (.create, .procedureStep(let vis), .admin),
+             (.update, .procedureStep(let vis), .admin),
+             (.delete, .procedureStep(let vis), .admin):
+            return visibilityAllows(role: .admin, visibility: vis)
+        case (.create, .procedureStep(let vis), .edit),
+             (.update, .procedureStep(let vis), .edit),
+             (.delete, .procedureStep(let vis), .edit):
+            return visibilityAllows(role: .edit, visibility: vis)
+        case (.create, .procedureStep, .guest),
+             (.update, .procedureStep, .guest),
+             (.delete, .procedureStep, .guest):
             return false
 
         case (.read, .activityLog, .guest):
