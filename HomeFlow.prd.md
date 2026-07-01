@@ -52,7 +52,7 @@ HomeFlow is a responsive iOS app (iPhone and iPad) that empowers primary homeown
 * **FR-HOME-01** (Priority: High) — Add/edit home properties with address, photos (display-optimized at upload and cached locally for hero display), and key info.
 * **FR-HOME-02** (Priority: High) — Service provider directory (propane, electric, internet, lawn care, etc.) with contacts and notes.
 * **FR-HOME-03** (Priority: High) — Editable, categorized documents for important details (UI section label: **Files**).
-* **FR-NAV-01** (Priority: High) — Home detail MUST expose four sections labeled **Procedures**, **Contacts**, **Files**, and **People** with device-appropriate navigation (iPhone: hero + horizontal tabs; iPad: compact left-column hero + vertical icon tabs, content-only right column).
+* **FR-NAV-01** (Priority: High) — Home detail MUST expose four sections labeled **Procedures**, **Contacts**, **Files**, and **People** with device-appropriate navigation (iPhone: hero + horizontal tabs; iPad: compact left-column hero + vertical icon tabs, with a **three-panel** layout — sidebar, section list, and section detail — for every section).
 * **FR-PROC-01** (Priority: High) — Add/edit procedure lists (e.g., winterizing, arrival prep) with persistent status (Not Started / In Progress / Complete / N/A).
 * **FR-PROC-02** (Priority: High) — Procedures contain ordered steps, each with its own status. Admin and Edit users can **create, rename, reorder, and delete** steps on procedures they can modify (per visibility). Guests have read-only access to step content and status.
 * **FR-PROC-03** (Priority: High) — Attach notes, photos, or documents to procedures.
@@ -77,10 +77,11 @@ HomeFlow is a responsive iOS app (iPhone and iPad) that empowers primary homeown
   * Minimal friction—Apple biometric sign-in if available.
 * **Step 2:** Dashboard shows homes managed/accessible.
   * At-a-glance indicators for open tasks, updates.
+  * **iPhone**: hero cards at standard height (~152pt). **iPad**: taller hero cards (~280pt) with top-aligned photos, home name, and address (or city/state when the full address is long) so wide layouts do not over-crop the image.
 * **Step 3:** Tap into a home for detail view.
   * Four sections, always labeled **Procedures**, **Contacts**, **Files**, and **People** (Files is the user-facing name for the document library).
   * **iPhone**: full-bleed home hero at top; horizontal segmented control for the four sections below.
-  * **iPad**: no large hero above main content. Leading column shows a **compact home hero** (photo, name, address) that sets which home is in focus, then **vertical icon tabs** for Procedures, Contacts, Files, and People. Trailing column shows only the selected section’s content — no duplicate hero and no top tab bar.
+  * **iPad**: no large hero above main content. Leading column shows a **compact home hero** (photo, name, address) that sets which home is in focus, then **vertical icon tabs** for Procedures, Contacts, Files, and People. The trailing area uses a **three-panel** pattern for **every** section: nested list (middle) and detail (right) inside the trailing column — e.g. procedure list | procedure detail, contact list | contact detail, file list | preview, member list | member detail. No duplicate home hero and no horizontal tab bar in the trailing area.
   * Return to **My Homes** from iPad home detail to switch homes (sidebar is not a persistent home picker while viewing a home).
   * Procedures list shows statuses; tap to drill into steps, update status, add comments or files.
   * On procedure detail: **tap** a step to toggle complete; **long-press** a step (Admin/Edit) to rename, delete, or reorder; **Add** on the Steps section to create a new step.
@@ -106,6 +107,7 @@ HomeFlow is a responsive iOS app (iPhone and iPad) that empowers primary homeown
 * **Accessibility (first-class)**: UI MUST respect iOS system settings — especially **Dynamic Type / text size**, VoiceOver, Reduce Motion, and sufficient contrast. Layouts MUST reflow at larger text sizes without clipping essential controls or requiring horizontal scrolling for primary content.
 * Procedure steps use checklist gestures: tap to complete, long-press for structure edits (Admin/Edit only).
 * Home section tabs use friendly SF Symbol icons paired with labels; minimum 44×44 pt tap targets.
+* **Launch screen**: black background; green house icon + white **HomeFlow** wordmark at ~1.5× prior size with tighter icon-to-text spacing (@1x/@2x/@3x PNG assets in `LaunchLogo` imageset).
 * High-contrast text, large tap targets for accessibility.
 * Role-based UI: Users only see actions/features they're permitted for.
 * Large, visible status indicators for tasks.
@@ -209,8 +211,8 @@ Imagine Diane, a homeowner who spends most of her time in Florida, but owns a ch
 * **AC-HOME-06** — Given an Admin or Edit user uploads a home photo, when the photo is saved to Storage, then the client uploads a display-optimized JPEG bounded to a maximum pixel dimension (not full camera resolution).
 * **AC-HOME-07** — Given a user has previously loaded a home photo on this device, when they view the dashboard or home detail again, then the hero photo renders from local cache without re-downloading from Storage.
 * **AC-HOME-08** — Given a home record has not yet synced to the server, when an Admin or Edit user attempts to upload a photo, then the upload is blocked and the user sees actionable guidance to sync first (e.g., pull to refresh while online).
-* **AC-HOME-09** — Given a user views home detail on iPad (regular horizontal size class), when any section is selected, then the trailing (main) column shows section content only — no full-bleed hero and no horizontal section tab bar in that column.
-* **AC-HOME-10** — Given a user opens a home on iPad, when home detail is shown, then the leading column displays a compact home hero (photo, name, address) and, below it, vertically stacked tappable section entries with icon and label for Procedures, Contacts, Files, and People; the trailing column shows the selected section.
+* **AC-HOME-09** — Given a user views home detail on iPad (regular horizontal size class), when any section is selected, then the trailing area shows section content only — no full-bleed home hero and no horizontal section tab bar at the home level (nested section list | detail splits are allowed inside the trailing area).
+* **AC-HOME-10** — Given a user opens a home on iPad, when home detail is shown, then the leading column displays a compact home hero (photo, name, address) and vertically stacked tappable section entries with icon and label for Procedures, Contacts, Files, and People; the trailing area shows the selected section using a three-panel layout (sidebar already visible + section list + section detail) for **all four** sections.
 * **AC-HOME-11** — Given a user views home detail on any device, when section navigation is shown, then section labels read Procedures, Contacts, Files, and People (Files implements the document library).
 
 ### US-ADMIN-02 / FR-USER-01 — Admin invites users

@@ -80,14 +80,24 @@ Safari visiting `https://<ref>.supabase.co` and seeing `{"error":"requested path
 
 | Device | Dashboard | Home detail |
 |--------|-------------|---------------|
-| iPhone | `NavigationStack` + `NavigationLink(value:)` push | Full-bleed hero + horizontal segmented tabs: Procedures \| Contacts \| Files \| People |
-| iPad | Home list (select home to enter detail) | `NavigationSplitView`: **leading** = compact hero + vertical icon tabs; **trailing** = section content only (**AC-HOME-09…10**) |
+| iPhone | `NavigationStack` push; hero cards **~152pt** | Full-bleed hero + horizontal tabs; single-column section content |
+| iPad | `NavigationStack` push; hero cards **~280pt**, top-aligned photo, name + address/`locationLabel` | **Three-panel**: leading sidebar (compact hero + vertical tabs) + trailing nested split (section list \| section detail) for **all** sections (**AC-HOME-09…10**) |
 
 **Do not** use `List(selection:)` on iPhone with `NavigationLink` — selection mode blocks push navigation.
 
 iPad home detail leading column is **not** a persistent home picker. Use **All Homes** (or equivalent) to return to dashboard and switch homes (**FR-NAV-01**).
 
 Section UI label **Files** implements document library (FR-HOME-03); code folder may remain `Documents/`.
+
+**iPad section shells** (list | detail placeholders until Phases 8–10): `ContactsView`, `FilesView`, `MembersView` (People), `ProceduresView`.
+
+---
+
+## Launch screen
+
+- Static launch via `UILaunchScreen` in Info.plist: `LaunchBackground` (black) + `LaunchLogo` imageset.
+- Assets regenerated ~**1.5×** prior wordmark/icon size with **tighter** green-house-to-text spacing (@1x/@2x/@3x PNG).
+- Regenerate with PIL crop/recompose from master `@3x` if adjusting again (see git history `2244b42`).
 
 ---
 
@@ -112,12 +122,12 @@ Section UI label **Files** implements document library (FR-HOME-03); code folder
 
 ## Known gaps (next spec-aligned work)
 
-- Procedures tab (Phase 7)
+- Step structure CRUD T047a–c (AC-PROC-04…07)
 - Apple Sign-In (App Store requirement before public release)
 - XCUITests T017, T069
 - Offline invite conflict T027; full sync matrix Phase 6
 - Member/invite unit tests T030–T033b
-- Files tab (Phase 10), Settings, guest read-only views
+- Contacts data (Phase 8), Files upload (Phase 10), Settings, guest read-only views
 
 ---
 

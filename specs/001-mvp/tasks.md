@@ -84,7 +84,7 @@ Partial deliverables documented in [dev-notes.md](./dev-notes.md). **Do not** en
 - [x] T019a [P] [US-ADMIN-01] Home photo display optimization: resize on upload, disk/memory cache, signed-URL reuse, dashboard prefetch in `ios/HomeFlow/Core/Storage/` — **Traces**: AC-HOME-06, AC-HOME-07, FR-HOME-01, NFR-PERF-01
 - [x] T020 [US-ADMIN-01] Home edit offline + sync conflict (timestamp wins + activity log) — **Traces**: AC-HOME-03, AC-SYNC-01, FR-LOG-01 — *HomeConflictResolver + merge; full offline E2E pending*
 - [x] T021 [P] [US-ADMIN-01] Home detail full-bleed photo hero header + tab bar shell (Procedures | Contacts | Documents | People) — **Traces**: FR-HOME-01 — *superseded by T021a–b*
-- [x] T021a [P] [US-ADMIN-01] iPad home detail: compact left-column hero + vertical icon tabs; trailing column content-only (no hero, no top tabs) in `ios/HomeFlow/Features/HomeDetail/` — **Traces**: FR-NAV-01, AC-HOME-09, AC-HOME-10
+- [x] T021a [P] [US-ADMIN-01] iPad home detail: compact left-column hero + vertical icon tabs; trailing area three-panel (list | detail) for **all** sections — **Traces**: FR-NAV-01, AC-HOME-09, AC-HOME-10 — *ContactsView, FilesView, MembersView split shells*
 - [x] T021b [P] [US-ADMIN-01] Rename Documents UI tab to **Files**; add SF Symbol icons to all four section tabs (iPhone horizontal + iPad vertical list) — **Traces**: FR-NAV-01, AC-HOME-11, AC-A11Y-02
 - [x] T021c [P] [US-ADMIN-01] iPad: **All Homes** navigation from home detail back to dashboard (sidebar not persistent home picker) — **Traces**: AC-HOME-10, FR-NAV-01
 

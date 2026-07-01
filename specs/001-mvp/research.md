@@ -80,7 +80,9 @@
 | Files | FR-HOME-03 | Document library; UI label **Files** (not Documents) |
 | People | FR-USER-* | Members, invites, roles (Admin) |
 
-**iPad home detail (D10b)**: Leading column = compact home hero + vertical icon tabs (Procedures, Contacts, Files, People). Trailing column = section content only — no duplicate hero, no horizontal tabs (**AC-HOME-09…10**, **FR-NAV-01**). Return to **My Homes** dashboard to switch homes.
+**iPad home detail (D10b)**: Three-panel layout on every section — leading sidebar (compact hero + vertical tabs) + nested list | detail in the trailing area (**AC-HOME-09…10**, **FR-NAV-01**). iPad **My Homes** dashboard cards are taller (~280pt) with top-aligned photos. Return to **My Homes** to switch homes.
+
+**Launch screen (D10c)**: `LaunchLogo` ~1.5× size, tighter icon-to-wordmark spacing (engineering detail in dev-notes).
 
 **Accessibility (D11)**: Dynamic Type, VoiceOver, Reduce Motion, and 44pt tap targets are MVP requirements (**NFR-A11Y-01**), not deferred polish.
 

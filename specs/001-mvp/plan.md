@@ -189,21 +189,27 @@ Do **not** bind `List(selection:)` on iPhone with `NavigationLink` (blocks push)
 
 ```text
 My Homes (dashboard) — home list; select a home to enter home detail
+  iPad dashboard cards: ~280pt tall, top-aligned photo, name + address/city-state
 
 Home detail — NavigationSplitView (regular horizontal size class)
-  Leading column
-    ├─ Compact home hero (photo, name, address, sync badge) — sets home context
-    ├─ "All Homes" control → returns to dashboard to switch homes
-    └─ Vertical section list below hero (icon + label, tappable, selected state)
+  Column 1 — Leading sidebar (~260–320 pt)
+    ├─ Compact home hero (photo, name, address, sync badge)
+    ├─ "All Homes" → returns to dashboard
+    └─ Vertical section tabs (icon + label)
          Procedures / Contacts / Files / People
 
-  Trailing column (main content)
-    └─ Selected section ONLY — no full-bleed hero, no horizontal tab bar
+  Columns 2 + 3 — Trailing area (nested NavigationSplitView per section)
+    ├─ Section list (middle) — e.g. procedures, contacts, files, members
+    └─ Section detail (right) — e.g. checklist, contact detail, file preview, member detail
 ```
 
-The leading column is **not** a persistent home picker while viewing home detail. Nested splits (e.g. Procedures list | detail) live in the **trailing** column only (**NFR-PERF-01**, T047).
+Every section (**Procedures**, **Contacts**, **Files**, **People**) uses the same three-panel pattern on iPad. The trailing area has **no** home-level hero or horizontal tab bar (**AC-HOME-09**).
 
-**Dashboard**: Full-bleed photo hero cards with name/address overlay (FR-HOME-01). Unsynced homes indicated (AC-SYNC-04).
+The leading column is **not** a persistent home picker while viewing home detail (**FR-NAV-01**, T021c).
+
+**Dashboard**: Full-bleed photo hero cards with name/address overlay (FR-HOME-01). iPhone ~152pt; iPad ~280pt with top-aligned photos. Unsynced homes indicated (AC-SYNC-04).
+
+**Launch screen**: `LaunchLogo` @1x/@2x/@3x on black (`LaunchBackground`); wordmark ~1.5× prior size, reduced gap between green house icon and **HomeFlow** text.
 
 ### Procedure detail (trailing column on iPad; below tabs on iPhone)
 

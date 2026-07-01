@@ -34,8 +34,8 @@ An Admin creates a home profile with address, photos, and key info, then sees it
 4. **AC-HOME-06** — Given Admin or Edit user uploads home photo, when saved to Storage, then client uploads display-optimized JPEG bounded to a maximum pixel dimension (not full camera resolution).
 5. **AC-HOME-07** — Given user previously loaded home photo on this device, when they view dashboard or home detail again, then hero photo renders from local cache without re-downloading from Storage.
 6. **AC-HOME-08** — Given home not yet synced to server, when Admin or Edit user attempts photo upload, then upload blocked with actionable guidance to sync first.
-7. **AC-HOME-09** — Given iPad regular width home detail, when any section selected, then trailing column shows section content only (no hero, no horizontal tab bar).
-8. **AC-HOME-10** — Given iPad home detail, when displayed, then leading column shows compact home hero plus vertical icon+label tabs for Procedures, Contacts, Files, People; trailing column shows selected section.
+7. **AC-HOME-09** — Given iPad regular width home detail, when any section selected, then trailing area shows section content only at the home level (no home hero or horizontal tabs; nested section list | detail allowed).
+8. **AC-HOME-10** — Given iPad home detail, when any section selected, then leading column shows compact hero + vertical tabs and trailing area uses three-panel layout (section list + section detail) for Procedures, Contacts, Files, and People.
 9. **AC-HOME-11** — Given home detail on any device, when section navigation shown, then labels are Procedures, Contacts, Files, and People.
 
 ---
@@ -178,7 +178,7 @@ All primary screens respect iOS accessibility settings, especially Dynamic Type 
 - **FR-HOME-01**: System MUST support add/edit home properties with address, photos (display-optimized at upload, locally cached for hero display), and key info.
 - **FR-HOME-02**: System MUST provide a searchable service provider directory with contacts and notes.
 - **FR-HOME-03**: System MUST provide categorized documents with visibility controls (UI section label: **Files**).
-- **FR-NAV-01**: Home detail MUST expose four sections — **Procedures**, **Contacts**, **Files**, **People** — with device-appropriate navigation: iPhone uses full-bleed hero + horizontal segmented tabs; iPad uses compact left-column hero + vertical icon tabs and a content-only trailing column (**AC-HOME-09…11**).
+- **FR-NAV-01**: Home detail MUST expose four sections — **Procedures**, **Contacts**, **Files**, **People** — with device-appropriate navigation: iPhone uses full-bleed hero + horizontal segmented tabs; iPad uses compact left-column hero + vertical icon tabs and a **three-panel** layout (sidebar + section list + section detail) for every section (**AC-HOME-09…11**).
 - **FR-PROC-01**: System MUST support procedure lists with status (Not Started / In Progress / Complete / N/A).
 - **FR-PROC-02**: Procedures MUST contain ordered steps, each with independent status. Admin and Edit users MUST be able to create, rename, reorder, and delete steps on procedures they can modify (per visibility). Step status updates and structure edits MUST sync offline-capable.
 - **FR-PROC-03**: Procedures MUST support notes, photos, and document attachments.
@@ -225,9 +225,9 @@ All primary screens respect iOS accessibility settings, especially Dynamic Type 
 - **Push notifications (FR-NOTIF-01)**: Deferred in MVP — Settings UI placeholder only; no APNs wiring.
 - Document upload uses standard iOS file/photo pickers; files stored in Supabase Storage.
 - Home photos: client resizes before upload (AC-HOME-06); dashboard and iPhone home-detail hero cards use disk/memory cache (AC-HOME-07); photo upload requires home synced first (AC-HOME-08). Signed URLs may be cached for the session; full-resolution originals are not required for hero display in MVP.
-- **Dashboard UX**: Home list uses full-bleed photo hero cards with name/address overlay (FR-HOME-01). iPhone home detail repeats full-bleed hero above horizontal section tabs. iPad home detail uses compact hero in leading column only; trailing column is content-only (**AC-HOME-09…10**, **FR-NAV-01**).
+- **Dashboard UX**: Home list uses full-bleed photo hero cards with name/address overlay (FR-HOME-01). iPhone cards ~152pt tall; **iPad dashboard cards ~280pt** with top-aligned photos and `locationLabel` (full address or city/state). iPhone home detail repeats full-bleed hero above horizontal section tabs. iPad home detail uses compact hero in leading column only; trailing area is three-panel (section list | detail) per section (**AC-HOME-09…10**, **FR-NAV-01**).
 - **Home sections (UI labels)**: **Procedures** | **Contacts** | **Files** | **People**. *Files* is the user-facing name for the document library (FR-HOME-03); data model entity remains *Document*.
-- **App branding**: Branded app icon and static launch screen (black background, green house + white wordmark; @1x/@2x/@3x launch assets).
+- **App branding**: Branded app icon and static launch screen (black background, green house + white wordmark; @1x/@2x/@3x `LaunchLogo` assets ~1.5× prior size, tighter icon-to-text spacing).
 - "Most recent timestamp wins" uses server `updated_at` at sync acceptance time.
 - Offline: local SwiftData cache + outbox queue; sync on reconnect; pending-sync homes indicated on dashboard (AC-SYNC-04).
 - **Step assignees**: Out of MVP scope (prototype shows assignees; ignore for v1).

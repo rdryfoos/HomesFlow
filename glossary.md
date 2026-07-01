@@ -28,6 +28,8 @@ Domain language for specs, plans, and code. When wording is ambiguous, this file
 | Files | FR-HOME-03 (documents) |
 | People | FR-USER-02 (memberships) |
 
+On **iPad**, each tab uses a three-panel layout: sidebar (home context + tabs) + section list + section detail (**FR-NAV-01**, **AC-HOME-10**).
+
 ## MVP exclusions
 
 - **Step assignees** — out of scope; steps have status and notes only.
