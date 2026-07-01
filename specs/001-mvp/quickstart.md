@@ -139,7 +139,7 @@ Implementation status: [tasks.md](./tasks.md) (checkboxes) + [dev-notes.md](./de
 | Migrations | `supabase/migrations/` |
 | Debug secrets template | `ios/HomeFlow/Resources/Secrets.xcconfig.example` |
 | Release secrets template | `ios/HomeFlow/Resources/Secrets.Release.xcconfig.example` |
-| PRD | `HomeFlow PRD.md` |
+| PRD | `HomeFlow.prd.md` |
 
 ---
 

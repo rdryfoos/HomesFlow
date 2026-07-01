@@ -9,6 +9,7 @@ final class AppEnvironment: ObservableObject {
     let homePhotoService: HomePhotoService
     let homeRepository: HomeRepository
     let memberRepository: MemberRepository
+    let procedureRepository: ProcedureRepository
 
     init(modelContext: ModelContext) {
         auth = SupabaseClientProvider.shared
@@ -30,6 +31,12 @@ final class AppEnvironment: ObservableObject {
             modelContext: modelContext,
             auth: auth,
             activityLog: activityLog
+        )
+        procedureRepository = ProcedureRepository(
+            modelContext: modelContext,
+            auth: auth,
+            activityLog: activityLog,
+            syncEngine: syncEngine
         )
     }
 }

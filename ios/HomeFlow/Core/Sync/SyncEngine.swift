@@ -66,19 +66,22 @@ final class SyncEngine: ObservableObject {
         guard let entries = try? modelContext.fetch(descriptor) else { return }
 
         for entry in entries {
-            guard entry.entity == .home, entry.op != .delete else {
-                modelContext.delete(entry)
-                continue
-            }
-
             do {
-                switch entry.op {
-                case .insert, .update:
+                switch entry.entity {
+                case .home:
+                    guard entry.op != .delete else {
+                        modelContext.delete(entry)
+                        continue
+                    }
                     try await pushHome(entry)
-                case .delete:
-                    break
-                case .none:
-                    break
+                case .procedureStep:
+                    guard entry.op == .update else {
+                        modelContext.delete(entry)
+                        continue
+                    }
+                    try await pushProcedureStep(entry)
+                default:
+                    continue
                 }
                 modelContext.delete(entry)
                 try? modelContext.save()
@@ -121,6 +124,67 @@ final class SyncEngine: ObservableObject {
         }
         home.sync = .synced
         home.serverUpdatedAt = .now
+        try? modelContext.save()
+    }
+
+    private func pushProcedureStep(_ entry: MutationOutboxEntry) async throws {
+        let stepId = entry.entityId
+        guard
+            let step = try? modelContext.fetch(FetchDescriptor<CachedProcedureStep>(
+                predicate: #Predicate<CachedProcedureStep> { $0.id == stepId }
+            )).first
+        else { return }
+
+        struct StepRow: Encodable {
+            let status: StepStatus
+            let notes: String?
+        }
+
+        try await client
+            .from("procedure_steps")
+            .update(StepRow(status: step.stepStatus, notes: step.notes))
+            .eq("id", value: step.id.uuidString)
+            .execute()
+
+        step.sync = .synced
+        step.serverUpdatedAt = .now
+
+        let procedureId = UUID(uuidString: entry.payload["procedure_id"] ?? "") ?? step.procedureId
+        let procTarget = procedureId
+        if let procedure = try? modelContext.fetch(FetchDescriptor<CachedProcedure>(
+            predicate: #Predicate<CachedProcedure> { $0.id == procTarget }
+        )).first {
+            let steps = (try? modelContext.fetch(FetchDescriptor<CachedProcedureStep>(
+                predicate: #Predicate<CachedProcedureStep> { $0.procedureId == procTarget },
+                sortBy: [SortDescriptor(\.sortOrder)]
+            ))) ?? []
+            let summaries = steps.map {
+                ProcedureStepSummary(
+                    id: $0.id,
+                    procedureId: $0.procedureId,
+                    sortOrder: $0.sortOrder,
+                    title: $0.title,
+                    status: $0.stepStatus,
+                    notes: $0.notes
+                )
+            }
+            let aggregate = ProcedureAggregator.aggregateStatus(for: summaries)
+
+            struct ProcedureRow: Encodable {
+                let status: ProcedureStatus
+            }
+
+            try await client
+                .from("procedures")
+                .update(ProcedureRow(status: aggregate))
+                .eq("id", value: procedure.id.uuidString)
+                .execute()
+
+            procedure.procedureStatus = aggregate
+            procedure.sync = SyncStatus.synced
+            procedure.serverUpdatedAt = Date.now
+        }
+
         try? modelContext.save()
     }
 
@@ -193,10 +257,21 @@ final class SyncEngine: ObservableObject {
 
     private func revertPermissionDenied(entry: MutationOutboxEntry, message: String?) {
         let targetId = entry.entityId
-        if let home = try? modelContext.fetch(FetchDescriptor<CachedHome>(
-            predicate: #Predicate<CachedHome> { $0.id == targetId }
-        )).first {
-            home.sync = .synced
+        switch entry.entity {
+        case .home:
+            if let home = try? modelContext.fetch(FetchDescriptor<CachedHome>(
+                predicate: #Predicate<CachedHome> { $0.id == targetId }
+            )).first {
+                home.sync = .synced
+            }
+        case .procedureStep:
+            if let step = try? modelContext.fetch(FetchDescriptor<CachedProcedureStep>(
+                predicate: #Predicate<CachedProcedureStep> { $0.id == targetId }
+            )).first {
+                step.sync = .synced
+            }
+        default:
+            break
         }
         modelContext.delete(entry)
         try? modelContext.save()

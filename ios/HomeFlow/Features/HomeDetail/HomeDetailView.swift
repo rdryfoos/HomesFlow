@@ -64,7 +64,8 @@ struct HomeDetailView: View {
     private var tabContent: some View {
         switch selectedTab {
         case .procedures:
-            ContentUnavailableView("Procedures", systemImage: "checklist", description: Text("Phase 2"))
+            ProceduresView(home: displayedHome)
+                .environment(\.appEnvironment, appEnvironment)
         case .contacts:
             ContentUnavailableView("Service Providers", systemImage: "phone", description: Text("Phase 2"))
         case .documents:

@@ -1,6 +1,6 @@
 # HomeFlow Constitution
 
-Non-negotiable laws for this codebase. Product requirements live in `HomeFlow PRD.md`. Traceability mechanics live in `traceability.md`.
+Non-negotiable laws for this codebase. Product requirements live in `HomeFlow.prd.md`. Traceability mechanics live in `traceability.md`.
 
 ## Core Principles
 
@@ -39,7 +39,7 @@ When documents conflict, higher layers win:
 
 1. This constitution (`.specify/memory/constitution.md`)
 2. `glossary.md`
-3. `HomeFlow PRD.md` (product requirements and AC registry)
+3. `HomeFlow.prd.md` (product requirements and AC registry)
 4. `specs/<feature>/spec.md` (feature slice derived from PRD)
 5. `specs/<feature>/plan.md` and `tasks.md`
 6. Source code

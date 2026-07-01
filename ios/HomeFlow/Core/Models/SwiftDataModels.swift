@@ -139,6 +139,109 @@ final class MutationOutboxEntry {
 
     var entity: EntityType? { EntityType(rawValue: entityType) }
     var op: OutboxOperation? { OutboxOperation(rawValue: operation) }
+
+    var payload: [String: String] {
+        guard
+            let data = payloadJSON.data(using: .utf8),
+            let dict = try? JSONDecoder().decode([String: String].self, from: data)
+        else { return [:] }
+        return dict
+    }
+}
+
+@Model
+final class CachedProcedure {
+    @Attribute(.unique) var id: UUID
+    var homeId: UUID
+    var title: String
+    var category: String?
+    var procedureDescription: String?
+    var status: String
+    var visibility: String
+    var syncStatus: String
+    var serverUpdatedAt: Date?
+
+    init(
+        id: UUID = UUID(),
+        homeId: UUID,
+        title: String,
+        category: String? = nil,
+        procedureDescription: String? = nil,
+        status: ProcedureStatus = .notStarted,
+        visibility: Visibility = .edit,
+        syncStatus: SyncStatus = .synced,
+        serverUpdatedAt: Date? = nil
+    ) {
+        self.id = id
+        self.homeId = homeId
+        self.title = title
+        self.category = category
+        self.procedureDescription = procedureDescription
+        self.status = status.rawValue
+        self.visibility = visibility.rawValue
+        self.syncStatus = syncStatus.rawValue
+        self.serverUpdatedAt = serverUpdatedAt
+    }
+
+    var procedureStatus: ProcedureStatus {
+        get { ProcedureStatus(rawValue: status) ?? .notStarted }
+        set { status = newValue.rawValue }
+    }
+
+    var procedureVisibility: Visibility {
+        get { Visibility(rawValue: visibility) ?? .edit }
+        set { visibility = newValue.rawValue }
+    }
+
+    var sync: SyncStatus {
+        get { SyncStatus(rawValue: syncStatus) ?? .pending }
+        set { syncStatus = newValue.rawValue }
+    }
+}
+
+@Model
+final class CachedProcedureStep {
+    @Attribute(.unique) var id: UUID
+    var procedureId: UUID
+    var sortOrder: Int
+    var title: String
+    var status: String
+    var notes: String?
+    var syncStatus: String
+    var localUpdatedAt: Date
+    var serverUpdatedAt: Date?
+
+    init(
+        id: UUID = UUID(),
+        procedureId: UUID,
+        sortOrder: Int,
+        title: String,
+        status: StepStatus = .notStarted,
+        notes: String? = nil,
+        syncStatus: SyncStatus = .synced,
+        localUpdatedAt: Date = .now,
+        serverUpdatedAt: Date? = nil
+    ) {
+        self.id = id
+        self.procedureId = procedureId
+        self.sortOrder = sortOrder
+        self.title = title
+        self.status = status.rawValue
+        self.notes = notes
+        self.syncStatus = syncStatus.rawValue
+        self.localUpdatedAt = localUpdatedAt
+        self.serverUpdatedAt = serverUpdatedAt
+    }
+
+    var stepStatus: StepStatus {
+        get { StepStatus(rawValue: status) ?? .notStarted }
+        set { status = newValue.rawValue }
+    }
+
+    var sync: SyncStatus {
+        get { SyncStatus(rawValue: syncStatus) ?? .pending }
+        set { syncStatus = newValue.rawValue }
+    }
 }
 
 @Model
@@ -179,6 +282,8 @@ enum SwiftDataContainer {
             CachedHome.self,
             CachedMembership.self,
             CachedInvite.self,
+            CachedProcedure.self,
+            CachedProcedureStep.self,
             MutationOutboxEntry.self,
             CachedActivityLogEntry.self
         ])

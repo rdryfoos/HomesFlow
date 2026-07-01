@@ -1,6 +1,6 @@
 # HomeFlow
 
-**PRD**: `HomeFlow PRD.md`  
+**PRD**: `HomeFlow.prd.md`  
 **Traceability**: `traceability.md`  
 **Constitution**: `.specify/memory/constitution.md`  
 **Glossary**: `glossary.md`  

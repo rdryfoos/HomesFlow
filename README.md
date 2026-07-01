@@ -6,7 +6,7 @@ Native iOS app for managing a second home — built with Spec Kit.
 
 | Document | Role |
 |----------|------|
-| **`HomeFlow PRD.md`** | Product requirements, user stories, acceptance criteria |
+| **`HomeFlow.prd.md`** | Product requirements, user stories, acceptance criteria |
 | **`traceability.md`** | How IDs flow from PRD → spec → tasks → code → tests |
 | **`README Architectural & Process Decisions.rtf`** | Process and stack thinking (not the product spec) |
 
@@ -14,7 +14,7 @@ Native iOS app for managing a second home — built with Spec Kit.
 
 ```text
 HomeFlow/
-├── HomeFlow PRD.md              ← product truth (you write / maintain)
+├── HomeFlow.prd.md              ← product truth (you write / maintain)
 ├── traceability.md              ← traceability mechanics
 ├── glossary.md                  ← domain terms
 ├── README Architectural & Process Decisions.rtf
@@ -40,7 +40,7 @@ export SPECIFY_FEATURE_DIRECTORY=specs/001-mvp
 
 | Step | Command | Output |
 |------|---------|--------|
-| 1 | `/speckit.specify` | Fills `specs/001-mvp/spec.md` from `HomeFlow PRD.md` |
+| 1 | `/speckit.specify` | Fills `specs/001-mvp/spec.md` from `HomeFlow.prd.md` |
 | 2 | `/speckit.clarify` | Resolves open questions |
 | 3 | `/speckit.plan` | `plan.md`, `research.md`, `data-model.md` |
 | 4 | `/speckit.tasks` | `tasks.md` with `Traces:` fields |
@@ -58,7 +58,7 @@ cd ios && xcodegen generate && open HomeFlow.xcodeproj
 
 UI reference (non-authoritative): https://haze-rabbit-58180688.figma.site
 
-**Before step 1:** Add durable IDs to requirements and ACs in `HomeFlow PRD.md` per `traceability.md` §3.
+**Before step 1:** Add durable IDs to requirements and ACs in `HomeFlow.prd.md` per `traceability.md` §3.
 
 ## What not to duplicate
 

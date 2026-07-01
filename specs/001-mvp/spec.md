@@ -6,7 +6,7 @@
 
 **Status**: Draft (clarified + planned)
 
-**Input**: `HomeFlow PRD.md` — full MVP scope for native iOS second-home management.
+**Input**: `HomeFlow.prd.md` — full MVP scope for native iOS second-home management.
 
 > IDs inherited from PRD. Do not mint new IDs in this file. See PRD § ID Registry.
 

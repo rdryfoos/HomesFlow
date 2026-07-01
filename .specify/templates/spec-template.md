@@ -8,7 +8,7 @@
 
 **Input**: User description: "$ARGUMENTS"
 
-> Every requirement and AC MUST carry a durable ID per `traceability.md`. IDs are assigned at the PRD level in `HomeFlow PRD.md` — feature specs inherit them; do not mint new IDs here.
+> Every requirement and AC MUST carry a durable ID per `traceability.md`. IDs are assigned at the PRD level in `HomeFlow.prd.md` — feature specs inherit them; do not mint new IDs here.
 
 ## User Scenarios & Testing *(mandatory)*
 
