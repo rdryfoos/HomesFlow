@@ -17,7 +17,7 @@ struct HomeHeroCard: View {
         var height: CGFloat {
             switch self {
             case .list: 152
-            case .dashboard: 480
+            case .dashboard: 528
             case .detail: 220
             case .sidebar: 120
             }
@@ -25,7 +25,7 @@ struct HomeHeroCard: View {
 
         var photoVerticalAlignment: Alignment {
             switch self {
-            case .dashboard, .list: .top
+            case .list: .top
             default: .center
             }
         }

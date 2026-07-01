@@ -189,7 +189,7 @@ Do **not** bind `List(selection:)` on iPhone with `NavigationLink` (blocks push)
 
 ```text
 My Homes (dashboard) — home list; select a home to enter home detail
-  iPad dashboard cards: ~480pt tall, top-aligned photo, name + address/city-state
+  iPad dashboard cards: ~528pt tall, vertically centered photo, name + address/city-state
 
 Home detail — NavigationSplitView (regular horizontal size class)
   Column 1 — Leading sidebar (~260–320 pt)
@@ -207,7 +207,7 @@ Every section (**Procedures**, **Contacts**, **Files**, **People**) uses the sam
 
 The leading column is **not** a persistent home picker while viewing home detail (**FR-NAV-01**, T021c).
 
-**Dashboard**: Full-bleed photo hero cards with name/address overlay (FR-HOME-01). iPhone ~152pt; iPad ~480pt with top-aligned photos. Unsynced homes indicated (AC-SYNC-04).
+**Dashboard**: Full-bleed photo hero cards with name/address overlay (FR-HOME-01). iPhone ~152pt; iPad ~528pt with vertically centered photos. Unsynced homes indicated (AC-SYNC-04).
 
 **Launch screen**: `LaunchLogo` @1x/@2x/@3x on black (`LaunchBackground`); wordmark ~1.5× prior size, reduced gap between green house icon and **HomeFlow** text.
 

@@ -81,7 +81,7 @@ Safari visiting `https://<ref>.supabase.co` and seeing `{"error":"requested path
 | Device | Dashboard | Home detail |
 |--------|-------------|---------------|
 | iPhone | `NavigationStack` push; hero cards **~152pt** | Full-bleed hero + horizontal tabs; single-column section content |
-| iPad | `NavigationStack` push; hero cards **~480pt**, top-aligned photo, name + address/`locationLabel` | **Three-panel**: leading sidebar (compact hero + vertical tabs) + trailing nested split (section list \| section detail) for **all** sections (**AC-HOME-09…10**) |
+| iPad | `NavigationStack` push; hero cards **~528pt**, vertically centered photo, name + address/`locationLabel` | **Three-panel**: leading sidebar (compact hero + vertical tabs) + trailing nested split (section list \| section detail) for **all** sections (**AC-HOME-09…10**) |
 
 **Do not** use `List(selection:)` on iPhone with `NavigationLink` — selection mode blocks push navigation.
 
