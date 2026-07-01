@@ -17,7 +17,7 @@ struct HomeHeroCard: View {
         var height: CGFloat {
             switch self {
             case .list: 152
-            case .dashboard: 280
+            case .dashboard: 480
             case .detail: 220
             case .sidebar: 120
             }
@@ -41,7 +41,7 @@ struct HomeHeroCard: View {
         var titleFont: Font {
             switch self {
             case .list: .title3.bold()
-            case .dashboard: .title2.bold()
+            case .dashboard: .title.bold()
             case .detail: .title2.bold()
             case .sidebar: .headline.bold()
             }

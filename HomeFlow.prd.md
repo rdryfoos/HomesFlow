@@ -77,7 +77,7 @@ HomeFlow is a responsive iOS app (iPhone and iPad) that empowers primary homeown
   * Minimal friction—Apple biometric sign-in if available.
 * **Step 2:** Dashboard shows homes managed/accessible.
   * At-a-glance indicators for open tasks, updates.
-  * **iPhone**: hero cards at standard height (~152pt). **iPad**: taller hero cards (~280pt) with top-aligned photos, home name, and address (or city/state when the full address is long) so wide layouts do not over-crop the image.
+  * **iPhone**: hero cards at standard height (~152pt). **iPad**: tall hero cards (~480pt, ~70% taller than phone cards) with top-aligned photos, home name, and address (or city/state when the full address is long) so wide layouts do not over-crop the image.
 * **Step 3:** Tap into a home for detail view.
   * Four sections, always labeled **Procedures**, **Contacts**, **Files**, and **People** (Files is the user-facing name for the document library).
   * **iPhone**: full-bleed home hero at top; horizontal segmented control for the four sections below.
