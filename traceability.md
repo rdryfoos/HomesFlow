@@ -14,7 +14,7 @@ This file is the single source of mechanics. The short, non-negotiable **princip
 | Mechanics | this file (`traceability.md`) | ID grammar, the chain, test naming, CI behavior. |
 | Structure | `.specify/templates/spec-template.md`, `tasks-template.md` | Required ID fields so IDs are mandatory structure, not afterthoughts. |
 | Gate 1 (pre-build) | `/speckit.analyze` | Constitutional check: ACs without tasks, tasks without IDs, etc. |
-| Gate 2 (post-build) | CI script | Greps tests + source for IDs, diffs against the registry, fails on orphans. |
+| Gate 2 (post-build) | `scripts/check-traceability.sh` + `.github/workflows/traceability.yml` | Greps tests + source for IDs, diffs against the registry, fails on orphans. |
 
 Rationale: the constitution is read by every Spec Kit phase but should stay stable. Keep volatile detail (regex, script) out of it so you tweak conventions without amending your "supreme law."
 
@@ -90,7 +90,7 @@ Each row is now one test.
 
 **Gate 1 — `/speckit.analyze` (before `/speckit.implement`).** With the principle in the constitution, analyze flags: ACs with no task, tasks with no `Traces:`, and IDs that don't match the grammar. Run it every time before implementing.
 
-**Gate 2 — CI coverage check (after implementation).** A small script that:
+**Gate 2 — CI coverage check (after implementation).** Implemented as `scripts/check-traceability.sh`, run locally or by CI (`.github/workflows/traceability.yml`) on every push/PR. A small script that:
 
 1. Parses the ID registry from the PRD/spec (the authoritative ID list).
 2. Scans test names for `AC-[A-Z]+-\d+` and source for `@covers <ID>`.

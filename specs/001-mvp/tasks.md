@@ -97,6 +97,8 @@ Partial deliverables documented in [dev-notes.md](./dev-notes.md). **Do not** en
 - [ ] T024b [P] [US-ADMIN-01] Unit test `test_AC_HOME_07_hero_renders_from_local_cache` — **Traces**: AC-HOME-07
 - [ ] T024c [P] [US-ADMIN-01] Unit test `test_AC_HOME_08_photo_blocked_until_home_synced` — **Traces**: AC-HOME-08
 - [ ] T024d [P] [US-ADMIN-01] Snapshot or UI test: iPad home detail trailing column has no hero/segmented tabs — **Traces**: AC-HOME-09
+- [ ] T024e [P] [US-ADMIN-01] Snapshot or UI test: iPad leading column shows compact home hero + vertical icon section tabs — **Traces**: AC-HOME-10
+- [ ] T024f [P] [US-ADMIN-01] UI test: Contacts, Files, and People sections use the three-panel layout on iPad — **Traces**: AC-HOME-11
 
 ---
 

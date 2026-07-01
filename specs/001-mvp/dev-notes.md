@@ -131,6 +131,12 @@ Section UI label **Files** implements document library (FR-HOME-03); code folder
 
 ---
 
+## Traceability Gate 2
+
+`scripts/check-traceability.sh` verifies the golden thread (registry drift, missing `Traces:`, untraced scope, untested ACs with no tracked task). Runs in CI via `.github/workflows/traceability.yml` on every push/PR; run locally with `bash scripts/check-traceability.sh`.
+
+---
+
 ## Regenerating Xcode project
 
 After editing `ios/project.yml`:
