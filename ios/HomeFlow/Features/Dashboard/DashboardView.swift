@@ -175,14 +175,17 @@ struct DashboardView: View {
         Section {
             ForEach(viewModel.homes) { home in
                 if useNavigationLink {
+                    let cardStyle: HomeHeroCard.Style = sizeClass == .regular ? .dashboard : .list
+                    let cardHeight = cardStyle.height
+
                     ZStack {
-                        HomeHeroCard(home: home, style: .list, showsDisclosureIndicator: true)
+                        HomeHeroCard(home: home, style: cardStyle, showsDisclosureIndicator: true)
 
                         NavigationLink(value: home.id) {
                             EmptyView()
                         }
                         .opacity(0)
-                        .frame(maxWidth: .infinity, minHeight: 152)
+                        .frame(maxWidth: .infinity, minHeight: cardHeight)
                     }
                     .listRowInsets(EdgeInsets(top: 8, leading: 0, bottom: 8, trailing: 0))
                     .listRowSeparator(.hidden)

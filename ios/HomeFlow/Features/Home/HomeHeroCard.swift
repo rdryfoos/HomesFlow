@@ -10,21 +10,30 @@ struct HomeHeroCard: View {
 
     enum Style {
         case list
+        case dashboard
         case detail
         case sidebar
 
         var height: CGFloat {
             switch self {
             case .list: 152
+            case .dashboard: 280
             case .detail: 220
             case .sidebar: 120
             }
         }
 
+        var photoVerticalAlignment: Alignment {
+            switch self {
+            case .dashboard, .list: .top
+            default: .center
+            }
+        }
+
         var cornerRadius: CGFloat {
             switch self {
-            case .list: 0
-            case .detail: 0
+            case .list, .detail: 0
+            case .dashboard: 0
             case .sidebar: 12
             }
         }
@@ -32,6 +41,7 @@ struct HomeHeroCard: View {
         var titleFont: Font {
             switch self {
             case .list: .title3.bold()
+            case .dashboard: .title2.bold()
             case .detail: .title2.bold()
             case .sidebar: .headline.bold()
             }
@@ -43,7 +53,8 @@ struct HomeHeroCard: View {
             HomePhotoFillView(
                 photoData: nil,
                 storagePath: home.photoURL,
-                homeId: home.id
+                homeId: home.id,
+                verticalAlignment: style.photoVerticalAlignment
             )
 
             LinearGradient(
@@ -57,8 +68,8 @@ struct HomeHeroCard: View {
                     .font(style.titleFont)
                     .foregroundStyle(.white)
                 Label {
-                    Text(home.streetAddress)
-                        .lineLimit(style == .detail ? 3 : 2)
+                    Text(home.locationLabel)
+                        .lineLimit(style == .detail || style == .dashboard ? 3 : 2)
                 } icon: {
                     Image(systemName: "mappin.and.ellipse")
                 }
@@ -87,7 +98,7 @@ struct HomeHeroCard: View {
     }
 
     private var accessibilityText: String {
-        var parts = [home.name, home.streetAddress]
+        var parts = [home.name, home.locationLabel]
         if home.isPendingSync {
             parts.append("Not synced")
         }
@@ -120,24 +131,28 @@ struct HomePhotoFillView: View {
     let photoData: Data?
     let storagePath: String?
     let homeId: UUID?
+    var verticalAlignment: Alignment = .center
 
     @State private var loadedImage: UIImage?
 
     var body: some View {
-        Group {
-            if let loadedImage {
-                Image(uiImage: loadedImage)
-                    .resizable()
-                    .scaledToFill()
-            } else if let photoData, let image = UIImage(data: photoData) {
-                Image(uiImage: image)
-                    .resizable()
-                    .scaledToFill()
-            } else {
-                placeholder
+        GeometryReader { geometry in
+            Group {
+                if let loadedImage {
+                    Image(uiImage: loadedImage)
+                        .resizable()
+                        .scaledToFill()
+                } else if let photoData, let image = UIImage(data: photoData) {
+                    Image(uiImage: image)
+                        .resizable()
+                        .scaledToFill()
+                } else {
+                    placeholder
+                }
             }
+            .frame(width: geometry.size.width, height: geometry.size.height, alignment: verticalAlignment)
+            .clipped()
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .task(id: loadKey) {
             await loadPhotoIfNeeded()
         }

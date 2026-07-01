@@ -141,17 +141,9 @@ struct HomeDetailView: View {
             ProceduresView(home: displayedHome)
                 .environment(\.appEnvironment, appEnvironment)
         case .contacts:
-            ContentUnavailableView(
-                "Service Providers",
-                systemImage: "person.crop.circle",
-                description: Text("Contacts for this home will appear here.")
-            )
+            ContactsView(home: displayedHome)
         case .files:
-            ContentUnavailableView(
-                "Files",
-                systemImage: "folder",
-                description: Text("House documents and files will appear here.")
-            )
+            FilesView(home: displayedHome)
         case .people:
             MembersView(home: displayedHome)
                 .environment(\.appEnvironment, appEnvironment)

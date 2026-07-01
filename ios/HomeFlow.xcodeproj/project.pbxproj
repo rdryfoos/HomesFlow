@@ -36,6 +36,7 @@
 		770573BEE85C53FE8F453F2C /* MemberRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6390873983914AE52C180D3D /* MemberRepository.swift */; };
 		8B3075FC9E428CE58FC66133 /* PermissionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CF9D16647D19E7853C52246 /* PermissionService.swift */; };
 		8B4E453C70FCC3711FE17255 /* HomeFlowApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1CD4F9264B8E65BF4B75240 /* HomeFlowApp.swift */; };
+		98D395128DC314A7BF92629C /* FilesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DE98E4CAE9465C0C555B81B /* FilesView.swift */; };
 		B0E473DEA8305285F5BA7000 /* HomeValidatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 504099625C1A94B14A9E029F /* HomeValidatorTests.swift */; };
 		B8B2DDB29BBC436B18FD38B8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B8EA1C0B8D56E94220543B63 /* Assets.xcassets */; };
 		C66085F8C146521809D6E671 /* DomainEnums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53C5D96F41A0A87D10BD1AF6 /* DomainEnums.swift */; };
@@ -43,6 +44,7 @@
 		CC9D432BCACD6BEBE748B66B /* ProcedureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A6207638303AF182C7C316A /* ProcedureTests.swift */; };
 		CCA37724D9C0870EE62062C5 /* AppRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 065E11DA60C5236E9094516D /* AppRouter.swift */; };
 		DF97B3DA56D40B5043E53A74 /* HomeHeroCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24584D4D48852644D6901B29 /* HomeHeroCard.swift */; };
+		E5D3DB13ECBF4283A7204C73 /* ContactsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90748E3E2030839155D51E1 /* ContactsView.swift */; };
 		EFDD81EA5F10127E3496161A /* SupabaseClientProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A55055DFB89B27A44EE4537 /* SupabaseClientProvider.swift */; };
 		F589A08913ED650B9FC8A4A4 /* ProcedureDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD9CEBE86C62A6C52C2B01F4 /* ProcedureDetailView.swift */; };
 		FB51C829CDB77333656F2F27 /* HomePhotoService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 406453D16A208977207D35E2 /* HomePhotoService.swift */; };
@@ -74,6 +76,7 @@
 		11A8B51F014C45340EA18A53 /* ProcedureDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProcedureDTO.swift; sourceTree = "<group>"; };
 		202D9DB27925A958E207D429 /* SwiftDataModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftDataModels.swift; sourceTree = "<group>"; };
 		24584D4D48852644D6901B29 /* HomeHeroCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeHeroCard.swift; sourceTree = "<group>"; };
+		2DE98E4CAE9465C0C555B81B /* FilesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilesView.swift; sourceTree = "<group>"; };
 		2E273D44AB8D24A9FA10E46A /* HomeFlowTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = HomeFlowTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		2F98B33798192E84DF26BF0A /* HomeDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeDTO.swift; sourceTree = "<group>"; };
 		33213B4805ED062B656B0320 /* HomeFlowUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeFlowUITests.swift; sourceTree = "<group>"; };
@@ -96,6 +99,7 @@
 		9BC05990017639DD3D616C1C /* HomeRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeRepository.swift; sourceTree = "<group>"; };
 		9CF9D16647D19E7853C52246 /* PermissionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionService.swift; sourceTree = "<group>"; };
 		9F6DFA717D62C6B87A211F00 /* Secrets.Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Secrets.Release.xcconfig; sourceTree = "<group>"; };
+		A90748E3E2030839155D51E1 /* ContactsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsView.swift; sourceTree = "<group>"; };
 		B1DD90540655FA98347267C7 /* Secrets.xcconfig.example */ = {isa = PBXFileReference; path = Secrets.xcconfig.example; sourceTree = "<group>"; };
 		B8EA1C0B8D56E94220543B63 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C1CD4F9264B8E65BF4B75240 /* HomeFlowApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeFlowApp.swift; sourceTree = "<group>"; };
@@ -132,6 +136,14 @@
 				F3BFD92FD120F1ABCD3DD57D /* SyncEngine.swift */,
 			);
 			path = Sync;
+			sourceTree = "<group>";
+		};
+		1502EC18C3DF34D9CFB5822C /* Documents */ = {
+			isa = PBXGroup;
+			children = (
+				2DE98E4CAE9465C0C555B81B /* FilesView.swift */,
+			);
+			path = Documents;
 			sourceTree = "<group>";
 		};
 		1D2225BEFACEB07B20D079A3 /* Members */ = {
@@ -195,6 +207,13 @@
 			path = HomeFlowUITests;
 			sourceTree = "<group>";
 		};
+		6FB7EDE3FFB63DCF2E781F4B /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Shared;
+			sourceTree = "<group>";
+		};
 		7079D0674329DD5C3AB98513 /* Home */ = {
 			isa = PBXGroup;
 			children = (
@@ -212,6 +231,14 @@
 				9B68B1B4E7B4C934706F512D /* Resources */,
 			);
 			path = HomeFlow;
+			sourceTree = "<group>";
+		};
+		79F381B2F5A4DBA8D6F3199A /* Providers */ = {
+			isa = PBXGroup;
+			children = (
+				A90748E3E2030839155D51E1 /* ContactsView.swift */,
+			);
+			path = Providers;
 			sourceTree = "<group>";
 		};
 		815E94B7479A6AD1712E465F /* HomeSetup */ = {
@@ -359,11 +386,14 @@
 			children = (
 				513985728A2F638732FC5627 /* Auth */,
 				C1603E5AFA92D679D2188F06 /* Dashboard */,
+				1502EC18C3DF34D9CFB5822C /* Documents */,
 				7079D0674329DD5C3AB98513 /* Home */,
 				9FC2B3C04C2333ECEA2024B6 /* HomeDetail */,
 				815E94B7479A6AD1712E465F /* HomeSetup */,
 				5378D01D9D439F8FC5757004 /* Members */,
 				EF0904B38941A0F26B86FFB0 /* Procedures */,
+				79F381B2F5A4DBA8D6F3199A /* Providers */,
+				6FB7EDE3FFB63DCF2E781F4B /* Shared */,
 			);
 			path = Features;
 			sourceTree = "<group>";
@@ -498,8 +528,10 @@
 				346D925D010F9CAB2F619397 /* AppEnvironment.swift in Sources */,
 				CCA37724D9C0870EE62062C5 /* AppRouter.swift in Sources */,
 				1722B1ACE322FE2FA06754B8 /* AuthView.swift in Sources */,
+				E5D3DB13ECBF4283A7204C73 /* ContactsView.swift in Sources */,
 				567510031EA05B1113D6FC6B /* DashboardView.swift in Sources */,
 				C66085F8C146521809D6E671 /* DomainEnums.swift in Sources */,
+				98D395128DC314A7BF92629C /* FilesView.swift in Sources */,
 				0490A5F0EE3A097FF3219F32 /* HomeConflictResolver.swift in Sources */,
 				16B0967312FC459C46CF3788 /* HomeDTO.swift in Sources */,
 				22C4DB5844C270556B1C7E3A /* HomeDetailView.swift in Sources */,

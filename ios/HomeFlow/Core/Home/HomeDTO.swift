@@ -40,6 +40,18 @@ struct HomeSummary: Identifiable, Sendable, Hashable {
         self.isPendingSync = isPendingSync
         self.currentUserRole = currentUserRole
     }
+
+    /// Full address when short; otherwise city/state from comma-separated address.
+    var locationLabel: String {
+        let trimmed = streetAddress.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return streetAddress }
+        if trimmed.count <= 48 { return trimmed }
+        let parts = trimmed.split(separator: ",").map { $0.trimmingCharacters(in: .whitespaces) }
+        if parts.count >= 2 {
+            return parts.suffix(2).joined(separator: ", ")
+        }
+        return trimmed
+    }
 }
 
 enum HomeValidationError: LocalizedError, Equatable {
