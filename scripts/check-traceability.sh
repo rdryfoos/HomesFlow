@@ -5,6 +5,8 @@
 #   (no args)  Check the golden thread; exit non-zero on any violation.
 #   --matrix   Regenerate specs/001-mvp/coverage.md from the same extraction.
 #   --json     Print the per-ID coverage dataset as JSON to stdout.
+#   --canvas   Update the local Golden Thread Coverage canvas (Cursor; not in git).
+#   --refresh  Gate 2 check + --matrix + --canvas (run after traceability changes).
 #
 # Checks (default mode):
 #   1. The ID registry (PRD) matches spec.md and tasks.md exactly (no drift).
@@ -24,6 +26,7 @@ PRD=HomeFlow.prd.md
 SPEC=specs/001-mvp/spec.md
 TASKS=specs/001-mvp/tasks.md
 MATRIX=specs/001-mvp/coverage.md
+CANVAS="${GOLDEN_THREAD_CANVAS:-$HOME/.cursor/projects/Users-rik-Developer-HomeFlow/canvases/golden-thread-coverage.canvas.tsx}"
 SRC_DIRS=(ios/HomeFlow)
 TEST_DIRS=(ios/HomeFlowTests ios/HomeFlowUITests)
 
@@ -96,37 +99,36 @@ status_for() { # $1=id  $2=done_tasks  $3=pending_tasks
   echo "unmapped"
 }
 
-# ---------------------------------------------------------------------------
-# Mode: --json
-# ---------------------------------------------------------------------------
-if [ "$MODE" = "--json" ]; then
-  echo "["
-  first=1
-  while IFS= read -r id; do
-    done_t=$(tasks_for "$id" "x")
-    pend_t=$(tasks_for "$id" " ")
-    tests=""
-    if [ "${id%%-*}" = "AC" ]; then tests=$(tests_for "$id"); fi
-    covered=false
-    if is_covered "$id"; then covered=true; fi
-    status=$(status_for "$id" "$done_t" "$pend_t")
-    domain=$(echo "$id" | cut -d- -f2)
-    json_list() { echo "$1" | tr ' ' '\n' | { grep -v '^$' || true; } | sed 's/.*/"&"/' | paste -sd',' - ; }
-    if [ $first -eq 0 ]; then echo ","; fi
-    first=0
-    printf '  {"id":"%s","type":"%s","domain":"%s","status":"%s","covered":%s,"doneTasks":[%s],"pendingTasks":[%s],"tests":[%s]}' \
-      "$id" "${id%%-*}" "$domain" "$status" "$covered" \
-      "$(json_list "$done_t")" "$(json_list "$pend_t")" "$(json_list "$tests")"
-  done < "$tmp/prd.txt"
-  echo
-  echo "]"
-  exit 0
-fi
+json_list() {
+  echo "$1" | tr ' ' '\n' | { grep -v '^$' || true; } | sed 's/.*/"&"/' | paste -sd',' -
+}
 
-# ---------------------------------------------------------------------------
-# Mode: --matrix
-# ---------------------------------------------------------------------------
-if [ "$MODE" = "--matrix" ]; then
+write_json_file() { # $1=output path
+  local out="$1"
+  {
+    echo "["
+    first=1
+    while IFS= read -r id; do
+      done_t=$(tasks_for "$id" "x")
+      pend_t=$(tasks_for "$id" " ")
+      tests=""
+      if [ "${id%%-*}" = "AC" ]; then tests=$(tests_for "$id"); fi
+      covered=false
+      if is_covered "$id"; then covered=true; fi
+      status=$(status_for "$id" "$done_t" "$pend_t")
+      domain=$(echo "$id" | cut -d- -f2)
+      if [ $first -eq 0 ]; then echo ","; fi
+      first=0
+      printf '  {"id":"%s","type":"%s","domain":"%s","status":"%s","covered":%s,"doneTasks":[%s],"pendingTasks":[%s],"tests":[%s]}' \
+        "$id" "${id%%-*}" "$domain" "$status" "$covered" \
+        "$(json_list "$done_t")" "$(json_list "$pend_t")" "$(json_list "$tests")"
+    done < "$tmp/prd.txt"
+    echo
+    echo "]"
+  } > "$out"
+}
+
+emit_matrix() {
   label_for() {
     case "$1" in
       verified)                 echo "Verified" ;;
@@ -203,11 +205,45 @@ if [ "$MODE" = "--matrix" ]; then
   } > "$MATRIX"
 
   echo "Wrote $MATRIX ($total_ids IDs; $verified/$total_acs ACs verified)."
+}
+
+# ---------------------------------------------------------------------------
+# Mode routing
+# ---------------------------------------------------------------------------
+if [ "$MODE" = "--json" ]; then
+  write_json_file /dev/stdout
   exit 0
 fi
 
+if [ "$MODE" = "--canvas" ]; then
+  write_json_file "$tmp/data.json"
+  if [ ! -f "$CANVAS" ]; then
+    echo "Canvas not found: $CANVAS" >&2
+    echo "Set GOLDEN_THREAD_CANVAS or open the Golden Thread Coverage canvas once in Cursor." >&2
+    exit 1
+  fi
+  python3 scripts/update-golden-thread-canvas.py "$tmp/data.json" "$CANVAS"
+  exit 0
+fi
+
+if [ "$MODE" = "--matrix" ]; then
+  emit_matrix
+  exit 0
+fi
+
+if [ "$MODE" = "--refresh" ]; then
+  emit_matrix
+  if [ -f "$CANVAS" ]; then
+    write_json_file "$tmp/data.json"
+    python3 scripts/update-golden-thread-canvas.py "$tmp/data.json" "$CANVAS"
+  else
+    echo "Skipping canvas (not found: $CANVAS)" >&2
+  fi
+  MODE=check
+fi
+
 # ---------------------------------------------------------------------------
-# Mode: check (default)
+# Mode: check (default, and final step of --refresh)
 # ---------------------------------------------------------------------------
 
 # --- 1. Registry drift ------------------------------------------------------

@@ -135,7 +135,7 @@ Section UI label **Files** implements document library (FR-HOME-03); code folder
 
 `scripts/check-traceability.sh` verifies the golden thread (registry drift, missing `Traces:`, untraced scope, untested ACs with no tracked task). Runs in CI via `.github/workflows/traceability.yml` on every push/PR; run locally with `bash scripts/check-traceability.sh`.
 
-Modes: `--matrix` regenerates [coverage.md](./coverage.md) (generated, never hand-edited; CI fails if stale — regenerate and commit after any change to tasks, `@covers`, or tests). `--json` emits the per-ID dataset for tooling/visualization.
+Modes: `--matrix` regenerates [coverage.md](./coverage.md) (commit after traceability changes; CI fails if stale). `--canvas` updates the local **Golden Thread Coverage** Cursor canvas. `--refresh` runs Gate 2 + matrix + canvas — use after changing tasks, `@covers`, or tests. See `.cursor/rules/golden-thread-coverage.mdc`.
 
 ---
 
