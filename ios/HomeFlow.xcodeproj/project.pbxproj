@@ -20,6 +20,8 @@
 		2DD10E22B53C7F762C0C8E24 /* PermissionServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9ADD6A2E347D891C2C1B0E8D /* PermissionServiceTests.swift */; };
 		31C707E10E4E9C0E91C46140 /* HomePhotoCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47557403984CE7BC85F709EF /* HomePhotoCache.swift */; };
 		346D925D010F9CAB2F619397 /* AppEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE19DC9CF981703D7575F3C6 /* AppEnvironment.swift */; };
+		38A8208AC8EF753DBC90C71C /* ProviderConflictResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF3D2A734B2C58C4911A4D71 /* ProviderConflictResolver.swift */; };
+		3C63311A691315D89EBC7BA3 /* ServiceProviderRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 103C467D720CFB0C691B33D0 /* ServiceProviderRepository.swift */; };
 		42B2D02124FD78D2B2E51FA1 /* SwiftDataModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 202D9DB27925A958E207D429 /* SwiftDataModels.swift */; };
 		47452E66A214480A18D45100 /* SupabaseConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10EF2773A56AA32BB0F9C556 /* SupabaseConfig.swift */; };
 		48C127EED88CD74CF221603F /* HomeFlowUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33213B4805ED062B656B0320 /* HomeFlowUITests.swift */; };
@@ -28,12 +30,14 @@
 		55E645CA22343F5DDB24009D /* HomeRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BC05990017639DD3D616C1C /* HomeRepository.swift */; };
 		567510031EA05B1113D6FC6B /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FD7A866773F9C47EAFBED1B /* DashboardView.swift */; };
 		59DBFDAE670BD9E8E0F6875D /* HomeConflictResolverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA433DFDC6F5CD99D427D78C /* HomeConflictResolverTests.swift */; };
+		5E83017066D76879825E0B9F /* ServiceProviderDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE7E24F815721CD882949EF3 /* ServiceProviderDTO.swift */; };
 		5FF8919A11BADF5CCEF374EC /* SyncEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3BFD92FD120F1ABCD3DD57D /* SyncEngine.swift */; };
 		605EDF407675D470942F7983 /* Secrets.Release.xcconfig.example in Resources */ = {isa = PBXBuildFile; fileRef = 7B95B47C0C7A40048617B702 /* Secrets.Release.xcconfig.example */; };
 		62A9227DA2D23CD4CEC2BE85 /* ProcedureRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB98B14D16CF895A989665D2 /* ProcedureRepository.swift */; };
 		6C825E505BECCFE0A496263F /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = 60FC5960D5740F386C342B50 /* Supabase */; };
 		6CB0E839149BBC53CCD9CB2C /* Secrets.xcconfig.example in Resources */ = {isa = PBXBuildFile; fileRef = B1DD90540655FA98347267C7 /* Secrets.xcconfig.example */; };
 		6D31EA26BC9E44490EF26A08 /* ActivityLogDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93E2F5EF5359F25C77954DD6 /* ActivityLogDTO.swift */; };
+		7093B7E302B42215B90C4784 /* ProviderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43E0FB27793A0BD1FBB1A6E8 /* ProviderTests.swift */; };
 		770573BEE85C53FE8F453F2C /* MemberRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6390873983914AE52C180D3D /* MemberRepository.swift */; };
 		8B3075FC9E428CE58FC66133 /* PermissionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CF9D16647D19E7853C52246 /* PermissionService.swift */; };
 		8B4E453C70FCC3711FE17255 /* HomeFlowApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1CD4F9264B8E65BF4B75240 /* HomeFlowApp.swift */; };
@@ -73,6 +77,7 @@
 		048692BBFBC56BDDBCF04E0F /* HomeSetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeSetupView.swift; sourceTree = "<group>"; };
 		065E11DA60C5236E9094516D /* AppRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRouter.swift; sourceTree = "<group>"; };
 		0A7B265F1408F64C1E951AD6 /* HomeFlow.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = HomeFlow.entitlements; sourceTree = "<group>"; };
+		103C467D720CFB0C691B33D0 /* ServiceProviderRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceProviderRepository.swift; sourceTree = "<group>"; };
 		10EF2773A56AA32BB0F9C556 /* SupabaseConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseConfig.swift; sourceTree = "<group>"; };
 		11A8B51F014C45340EA18A53 /* ProcedureDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProcedureDTO.swift; sourceTree = "<group>"; };
 		202D9DB27925A958E207D429 /* SwiftDataModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftDataModels.swift; sourceTree = "<group>"; };
@@ -83,6 +88,7 @@
 		33213B4805ED062B656B0320 /* HomeFlowUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeFlowUITests.swift; sourceTree = "<group>"; };
 		406453D16A208977207D35E2 /* HomePhotoService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomePhotoService.swift; sourceTree = "<group>"; };
 		432D7CF7139BF5BDF9FC17AF /* InviteMemberView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InviteMemberView.swift; sourceTree = "<group>"; };
+		43E0FB27793A0BD1FBB1A6E8 /* ProviderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProviderTests.swift; sourceTree = "<group>"; };
 		47557403984CE7BC85F709EF /* HomePhotoCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomePhotoCache.swift; sourceTree = "<group>"; };
 		4A55055DFB89B27A44EE4537 /* SupabaseClientProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseClientProvider.swift; sourceTree = "<group>"; };
 		4FD7A866773F9C47EAFBED1B /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
@@ -109,6 +115,7 @@
 		CA433DFDC6F5CD99D427D78C /* HomeConflictResolverTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeConflictResolverTests.swift; sourceTree = "<group>"; };
 		D16561DBEF8165ED72800892 /* HomeConflictResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeConflictResolver.swift; sourceTree = "<group>"; };
 		DAA4B516924C9EC3C8731B3B /* MembersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MembersView.swift; sourceTree = "<group>"; };
+		DF3D2A734B2C58C4911A4D71 /* ProviderConflictResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProviderConflictResolver.swift; sourceTree = "<group>"; };
 		E07E4F3E611B1ECA6683BCDE /* ProceduresView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProceduresView.swift; sourceTree = "<group>"; };
 		E2BF3FC894DC970479F1FCA4 /* HomeDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeDetailView.swift; sourceTree = "<group>"; };
 		E8233B3D385B58C52FAC3D9E /* ActivityLogService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityLogService.swift; sourceTree = "<group>"; };
@@ -117,6 +124,7 @@
 		F3BFD92FD120F1ABCD3DD57D /* SyncEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncEngine.swift; sourceTree = "<group>"; };
 		FB98B14D16CF895A989665D2 /* ProcedureRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProcedureRepository.swift; sourceTree = "<group>"; };
 		FD9CEBE86C62A6C52C2B01F4 /* ProcedureDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProcedureDetailView.swift; sourceTree = "<group>"; };
+		FE7E24F815721CD882949EF3 /* ServiceProviderDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceProviderDTO.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -201,6 +209,16 @@
 			path = ActivityLog;
 			sourceTree = "<group>";
 		};
+		63CF44F780DE142BAAE50D59 /* Providers */ = {
+			isa = PBXGroup;
+			children = (
+				DF3D2A734B2C58C4911A4D71 /* ProviderConflictResolver.swift */,
+				FE7E24F815721CD882949EF3 /* ServiceProviderDTO.swift */,
+				103C467D720CFB0C691B33D0 /* ServiceProviderRepository.swift */,
+			);
+			path = Providers;
+			sourceTree = "<group>";
+		};
 		63EDF7724807DB4BA66B9E66 /* HomeFlowUITests */ = {
 			isa = PBXGroup;
 			children = (
@@ -258,6 +276,7 @@
 				504099625C1A94B14A9E029F /* HomeValidatorTests.swift */,
 				9ADD6A2E347D891C2C1B0E8D /* PermissionServiceTests.swift */,
 				7A6207638303AF182C7C316A /* ProcedureTests.swift */,
+				43E0FB27793A0BD1FBB1A6E8 /* ProviderTests.swift */,
 				6B473D8EF4DA4BB50AC1B691 /* StepStructureTests.swift */,
 			);
 			path = HomeFlowTests;
@@ -376,6 +395,7 @@
 				953D81A20B03C94CAC374C73 /* Models */,
 				DF6EA5C537611189122FCA15 /* Permissions */,
 				58587858DFB97B118861BB1D /* Procedures */,
+				63CF44F780DE142BAAE50D59 /* Providers */,
 				CAA25D4B2B1D041656BCF331 /* Storage */,
 				46948D206745A33A05E8C71B /* Supabase */,
 				01736165696AAAB402C9F151 /* Sync */,
@@ -554,6 +574,9 @@
 				F589A08913ED650B9FC8A4A4 /* ProcedureDetailView.swift in Sources */,
 				62A9227DA2D23CD4CEC2BE85 /* ProcedureRepository.swift in Sources */,
 				07D232478FBD3691B1AD33B6 /* ProceduresView.swift in Sources */,
+				38A8208AC8EF753DBC90C71C /* ProviderConflictResolver.swift in Sources */,
+				5E83017066D76879825E0B9F /* ServiceProviderDTO.swift in Sources */,
+				3C63311A691315D89EBC7BA3 /* ServiceProviderRepository.swift in Sources */,
 				EFDD81EA5F10127E3496161A /* SupabaseClientProvider.swift in Sources */,
 				47452E66A214480A18D45100 /* SupabaseConfig.swift in Sources */,
 				42B2D02124FD78D2B2E51FA1 /* SwiftDataModels.swift in Sources */,
@@ -569,6 +592,7 @@
 				B0E473DEA8305285F5BA7000 /* HomeValidatorTests.swift in Sources */,
 				2DD10E22B53C7F762C0C8E24 /* PermissionServiceTests.swift in Sources */,
 				CC9D432BCACD6BEBE748B66B /* ProcedureTests.swift in Sources */,
+				7093B7E302B42215B90C4784 /* ProviderTests.swift in Sources */,
 				25C17813674CCC5579D4CDFF /* StepStructureTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

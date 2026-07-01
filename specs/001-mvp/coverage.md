@@ -9,9 +9,9 @@ CI fails if this file is stale. Source of truth: `HomeFlow.prd.md` registry × `
 |--------|-------|
 | Registry IDs | 61 |
 | Acceptance criteria | 34 |
-| ACs verified (test passing in suite) | 12 |
+| ACs verified (test passing in suite) | 14 |
 | ACs implemented — test pending | 14 |
-| ACs planned (tracked, not implemented) | 4 |
+| ACs planned (tracked, not implemented) | 3 |
 
 ## Acceptance criteria
 
@@ -25,8 +25,8 @@ CI fails if this file is stale. Source of truth: `HomeFlow.prd.md` registry × `
 | AC-HOME-01 | Verified | T018 T019 | T022 | `test_AC_HOME_01_valid_home_passes_validation` |
 | AC-HOME-02 | Verified | T018 T023 | — | `test_AC_HOME_02_empty_address_rejected`<br>`test_AC_HOME_02_empty_name_rejected` |
 | AC-HOME-03 | Verified | T020 T024 | — | `test_AC_HOME_03_local_newer_keeps_pending_local`<br>`test_AC_HOME_03_server_newer_overwrites_pending_local`<br>`test_AC_HOME_03_synced_home_applies_server` |
-| AC-HOME-04 | Planned | — | T051 T052 T055 | — |
-| AC-HOME-05 | In progress | T037 | T053 T056 | — |
+| AC-HOME-04 | Verified | T051 T052 T055 | — | `test_AC_HOME_04_local_newer_edit_is_kept`<br>`test_AC_HOME_04_provider_edit_propagates` |
+| AC-HOME-05 | Verified | T037 T053 T056 | — | `test_AC_HOME_05_delete_wins_over_edit`<br>`test_AC_HOME_05_local_only_insert_survives_pull`<br>`test_AC_HOME_05_synced_row_removed_silently` |
 | AC-HOME-06 | Implemented — test pending | T019a | T024a | — |
 | AC-HOME-07 | Implemented — test pending | T019a | T024b | — |
 | AC-HOME-08 | Implemented — test pending | T019 | T024c | — |
@@ -40,7 +40,7 @@ CI fails if this file is stale. Source of truth: `HomeFlow.prd.md` registry × `
 | AC-PROC-05 | Verified | T047b T050a | — | `test_AC_PROC_05_move_down_swaps_with_next_step`<br>`test_AC_PROC_05_move_is_noop_at_list_boundaries`<br>`test_AC_PROC_05_move_up_swaps_with_previous_step`<br>`test_AC_PROC_05_new_step_appends_at_end` |
 | AC-PROC-06 | Verified | T047a T050b | — | `test_AC_PROC_06_structure_changes_produce_activity_summaries` |
 | AC-PROC-07 | Verified | T047c T050c | — | `test_AC_PROC_07_guest_cannot_manage_step_structure` |
-| AC-SYNC-01 | Implemented — test pending | T011 T020 T034 T037 T045 | T027 T038 T053 T072 | — |
+| AC-SYNC-01 | Implemented — test pending | T011 T020 T034 T037 T045 T053 | T027 T038 T072 | — |
 | AC-SYNC-02 | Implemented — test pending | T011 | T035 T039 T072 | — |
 | AC-SYNC-03 | Implemented — test pending | T011 T036 | T040 T072 | — |
 | AC-SYNC-04 | Implemented — test pending | T015 T037 | T040a | — |
@@ -60,7 +60,7 @@ CI fails if this file is stale. Source of truth: `HomeFlow.prd.md` registry × `
 | FR-GUEST-01 | In progress | T005 | T057 T071 |
 | FR-GUEST-02 | Implemented | T025 | — |
 | FR-HOME-01 | Implemented | T004 T007 T015 T018 T019 T019a T021 | — |
-| FR-HOME-02 | In progress | — | T051 T054 |
+| FR-HOME-02 | Implemented | T051 T054 | — |
 | FR-HOME-03 | In progress | T007 | T065 |
 | FR-LOG-01 | In progress | T012 T020 T029 T046 | T061 |
 | FR-NAV-01 | Implemented | T021a T021b T021c | — |
@@ -90,7 +90,7 @@ CI fails if this file is stale. Source of truth: `HomeFlow.prd.md` registry × `
 | US-ADMIN-02 | In progress | T025 T026 | T027 T030 T031 T033a T033c |
 | US-ADMIN-03 | In progress | T028 T029 | T032 T033 T033b |
 | US-EDIT-01 | In progress | T041 T042 T044 T045 T046 T047 T047a T047b T047c T048 T049 T050 T050a T050b T050c | T043 |
-| US-EDIT-02 | Planned | — | T051 T052 T053 T054 T055 T056 |
+| US-EDIT-02 | Tasks done — no @covers | T051 T052 T053 T054 T055 T056 | — |
 | US-GUEST-01 | Planned | — | T057 T058 T059 T062 T063a T063b T064 |
 | US-GUEST-02 | Planned | — | T060 T061 T063 T063c |
 

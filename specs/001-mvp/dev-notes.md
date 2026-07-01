@@ -127,7 +127,7 @@ Section UI label **Files** implements document library (FR-HOME-03); code folder
 - XCUITests T017, T069
 - Offline invite conflict T027; full sync matrix Phase 6
 - Member/invite unit tests T030–T033b
-- Contacts data (Phase 8), Files upload (Phase 10), Settings, guest read-only views
+- Files upload (Phase 10), Settings, guest read-only views (Phase 9)
 
 ---
 

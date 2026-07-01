@@ -90,6 +90,20 @@ final class SyncEngine: ObservableObject {
                         modelContext.delete(entry)
                         continue
                     }
+                case .serviceProvider:
+                    switch entry.op {
+                    case .insert, .update:
+                        try await pushServiceProvider(entry)
+                    case .delete:
+                        try await client
+                            .from("service_providers")
+                            .delete()
+                            .eq("id", value: entry.entityId.uuidString)
+                            .execute()
+                    case nil:
+                        modelContext.delete(entry)
+                        continue
+                    }
                 default:
                     continue
                 }
@@ -256,6 +270,55 @@ final class SyncEngine: ObservableObject {
         procedure.serverUpdatedAt = Date.now
     }
 
+    private func pushServiceProvider(_ entry: MutationOutboxEntry) async throws {
+        let targetId = entry.entityId
+        guard
+            let provider = try? modelContext.fetch(FetchDescriptor<CachedServiceProvider>(
+                predicate: #Predicate<CachedServiceProvider> { $0.id == targetId }
+            )).first
+        else { return }
+
+        struct ProviderRow: Encodable {
+            let id: UUID
+            let home_id: UUID
+            let company_name: String
+            let service_type: String
+            let account_number: String?
+            let phone: String?
+            let website: String?
+            let hours: String?
+            let notes: String?
+            let visibility: Visibility
+        }
+
+        let row = ProviderRow(
+            id: provider.id,
+            home_id: provider.homeId,
+            company_name: provider.companyName,
+            service_type: provider.serviceType,
+            account_number: provider.accountNumber,
+            phone: provider.phone,
+            website: provider.website,
+            hours: provider.hours,
+            notes: provider.notes,
+            visibility: provider.providerVisibility
+        )
+
+        if entry.op == .insert {
+            try await client.from("service_providers").insert(row).execute()
+        } else {
+            try await client
+                .from("service_providers")
+                .update(row)
+                .eq("id", value: provider.id.uuidString)
+                .execute()
+        }
+
+        provider.sync = .synced
+        provider.serverUpdatedAt = .now
+        try? modelContext.save()
+    }
+
     private func pullChanges() async {
         do {
             let rows: [HomeDTO] = try await client
@@ -341,6 +404,16 @@ final class SyncEngine: ObservableObject {
                     modelContext.delete(step)
                 } else {
                     step.sync = .synced
+                }
+            }
+        case .serviceProvider:
+            if let provider = try? modelContext.fetch(FetchDescriptor<CachedServiceProvider>(
+                predicate: #Predicate<CachedServiceProvider> { $0.id == targetId }
+            )).first {
+                if entry.op == .insert {
+                    modelContext.delete(provider)
+                } else {
+                    provider.sync = .synced
                 }
             }
         default:

@@ -245,6 +245,63 @@ final class CachedProcedureStep {
 }
 
 @Model
+final class CachedServiceProvider {
+    @Attribute(.unique) var id: UUID
+    var homeId: UUID
+    var companyName: String
+    var serviceType: String
+    var accountNumber: String?
+    var phone: String?
+    var website: String?
+    var hours: String?
+    var notes: String?
+    var visibility: String
+    var syncStatus: String
+    var localUpdatedAt: Date
+    var serverUpdatedAt: Date?
+
+    init(
+        id: UUID = UUID(),
+        homeId: UUID,
+        companyName: String,
+        serviceType: String,
+        accountNumber: String? = nil,
+        phone: String? = nil,
+        website: String? = nil,
+        hours: String? = nil,
+        notes: String? = nil,
+        visibility: Visibility = .edit,
+        syncStatus: SyncStatus = .pending,
+        localUpdatedAt: Date = .now,
+        serverUpdatedAt: Date? = nil
+    ) {
+        self.id = id
+        self.homeId = homeId
+        self.companyName = companyName
+        self.serviceType = serviceType
+        self.accountNumber = accountNumber
+        self.phone = phone
+        self.website = website
+        self.hours = hours
+        self.notes = notes
+        self.visibility = visibility.rawValue
+        self.syncStatus = syncStatus.rawValue
+        self.localUpdatedAt = localUpdatedAt
+        self.serverUpdatedAt = serverUpdatedAt
+    }
+
+    var providerVisibility: Visibility {
+        get { Visibility(rawValue: visibility) ?? .edit }
+        set { visibility = newValue.rawValue }
+    }
+
+    var sync: SyncStatus {
+        get { SyncStatus(rawValue: syncStatus) ?? .pending }
+        set { syncStatus = newValue.rawValue }
+    }
+}
+
+@Model
 final class CachedActivityLogEntry {
     @Attribute(.unique) var id: UUID
     var homeId: UUID
@@ -284,6 +341,7 @@ enum SwiftDataContainer {
             CachedInvite.self,
             CachedProcedure.self,
             CachedProcedureStep.self,
+            CachedServiceProvider.self,
             MutationOutboxEntry.self,
             CachedActivityLogEntry.self
         ])

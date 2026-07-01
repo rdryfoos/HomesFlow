@@ -142,6 +142,7 @@ struct HomeDetailView: View {
                 .environment(\.appEnvironment, appEnvironment)
         case .contacts:
             ContactsView(home: displayedHome)
+                .environment(\.appEnvironment, appEnvironment)
         case .files:
             FilesView(home: displayedHome)
         case .people:

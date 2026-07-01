@@ -15,7 +15,7 @@
 | 5 Invites & roles | **Partial** | Deep links T026; offline conflict T027; unit tests |
 | 6 Offline sync | **Partial** | Field merge T035; full sync tests |
 | 7 Procedures | **Mostly complete** | Photo attach T043 |
-| 8–10 P2/P3 features | Not started | Contacts tab next |
+| 8–10 P2/P3 features | **Partial** | Contacts done (Phase 8); guest views, Files, Settings next |
 | 11 Hardening | Not started | Re-run analyze after P1 checkpoint |
 
 Partial deliverables documented in [dev-notes.md](./dev-notes.md). **Do not** encode implementation details in [spec.md](./spec.md).
@@ -182,15 +182,15 @@ Partial deliverables documented in [dev-notes.md](./dev-notes.md). **Do not** en
 
 ### Implementation
 
-- [ ] T051 [US-EDIT-02] Service provider list + search in `ios/HomeFlow/Features/Providers/` (UI tab: Contacts) — **Traces**: FR-HOME-02, AC-HOME-04
-- [ ] T052 [US-EDIT-02] Provider create/edit form (company, type, phone, website, hours, notes) — **Traces**: AC-HOME-04
-- [ ] T053 [US-EDIT-02] Provider edit vs delete sync conflict — **Traces**: AC-HOME-05, AC-SYNC-01
-- [ ] T054 [P] [US-EDIT-02] Tap phone → `tel:` link — **Traces**: FR-HOME-02
+- [x] T051 [US-EDIT-02] Service provider list + search in `ios/HomeFlow/Features/Providers/` (UI tab: Contacts) — **Traces**: FR-HOME-02, AC-HOME-04
+- [x] T052 [US-EDIT-02] Provider create/edit form (company, type, phone, website, hours, notes) — **Traces**: AC-HOME-04
+- [x] T053 [US-EDIT-02] Provider edit vs delete sync conflict — **Traces**: AC-HOME-05, AC-SYNC-01
+- [x] T054 [P] [US-EDIT-02] Tap phone → `tel:` link — **Traces**: FR-HOME-02
 
 ### Tests
 
-- [ ] T055 [P] [US-EDIT-02] Unit test `test_AC_HOME_04_provider_edit_propagates` — **Traces**: AC-HOME-04
-- [ ] T056 [US-EDIT-02] Unit test `test_AC_HOME_05_delete_wins_over_edit` — **Traces**: AC-HOME-05
+- [x] T055 [P] [US-EDIT-02] Unit test `test_AC_HOME_04_provider_edit_propagates` — **Traces**: AC-HOME-04 — *ProviderTests*
+- [x] T056 [US-EDIT-02] Unit test `test_AC_HOME_05_delete_wins_over_edit` — **Traces**: AC-HOME-05 — *ProviderTests*
 
 ---
 
