@@ -52,6 +52,99 @@ final class ProcedureRepository: ObservableObject {
         }
     }
 
+    func canViewActivityLog(userRole: HomeRole) -> Bool {
+        permissions.can(.read, entity: .activityLog, role: userRole)
+    }
+
+    func fetchProcedureActivity(
+        procedureId: UUID,
+        homeId: UUID,
+        userRole: HomeRole
+    ) async throws -> [ActivityLogSummary] {
+        guard canViewActivityLog(userRole: userRole) else { return [] }
+
+        if NetworkMonitor.shared.isConnected {
+            try await activityLog.pull(homeId: homeId)
+        }
+
+        guard let detail = cachedDetail(procedureId: procedureId, userRole: userRole) else {
+            return []
+        }
+
+        let stepIds = Set(detail.steps.map(\.id))
+        return activityLog.recentForProcedure(
+            homeId: homeId,
+            procedureId: procedureId,
+            stepIds: stepIds,
+            limit: 10
+        )
+    }
+
+    func updateStepNotes(
+        homeId: UUID,
+        procedureId: UUID,
+        stepId: UUID,
+        notes: String?,
+        userRole: HomeRole
+    ) async throws {
+        guard let userId = auth.session?.user.id else { throw AuthError.notSignedIn }
+
+        guard let detail = cachedDetail(procedureId: procedureId, userRole: userRole) else {
+            throw ProcedureError.notFound
+        }
+
+        guard permissions.can(
+            .updateStepStatus,
+            entity: .procedureStep(procedureVisibility: detail.visibility),
+            role: userRole
+        ) else {
+            throw ProcedureError.notAuthorized
+        }
+
+        guard let step = detail.steps.first(where: { $0.id == stepId }) else {
+            throw ProcedureError.notFound
+        }
+
+        let trimmed = notes?.trimmingCharacters(in: .whitespacesAndNewlines)
+        let normalizedNotes = (trimmed?.isEmpty == false) ? trimmed : nil
+        let previousNotes = step.notes
+
+        guard normalizedNotes != previousNotes else { return }
+
+        let stepTarget = stepId
+        guard let cachedStep = try? modelContext.fetch(FetchDescriptor<CachedProcedureStep>(
+            predicate: #Predicate<CachedProcedureStep> { $0.id == stepTarget }
+        )).first else {
+            throw ProcedureError.notFound
+        }
+
+        cachedStep.notes = normalizedNotes
+        cachedStep.localUpdatedAt = .now
+        cachedStep.sync = .pending
+
+        syncEngine.enqueue(
+            entityType: .procedureStep,
+            entityId: stepId,
+            operation: .update,
+            payload: ["procedure_id": procedureId.uuidString]
+        )
+
+        try modelContext.save()
+
+        activityLog.append(
+            homeId: homeId,
+            actorId: userId,
+            entityType: "procedure_step",
+            entityId: stepId,
+            action: "notes_updated",
+            summary: "Updated notes for \"\(step.title)\" in \(detail.title)"
+        )
+
+        if NetworkMonitor.shared.isConnected {
+            _ = await syncEngine.run()
+        }
+    }
+
     func updateStepStatus(
         homeId: UUID,
         procedureId: UUID,

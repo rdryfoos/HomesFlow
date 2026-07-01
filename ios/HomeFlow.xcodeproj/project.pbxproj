@@ -32,6 +32,7 @@
 		62A9227DA2D23CD4CEC2BE85 /* ProcedureRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB98B14D16CF895A989665D2 /* ProcedureRepository.swift */; };
 		6C825E505BECCFE0A496263F /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = 60FC5960D5740F386C342B50 /* Supabase */; };
 		6CB0E839149BBC53CCD9CB2C /* Secrets.xcconfig.example in Resources */ = {isa = PBXBuildFile; fileRef = B1DD90540655FA98347267C7 /* Secrets.xcconfig.example */; };
+		6D31EA26BC9E44490EF26A08 /* ActivityLogDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93E2F5EF5359F25C77954DD6 /* ActivityLogDTO.swift */; };
 		770573BEE85C53FE8F453F2C /* MemberRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6390873983914AE52C180D3D /* MemberRepository.swift */; };
 		8B3075FC9E428CE58FC66133 /* PermissionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CF9D16647D19E7853C52246 /* PermissionService.swift */; };
 		8B4E453C70FCC3711FE17255 /* HomeFlowApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1CD4F9264B8E65BF4B75240 /* HomeFlowApp.swift */; };
@@ -88,6 +89,7 @@
 		7B95B47C0C7A40048617B702 /* Secrets.Release.xcconfig.example */ = {isa = PBXFileReference; path = Secrets.Release.xcconfig.example; sourceTree = "<group>"; };
 		7D4B91998F226F2A6A692880 /* NetworkMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMonitor.swift; sourceTree = "<group>"; };
 		8085E2B49EE2ABC4C37EF2A9 /* Secrets.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Secrets.xcconfig; sourceTree = "<group>"; };
+		93E2F5EF5359F25C77954DD6 /* ActivityLogDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityLogDTO.swift; sourceTree = "<group>"; };
 		9ADD6A2E347D891C2C1B0E8D /* PermissionServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionServiceTests.swift; sourceTree = "<group>"; };
 		9BC05990017639DD3D616C1C /* HomeRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeRepository.swift; sourceTree = "<group>"; };
 		9CF9D16647D19E7853C52246 /* PermissionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionService.swift; sourceTree = "<group>"; };
@@ -177,6 +179,7 @@
 		5F4E56FEF150BA94394DC277 /* ActivityLog */ = {
 			isa = PBXGroup;
 			children = (
+				93E2F5EF5359F25C77954DD6 /* ActivityLogDTO.swift */,
 				E8233B3D385B58C52FAC3D9E /* ActivityLogService.swift */,
 			);
 			path = ActivityLog;
@@ -487,6 +490,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6D31EA26BC9E44490EF26A08 /* ActivityLogDTO.swift in Sources */,
 				C825A3509D94B360ED7184C0 /* ActivityLogService.swift in Sources */,
 				346D925D010F9CAB2F619397 /* AppEnvironment.swift in Sources */,
 				CCA37724D9C0870EE62062C5 /* AppRouter.swift in Sources */,

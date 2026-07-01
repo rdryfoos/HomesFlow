@@ -13,7 +13,7 @@ final class AppEnvironment: ObservableObject {
 
     init(modelContext: ModelContext) {
         auth = SupabaseClientProvider.shared
-        activityLog = ActivityLogService(modelContext: modelContext)
+        activityLog = ActivityLogService(modelContext: modelContext, client: auth.client)
         syncEngine = SyncEngine(
             modelContext: modelContext,
             client: auth.client,
