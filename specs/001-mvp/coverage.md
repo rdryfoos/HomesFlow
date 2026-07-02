@@ -33,7 +33,7 @@ CI fails if this file is stale. Source of truth: `HomeFlow.prd.md` registry × `
 | AC-HOME-09 | Implemented — test pending | T021a | T024d | — |
 | AC-HOME-10 | Implemented — test pending | T021a T021c | T024e | — |
 | AC-HOME-11 | Implemented — test pending | T021b | T024f T065 | — |
-| AC-PROC-01 | Verified | T042 T046 T048 | — | `test_AC_PROC_01_completed_step_counts_toward_progress` |
+| AC-PROC-01 | Verified | T042 T046 T048 | — | `test_AC_PROC_01_complete_and_na_steps_mark_procedure_complete`<br>`test_AC_PROC_01_completed_step_counts_toward_progress`<br>`test_AC_PROC_01_final_step_completion_marks_procedure_complete` |
 | AC-PROC-02 | Verified | T010 T044 T049 | — | `test_AC_PROC_02_edit_cannot_update_admin_only_step`<br>`test_AC_PROC_02_guest_cannot_update_guest_visible_step` |
 | AC-PROC-03 | Verified | T037 T045 T050 | — | `test_AC_PROC_03_local_newer_keeps_pending_local`<br>`test_AC_PROC_03_server_newer_overwrites_pending_local` |
 | AC-PROC-04 | Verified | T047b T050a | — | `test_AC_PROC_04_admin_can_manage_step_structure`<br>`test_AC_PROC_04_edit_can_manage_step_structure`<br>`test_AC_PROC_04_edit_cannot_manage_admin_only_procedure_steps` |

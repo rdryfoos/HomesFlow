@@ -13,10 +13,19 @@ final class ProcedureAggregatorTests: XCTestCase {
         XCTAssertEqual(ProcedureAggregator.aggregateStatus(for: steps), .inProgress)
     }
 
-    func test_all_steps_complete_marks_procedure_complete() {
+    func test_AC_PROC_01_final_step_completion_marks_procedure_complete() {
         let steps = [
             makeStep(status: .complete),
             makeStep(status: .complete)
+        ]
+
+        XCTAssertEqual(ProcedureAggregator.aggregateStatus(for: steps), .complete)
+    }
+
+    func test_AC_PROC_01_complete_and_na_steps_mark_procedure_complete() {
+        let steps = [
+            makeStep(status: .complete),
+            makeStep(status: .na)
         ]
 
         XCTAssertEqual(ProcedureAggregator.aggregateStatus(for: steps), .complete)

@@ -6,6 +6,9 @@ import Supabase
 
 @MainActor
 final class ProcedureRepository: ObservableObject {
+    /// Bumped when procedure list summaries (status/progress) may have changed.
+    @Published private(set) var listRevision = 0
+
     private let modelContext: ModelContext
     private let auth: SupabaseClientProvider
     private let activityLog: ActivityLogService
@@ -323,6 +326,7 @@ final class ProcedureRepository: ObservableObject {
         let summaries = cachedSteps(for: procedureId).map(stepSummary(from:))
         procedure.procedureStatus = ProcedureAggregator.aggregateStatus(for: summaries)
         procedure.sync = .pending
+        notifyProcedureListChanged()
     }
 
     private func cachedStep(_ stepId: UUID) -> CachedProcedureStep? {
@@ -522,6 +526,8 @@ final class ProcedureRepository: ObservableObject {
         if NetworkMonitor.shared.isConnected {
             _ = await syncEngine.run()
         }
+
+        notifyProcedureListChanged()
     }
 
     private func pullProcedures(homeId: UUID) async throws {
@@ -841,6 +847,10 @@ final class ProcedureRepository: ObservableObject {
             status: cached.stepStatus,
             notes: cached.notes
         )
+    }
+
+    private func notifyProcedureListChanged() {
+        listRevision += 1
     }
 }
 

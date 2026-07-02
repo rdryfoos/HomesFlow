@@ -5,6 +5,7 @@ import SwiftUI
 struct ProceduresView: View {
     let home: HomeSummary
     @Environment(\.appEnvironment) private var appEnvironment
+    @EnvironmentObject private var procedureRepository: ProcedureRepository
     @Environment(\.horizontalSizeClass) private var sizeClass
     @EnvironmentObject private var syncEngine: SyncEngine
     @StateObject private var viewModel = ProceduresViewModel()
@@ -32,14 +33,17 @@ struct ProceduresView: View {
             await reload()
         }
         .task { await reload() }
+        .onChange(of: procedureRepository.listRevision) { _, _ in
+            Task { await reload() }
+        }
         .onChange(of: viewModel.procedures.map(\.id)) { _, ids in
             guard sizeClass == .regular else { return }
             if let selectedProcedureId, ids.contains(selectedProcedureId) { return }
             selectedProcedureId = ids.first
         }
         .onChange(of: selectedProcedureId) { _, newId in
-            guard sizeClass == .regular, let newId, let repo = appEnvironment?.procedureRepository else { return }
-            if repo.procedureAccessState(procedureId: newId, userRole: userRole) == .accessDenied {
+            guard sizeClass == .regular, let newId else { return }
+            if procedureRepository.procedureAccessState(procedureId: newId, userRole: userRole) == .accessDenied {
                 selectedProcedureId = viewModel.procedures.first?.id
             }
         }
@@ -67,9 +71,8 @@ struct ProceduresView: View {
         NavigationSplitView {
             procedureList(useSelection: true)
         } detail: {
-            if let procedureId = selectedProcedureId ?? viewModel.procedures.first?.id,
-               let repo = appEnvironment?.procedureRepository {
-                switch repo.procedureAccessState(procedureId: procedureId, userRole: userRole) {
+            if let procedureId = selectedProcedureId ?? viewModel.procedures.first?.id {
+                switch procedureRepository.procedureAccessState(procedureId: procedureId, userRole: userRole) {
                 case .accessDenied:
                     GuestAccessDeniedView(
                         message: "This procedure is not shared with guest accounts."

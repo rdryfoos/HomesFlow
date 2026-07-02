@@ -74,7 +74,7 @@ Edit user updates procedure step status and manages step structure (add, rename,
 
 **Acceptance Scenarios**:
 
-1. **AC-PROC-01** — Given Edit user marks step Complete, then status updates for permitted users and activity log entry created.
+1. **AC-PROC-01** — Given Edit user marks step Complete, then status updates for permitted users, the procedures list reflects the new aggregate status and progress immediately, and an activity log entry is created.
 2. **AC-PROC-02** — Given Edit user updates step beyond permission, then update blocked with permission error.
 3. **AC-PROC-03** — Given offline step conflict, when reconnect, then latest timestamp wins and overwritten user notified via activity log reference.
 4. **AC-PROC-04** — Given Admin or Edit user long-presses a step they can modify, then context menu offers Rename, Delete, Move Up, Move Down.

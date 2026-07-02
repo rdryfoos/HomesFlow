@@ -171,8 +171,11 @@ struct HomeDetailView: View {
     private var tabContent: some View {
         switch selectedTab {
         case .procedures:
-            ProceduresView(home: displayedHome)
-                .environment(\.appEnvironment, appEnvironment)
+            if let appEnvironment {
+                ProceduresView(home: displayedHome)
+                    .environment(\.appEnvironment, appEnvironment)
+                    .environmentObject(appEnvironment.procedureRepository)
+            }
         case .contacts:
             ContactsView(home: displayedHome)
                 .environment(\.appEnvironment, appEnvironment)

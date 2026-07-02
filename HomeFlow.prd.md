@@ -230,7 +230,7 @@ Imagine Diane, a homeowner who spends most of her time in Florida, but owns a ch
 
 ### US-EDIT-01 / FR-PROC-02 — Edit user updates maintenance tasks
 
-* **AC-PROC-01** — Given an Edit user views a procedure, when they mark a step Complete, then the step status updates for all users with appropriate visibility and an activity log entry is created.
+* **AC-PROC-01** — Given an Edit user views a procedure, when they mark a step Complete, then the step status updates for all users with appropriate visibility, the procedure's aggregate status and progress in the procedures list update immediately, and an activity log entry is created.
 * **AC-PROC-02** — Given an Edit user attempts to update a step beyond their permission (e.g., another home's admin-only procedure or step), when they submit the change, then the app blocks the update and shows a permission error.
 * **AC-PROC-03** — Given an Edit user updates a step while offline and another user updates the same step before sync, when both devices reconnect, then the update with the most recent timestamp is persisted and the other user receives a notification about the overwritten change with reference to the activity log.
 * **AC-PROC-04** — Given an Admin or Edit user long-presses a step on a procedure they can modify, when the context menu appears, then Rename, Delete, Move Up, and Move Down are available.
