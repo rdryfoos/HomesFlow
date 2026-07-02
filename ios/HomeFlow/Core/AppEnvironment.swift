@@ -11,6 +11,7 @@ final class AppEnvironment: ObservableObject {
     let memberRepository: MemberRepository
     let procedureRepository: ProcedureRepository
     let providerRepository: ServiceProviderRepository
+    let documentRepository: DocumentRepository
     let procedureAttachmentService: ProcedureAttachmentService
 
     init(modelContext: ModelContext) {
@@ -23,6 +24,7 @@ final class AppEnvironment: ObservableObject {
         )
         homePhotoService = HomePhotoService(client: auth.client)
         procedureAttachmentService = ProcedureAttachmentService(client: auth.client)
+        let documentStorage = DocumentStorageService(client: auth.client)
         homeRepository = HomeRepository(
             modelContext: modelContext,
             auth: auth,
@@ -47,6 +49,13 @@ final class AppEnvironment: ObservableObject {
             auth: auth,
             activityLog: activityLog,
             syncEngine: syncEngine
+        )
+        documentRepository = DocumentRepository(
+            modelContext: modelContext,
+            auth: auth,
+            activityLog: activityLog,
+            syncEngine: syncEngine,
+            storage: documentStorage
         )
     }
 }

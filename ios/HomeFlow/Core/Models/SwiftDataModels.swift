@@ -305,6 +305,51 @@ final class CachedServiceProvider {
 }
 
 @Model
+final class CachedDocument {
+    @Attribute(.unique) var id: UUID
+    var homeId: UUID
+    var title: String
+    var category: String?
+    var storagePath: String?
+    var visibility: String
+    var syncStatus: String
+    var localUpdatedAt: Date
+    var serverUpdatedAt: Date?
+
+    init(
+        id: UUID = UUID(),
+        homeId: UUID,
+        title: String,
+        category: String? = nil,
+        storagePath: String? = nil,
+        visibility: Visibility = .manager,
+        syncStatus: SyncStatus = .pending,
+        localUpdatedAt: Date = .now,
+        serverUpdatedAt: Date? = nil
+    ) {
+        self.id = id
+        self.homeId = homeId
+        self.title = title
+        self.category = category
+        self.storagePath = storagePath
+        self.visibility = visibility.rawValue
+        self.syncStatus = syncStatus.rawValue
+        self.localUpdatedAt = localUpdatedAt
+        self.serverUpdatedAt = serverUpdatedAt
+    }
+
+    var documentVisibility: Visibility {
+        get { Visibility(migratingRawValue: visibility) ?? .manager }
+        set { visibility = newValue.rawValue }
+    }
+
+    var sync: SyncStatus {
+        get { SyncStatus(rawValue: syncStatus) ?? .pending }
+        set { syncStatus = newValue.rawValue }
+    }
+}
+
+@Model
 final class CachedActivityLogEntry {
     @Attribute(.unique) var id: UUID
     var homeId: UUID
@@ -345,6 +390,7 @@ enum SwiftDataContainer {
             CachedProcedure.self,
             CachedProcedureStep.self,
             CachedServiceProvider.self,
+            CachedDocument.self,
             MutationOutboxEntry.self,
             CachedActivityLogEntry.self
         ])

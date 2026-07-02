@@ -104,6 +104,16 @@ final class SyncEngine: ObservableObject {
                         modelContext.delete(entry)
                         continue
                     }
+                case .document:
+                    switch entry.op {
+                    case .insert, .update:
+                        try await pushDocument(entry)
+                    case .delete:
+                        try await deleteDocument(entry)
+                    case nil:
+                        modelContext.delete(entry)
+                        continue
+                    }
                 default:
                     continue
                 }
@@ -324,6 +334,58 @@ final class SyncEngine: ObservableObject {
         try? modelContext.save()
     }
 
+    private func pushDocument(_ entry: MutationOutboxEntry) async throws {
+        let targetId = entry.entityId
+        guard
+            let document = try? modelContext.fetch(FetchDescriptor<CachedDocument>(
+                predicate: #Predicate<CachedDocument> { $0.id == targetId }
+            )).first
+        else { return }
+
+        struct DocumentRow: Encodable {
+            let id: UUID
+            let home_id: UUID
+            let title: String
+            let category: String?
+            let storage_path: String?
+            let visibility: Visibility
+        }
+
+        let row = DocumentRow(
+            id: document.id,
+            home_id: document.homeId,
+            title: document.title,
+            category: document.category,
+            storage_path: document.storagePath,
+            visibility: document.documentVisibility
+        )
+
+        if entry.op == .insert {
+            try await client.from("documents").insert(row).execute()
+        } else {
+            try await client
+                .from("documents")
+                .update(row)
+                .eq("id", value: document.id.uuidString)
+                .execute()
+        }
+
+        document.sync = .synced
+        document.serverUpdatedAt = .now
+        try? modelContext.save()
+    }
+
+    private func deleteDocument(_ entry: MutationOutboxEntry) async throws {
+        if let path = entry.payload["storage_path"], !path.isEmpty {
+            try? await client.storage.from("documents").remove(paths: [path])
+        }
+        try await client
+            .from("documents")
+            .delete()
+            .eq("id", value: entry.entityId.uuidString)
+            .execute()
+    }
+
     private func pullChanges() async {
         do {
             let rows: [HomeDTO] = try await client
@@ -419,6 +481,16 @@ final class SyncEngine: ObservableObject {
                     modelContext.delete(provider)
                 } else {
                     provider.sync = .synced
+                }
+            }
+        case .document:
+            if let document = try? modelContext.fetch(FetchDescriptor<CachedDocument>(
+                predicate: #Predicate<CachedDocument> { $0.id == targetId }
+            )).first {
+                if entry.op == .insert {
+                    modelContext.delete(document)
+                } else {
+                    document.sync = .synced
                 }
             }
         default:

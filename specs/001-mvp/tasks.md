@@ -1,4 +1,4 @@
-# Tasks: HomeFlow MVP
+# Tasks: HomesFlow MVP
 
 **Input**: [spec.md](./spec.md) · [plan.md](./plan.md) · [data-model.md](./data-model.md) · [contracts/](./contracts/)
 
@@ -14,7 +14,7 @@
 | 3–4 Auth, dashboard, homes | **Mostly complete** | XCUITest T017 |
 | 5 Invites & roles | **Partial** | Deep links T026; offline conflict T027; unit tests |
 | 6 Offline sync | **Partial** | Field merge T035; full sync tests |
-| 7 Procedures | **Mostly complete** | Photo attach T043 |
+| 7 Procedures | **Complete** | AC-PROC-08 UI test T050d pending |
 | 8–10 P2/P3 features | **Partial** | Phase 9 guest views done; Files, Settings next |
 | 11 Hardening | Not started | Re-run analyze after P1 checkpoint |
 
@@ -164,6 +164,7 @@ Partial deliverables documented in [dev-notes.md](./dev-notes.md). **Do not** en
 - [x] T047a [US-EDIT-01] Step structure sync: create, rename, delete, reorder in `ProcedureRepository` + `SyncEngine` — **Traces**: FR-PROC-02, AC-PROC-06
 - [x] T047b [US-EDIT-01] Long-press step context menu (rename, delete, move up/down) + Add step on Steps section — **Traces**: AC-PROC-04, AC-PROC-05
 - [x] T047c [US-EDIT-01] Hide step structure controls for Guest (read-only) — **Traces**: AC-PROC-07, AC-GUEST-04
+- [x] T047d [US-EDIT-01] Step row UI: notes below title, pencil Edit, tappable photo preview, ellipsis rightmost — **Traces**: AC-PROC-08
 
 ### Tests
 
@@ -173,6 +174,7 @@ Partial deliverables documented in [dev-notes.md](./dev-notes.md). **Do not** en
 - [x] T050a [P] [US-EDIT-01] Unit test `test_AC_PROC_04_manager_can_manage_step_structure` — **Traces**: AC-PROC-04, AC-PROC-05 — *StepStructureTests*
 - [x] T050b [P] [US-EDIT-01] Unit test `test_AC_PROC_06_step_structure_change_logged` — **Traces**: AC-PROC-06 — *StepStructureTests*
 - [x] T050c [P] [US-EDIT-01] Unit test `test_AC_PROC_07_guest_no_step_structure_controls` — **Traces**: AC-PROC-07 — *StepStructureTests*
+- [ ] T050d [P] [US-EDIT-01] XCUITest `test_AC_PROC_08_step_photo_preview_and_row_layout` — **Traces**: AC-PROC-08 — *UI: Photo attached tap → preview sheet*
 
 ---
 
@@ -200,7 +202,7 @@ Partial deliverables documented in [dev-notes.md](./dev-notes.md). **Do not** en
 
 ### Implementation
 
-- [x] T057 [US-GUEST-01] Visibility filtering on providers, documents, procedures — **Traces**: AC-GUEST-01, FR-GUEST-01 — *repository filters + guest tabs; documents when T065*
+- [x] T057 [US-GUEST-01] Visibility filtering on providers, documents, procedures — **Traces**: AC-GUEST-01, FR-GUEST-01 — *repository filters + guest tabs; documents via DocumentRepository*
 - [x] T058 [US-GUEST-01] Navigation guard: deny restricted content with message — **Traces**: AC-GUEST-02 — *GuestAccessDeniedView + access state checks*
 - [x] T059 [US-GUEST-01] Offline visibility sync — **Traces**: AC-GUEST-03 — *timestamp-wins procedure/provider merge*
 - [x] T060 [US-GUEST-02] Guest procedure detail read-only (no status edits) — **Traces**: AC-GUEST-04 — *canEdit false + footer hint*
@@ -223,7 +225,7 @@ Partial deliverables documented in [dev-notes.md](./dev-notes.md). **Do not** en
 
 ### Implementation
 
-- [ ] T065 [FR-HOME-03] Files tab: documents list + upload + visibility in `ios/HomeFlow/Features/Documents/` — **Traces**: FR-HOME-03, AC-GUEST-01, AC-HOME-11
+- [x] T065 [FR-HOME-03] Files tab: documents list + upload + visibility in `ios/HomeFlow/Features/Documents/` — **Traces**: FR-HOME-03, AC-GUEST-01, AC-HOME-11
 - [ ] T066 [P] [FR-NOTIF-01] Settings screen: account, notification toggle disabled (“Coming soon”) in `ios/HomeFlow/Features/Settings/` — **Traces**: FR-NOTIF-01
 - [ ] T066a [P] Accessibility baseline: Dynamic Type layouts, VoiceOver labels on section tabs, Reduce Motion, 44pt targets across dashboard/home/procedures — **Traces**: NFR-A11Y-01, AC-A11Y-01, AC-A11Y-02, AC-A11Y-03
 - [x] T067 [P] Sign out clears session — **Traces**: FR-AUTH-01 — *dashboard toolbar today; Settings screen Phase 10*

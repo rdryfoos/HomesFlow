@@ -10,6 +10,7 @@
 		0490A5F0EE3A097FF3219F32 /* HomeConflictResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16561DBEF8165ED72800892 /* HomeConflictResolver.swift */; };
 		07D232478FBD3691B1AD33B6 /* ProceduresView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E07E4F3E611B1ECA6683BCDE /* ProceduresView.swift */; };
 		0CAE9DBF9ADD5ECD3422AA3A /* InviteMemberView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 432D7CF7139BF5BDF9FC17AF /* InviteMemberView.swift */; };
+		1591BFB5C7FBC18054E4F599 /* DocumentStorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AF7FE8F7EC36157636A7296 /* DocumentStorageService.swift */; };
 		16B0967312FC459C46CF3788 /* HomeDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F98B33798192E84DF26BF0A /* HomeDTO.swift */; };
 		1722B1ACE322FE2FA06754B8 /* AuthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60414CD441B73249944E83F4 /* AuthView.swift */; };
 		22C4DB5844C270556B1C7E3A /* HomeDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2BF3FC894DC970479F1FCA4 /* HomeDetailView.swift */; };
@@ -36,6 +37,7 @@
 		5E83017066D76879825E0B9F /* ServiceProviderDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE7E24F815721CD882949EF3 /* ServiceProviderDTO.swift */; };
 		5FF8919A11BADF5CCEF374EC /* SyncEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3BFD92FD120F1ABCD3DD57D /* SyncEngine.swift */; };
 		605EDF407675D470942F7983 /* Secrets.Release.xcconfig.example in Resources */ = {isa = PBXBuildFile; fileRef = 7B95B47C0C7A40048617B702 /* Secrets.Release.xcconfig.example */; };
+		612EB76DE93B2592CBF0913F /* DocumentDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1592A6918D860D7ECAFC657D /* DocumentDTO.swift */; };
 		62A9227DA2D23CD4CEC2BE85 /* ProcedureRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB98B14D16CF895A989665D2 /* ProcedureRepository.swift */; };
 		6C825E505BECCFE0A496263F /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = 60FC5960D5740F386C342B50 /* Supabase */; };
 		6CB0E839149BBC53CCD9CB2C /* Secrets.xcconfig.example in Resources */ = {isa = PBXBuildFile; fileRef = B1DD90540655FA98347267C7 /* Secrets.xcconfig.example */; };
@@ -56,6 +58,7 @@
 		E5D3DB13ECBF4283A7204C73 /* ContactsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90748E3E2030839155D51E1 /* ContactsView.swift */; };
 		EFDD81EA5F10127E3496161A /* SupabaseClientProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A55055DFB89B27A44EE4537 /* SupabaseClientProvider.swift */; };
 		F589A08913ED650B9FC8A4A4 /* ProcedureDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD9CEBE86C62A6C52C2B01F4 /* ProcedureDetailView.swift */; };
+		F63AC23E86C66A5014157AF6 /* DocumentRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23D0C557DD7304518443FB52 /* DocumentRepository.swift */; };
 		FB51C829CDB77333656F2F27 /* HomePhotoService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 406453D16A208977207D35E2 /* HomePhotoService.swift */; };
 /* End PBXBuildFile section */
 
@@ -81,11 +84,14 @@
 		048692BBFBC56BDDBCF04E0F /* HomeSetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeSetupView.swift; sourceTree = "<group>"; };
 		065E11DA60C5236E9094516D /* AppRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRouter.swift; sourceTree = "<group>"; };
 		0A7B265F1408F64C1E951AD6 /* HomeFlow.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = HomeFlow.entitlements; sourceTree = "<group>"; };
+		0AF7FE8F7EC36157636A7296 /* DocumentStorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentStorageService.swift; sourceTree = "<group>"; };
 		103C467D720CFB0C691B33D0 /* ServiceProviderRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceProviderRepository.swift; sourceTree = "<group>"; };
 		10EF2773A56AA32BB0F9C556 /* SupabaseConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseConfig.swift; sourceTree = "<group>"; };
 		11A8B51F014C45340EA18A53 /* ProcedureDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProcedureDTO.swift; sourceTree = "<group>"; };
+		1592A6918D860D7ECAFC657D /* DocumentDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentDTO.swift; sourceTree = "<group>"; };
 		19A3C4630942F4E31CAAEAC6 /* GuestAccessDeniedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuestAccessDeniedView.swift; sourceTree = "<group>"; };
 		202D9DB27925A958E207D429 /* SwiftDataModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftDataModels.swift; sourceTree = "<group>"; };
+		23D0C557DD7304518443FB52 /* DocumentRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentRepository.swift; sourceTree = "<group>"; };
 		24584D4D48852644D6901B29 /* HomeHeroCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeHeroCard.swift; sourceTree = "<group>"; };
 		2DE98E4CAE9465C0C555B81B /* FilesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilesView.swift; sourceTree = "<group>"; };
 		2E273D44AB8D24A9FA10E46A /* HomeFlowTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = HomeFlowTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -105,7 +111,7 @@
 		643018972A6E7883863E2521 /* ProcedureAttachmentService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProcedureAttachmentService.swift; sourceTree = "<group>"; };
 		6B473D8EF4DA4BB50AC1B691 /* StepStructureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StepStructureTests.swift; sourceTree = "<group>"; };
 		7A6207638303AF182C7C316A /* ProcedureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProcedureTests.swift; sourceTree = "<group>"; };
-		7B95B47C0C7A40048617B702 /* Secrets.Release.xcconfig.example */ = {isa = PBXFileReference; path = Secrets.Release.xcconfig.example; sourceTree = "<group>"; };
+		7B95B47C0C7A40048617B702 /* Secrets.Release.xcconfig.example */ = {isa = PBXFileReference; lastKnownFileType = text; path = Secrets.Release.xcconfig.example; sourceTree = "<group>"; };
 		7D4B91998F226F2A6A692880 /* NetworkMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMonitor.swift; sourceTree = "<group>"; };
 		8085E2B49EE2ABC4C37EF2A9 /* Secrets.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Secrets.xcconfig; sourceTree = "<group>"; };
 		93E2F5EF5359F25C77954DD6 /* ActivityLogDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityLogDTO.swift; sourceTree = "<group>"; };
@@ -115,7 +121,7 @@
 		9CF9D16647D19E7853C52246 /* PermissionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionService.swift; sourceTree = "<group>"; };
 		9F6DFA717D62C6B87A211F00 /* Secrets.Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Secrets.Release.xcconfig; sourceTree = "<group>"; };
 		A90748E3E2030839155D51E1 /* ContactsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsView.swift; sourceTree = "<group>"; };
-		B1DD90540655FA98347267C7 /* Secrets.xcconfig.example */ = {isa = PBXFileReference; path = Secrets.xcconfig.example; sourceTree = "<group>"; };
+		B1DD90540655FA98347267C7 /* Secrets.xcconfig.example */ = {isa = PBXFileReference; lastKnownFileType = text; path = Secrets.xcconfig.example; sourceTree = "<group>"; };
 		B8EA1C0B8D56E94220543B63 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C1CD4F9264B8E65BF4B75240 /* HomeFlowApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeFlowApp.swift; sourceTree = "<group>"; };
 		C68A188BA476640949CB88D1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -126,7 +132,7 @@
 		E07E4F3E611B1ECA6683BCDE /* ProceduresView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProceduresView.swift; sourceTree = "<group>"; };
 		E2BF3FC894DC970479F1FCA4 /* HomeDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeDetailView.swift; sourceTree = "<group>"; };
 		E8233B3D385B58C52FAC3D9E /* ActivityLogService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityLogService.swift; sourceTree = "<group>"; };
-		ECBB805D2DD0798C893D12DE /* HomeFlow.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = HomeFlow.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		ECBB805D2DD0798C893D12DE /* HomeFlow.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HomeFlow.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EE19DC9CF981703D7575F3C6 /* AppEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppEnvironment.swift; sourceTree = "<group>"; };
 		F03D4FA2371DADD21D2B444E /* EntityAccessState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityAccessState.swift; sourceTree = "<group>"; };
 		F3BFD92FD120F1ABCD3DD57D /* SyncEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncEngine.swift; sourceTree = "<group>"; };
@@ -341,6 +347,16 @@
 			path = HomeDetail;
 			sourceTree = "<group>";
 		};
+		AB297001439D8A4B2C11AD05 /* Documents */ = {
+			isa = PBXGroup;
+			children = (
+				1592A6918D860D7ECAFC657D /* DocumentDTO.swift */,
+				23D0C557DD7304518443FB52 /* DocumentRepository.swift */,
+				0AF7FE8F7EC36157636A7296 /* DocumentStorageService.swift */,
+			);
+			path = Documents;
+			sourceTree = "<group>";
+		};
 		BD5DC9FC379B6212557B8733 /* Home */ = {
 			isa = PBXGroup;
 			children = (
@@ -409,6 +425,7 @@
 			isa = PBXGroup;
 			children = (
 				5F4E56FEF150BA94394DC277 /* ActivityLog */,
+				AB297001439D8A4B2C11AD05 /* Documents */,
 				BD5DC9FC379B6212557B8733 /* Home */,
 				1D2225BEFACEB07B20D079A3 /* Members */,
 				953D81A20B03C94CAC374C73 /* Models */,
@@ -519,7 +536,6 @@
 						ProvisioningStyle = Automatic;
 					};
 					98683CA64C9F06E51878D55A = {
-						DevelopmentTeam = "";
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -573,6 +589,9 @@
 				1722B1ACE322FE2FA06754B8 /* AuthView.swift in Sources */,
 				E5D3DB13ECBF4283A7204C73 /* ContactsView.swift in Sources */,
 				567510031EA05B1113D6FC6B /* DashboardView.swift in Sources */,
+				612EB76DE93B2592CBF0913F /* DocumentDTO.swift in Sources */,
+				F63AC23E86C66A5014157AF6 /* DocumentRepository.swift in Sources */,
+				1591BFB5C7FBC18054E4F599 /* DocumentStorageService.swift in Sources */,
 				C66085F8C146521809D6E671 /* DomainEnums.swift in Sources */,
 				A1D9E4AB3E0E3EE738F9A2AD /* EntityAccessState.swift in Sources */,
 				98D395128DC314A7BF92629C /* FilesView.swift in Sources */,
@@ -652,6 +671,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = HomeFlow/Resources/HomeFlow.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = Z2PVV7A8SG;
 				ENABLE_TESTABILITY = YES;
 				INFOPLIST_FILE = HomeFlow/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -739,6 +759,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = HomeFlow/Resources/HomeFlow.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = Z2PVV7A8SG;
 				ENABLE_TESTABILITY = YES;
 				INFOPLIST_FILE = HomeFlow/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
