@@ -106,7 +106,7 @@ Keep the matrix **generated**, never hand-maintained.
 
 Spec Kit templates are just markdown — edit them so IDs can't be skipped.
 
-- **`.specify/templates/spec-template.md`** — give requirements and acceptance-criteria sections an explicit `ID` field, and add a line: "Every requirement and AC MUST have an ID per `traceability.md`."
+- **`.specify/templates/spec-template.md`** — give requirements and acceptance-criteria sections an explicit `ID` field; add **Intended Use** and **Risk & failure modes** sections per `traceability.md` §9.3; add a line: "Every requirement and AC MUST have an ID per `traceability.md`."
 - **`.specify/templates/tasks-template.md`** — add a required `Traces:` field to the per-task structure so every generated task names the AC(s) it satisfies.
 
 After this, the structure carries the rule forward automatically on every new feature.
@@ -123,19 +123,82 @@ After this, the structure carries the rule forward automatically on every new fe
 
 ---
 
-## 9. Design controls mapping (DHF-aligned practice)
+## 9. Lightweight design controls (ISO 13485 / IEC 62304 inspired)
 
-The repo maps classical design-control concepts to concrete artifacts and objective evidence. **Verification** asks whether implementation matches specified requirements; **validation** asks whether users can achieve the intended use.
+HomesFlow is **not** a medical device and does **not** target ISO 13485 or IEC 62304 certification. This section borrows the **useful discipline** — traceability, verification, validation, release evidence — without audit binders or SOUP dossiers.
+
+### 9.1 Standard clause map
+
+| ISO 13485 §7.3 / IEC 62304 | HomesFlow artifact | Gate or evidence |
+|---|---|---|
+| Design planning | `specs/<feature>/plan.md`, `tasks.md` | `/speckit.plan`, `/speckit.tasks` |
+| Design inputs (user needs) | `HomesFlow.prd.md`, `spec.md` (intended use, ACs) | `/speckit.specify` |
+| Risk management (lightweight) | `spec.md` → **Risk & failure modes** (§9.3) | Human review at `/speckit.analyze` |
+| Architectural / detailed design | `plan.md`, `data-model.md`, source structure | Plan approval before implement |
+| Design outputs | `ios/`, `supabase/migrations/` | Git commits, PR review |
+| Design verification | XCTest, Gate 2 traceability | `check-traceability.sh`; CI green |
+| Design validation | XCUITest, manual/exploratory sessions | Tasks **T064**, **T069**, **T069a** (§9.4) |
+| Design transfer / release | `specs/<feature>/release-checklist.md` | Pre-TestFlight / pre-prod sign-off (§9.5) |
+| Change control | Spec Kit workflow + immutable IDs | No `/speckit.implement` until analyze clean; ID tombstones only |
+| DHF / objective evidence | Git history, `coverage.md`, CI logs, release checklist | Auditable chain per §4 |
+
+### 9.2 Verification vs validation (keep explicit)
+
+| Activity | Question | HomesFlow practice |
+|---|---|---|
+| **Verification** | Did we build it **right**? | Unit tests name AC IDs; `@covers` on source; Gate 2 matrix |
+| **Validation** | Did we build the **right thing** for real users? | XCUITest journeys, guest read-only checks, accessibility pass, structured manual sessions on device |
+
+Verification is largely **automated today**. Validation is **tracked debt** until T064/T069/T069a land — not optional polish (§9.4).
+
+### 9.3 Risk notes (per feature)
+
+Every `spec.md` MUST include a **Risk & failure modes** section (see `.specify/templates/spec-template.md`). Keep it short — typically 3–8 bullets:
+
+```markdown
+## Risk & failure modes
+
+| Failure | User impact | Mitigation / trace |
+|---------|-------------|-------------------|
+| Guest edits step offline | Unauthorized state change | Permission gate + AC-GUEST-05; activity log |
+| Sync conflict on procedure step | Lost or surprising status | Timestamp-wins + user notification AC-PROC-03, AC-SYNC-01 |
+```
+
+No separate FMEA spreadsheet required unless scope or harm potential grows. Link mitigations to FR/AC IDs so they enter the golden thread.
+
+### 9.4 Validation debt (not “nice to have”)
+
+These tasks are **design validation** work — equivalent to IEC 62304 system testing and ISO 13485 validation evidence:
+
+| Task | Validates |
+|---|---|
+| **T064** | Guest cannot edit restricted content (SC-03) |
+| **T069** | End-to-end Owner → invite → step update → guest read-only (SC-01…03) |
+| **T069a** | Accessibility under real iOS settings (AC-A11Y-01…03) |
+| **T072** | Sync conflict matrix — 95% scripted scenarios (SC-04) |
+
+Leave them unchecked in `tasks.md` until done; do not ship a milestone release without updating the release checklist (§9.5) for known validation gaps.
+
+### 9.5 Release checklist
+
+Before TestFlight, staging demo, or production promotion, complete [`specs/<feature>/release-checklist.md`](specs/001-mvp/release-checklist.md):
+
+- Migrations pushed; secrets configured for target environment
+- Unit tests + Gate 2 traceability green
+- Known issues and open validation tasks documented
+- Rollback / revert plan noted (app version, migration downgrade policy)
+
+This is IEC 62304 **software release** thinking without a formal anomaly list binder.
+
+### 9.6 DHF artifact summary
 
 | Design control | Repository artifact | Objective evidence |
 |---|---|---|
-| Governance & language | `constitution.md`, `glossary.md` | Version-controlled laws and domain terms used across specs, plans, and tests |
-| User needs | `HomesFlow.prd.md`, `specs/<feature>/spec.md` | Intended use, personas, acceptance criteria, risk notes |
-| Design inputs | `specs/<feature>/plan.md` | Data models, API contracts, task breakdown under constitution + glossary constraints |
-| Design outputs | Source code + migrations | Signed Git commits implementing the approved plan |
-| Design verification | XCTest unit/integration suites | CI test logs; `@covers` + `test_AC_*` naming per §6 |
-| Design validation | XCUITest + exploratory testing | E2E logs; qualitative feedback that critical flows work for real users |
+| Governance & language | `constitution.md`, `glossary.md` | Version-controlled laws and domain terms |
+| User needs | `HomesFlow.prd.md`, `specs/<feature>/spec.md` | Intended use, personas, ACs, risk notes |
+| Design inputs | `specs/<feature>/plan.md` | Data models, API contracts, tasks |
+| Design outputs | Source + migrations | Signed Git commits |
+| Design verification | XCTest | CI logs; `@covers` + `test_AC_*` per §6 |
+| Design validation | XCUITest + exploratory | E2E logs; qualitative user-flow confirmation |
 
-**Example flow** (winterization checklist): a constitution rule requires auditable cross-user state changes → the feature spec defines personas and ACs → `/speckit.plan` proposes Supabase tables, RLS, and SwiftUI structure → implementation is verified by XCTest and validated by XCUITest / manual sessions.
-
-Feature specs SHOULD call out intended use and material failure modes where relevant; trace those through plan, code, and tests using the ID chain in §4.
+**Example flow** (winterization checklist): constitution requires auditable cross-user changes → spec defines personas and ACs → plan proposes Supabase tables, RLS, SwiftUI → verified by XCTest → validated by XCUITest / manual sessions on device.

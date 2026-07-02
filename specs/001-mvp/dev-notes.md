@@ -162,6 +162,8 @@ Modes: `--matrix` regenerates [coverage.md](./coverage.md) (commit after traceab
 | Observability | Mobile crash/sync telemetry (e.g. Sentry for iOS), queued upload after reconnect | Not integrated |
 | Regression evals | Scripted sync/conflict scenario datasets in CI (SC-04 matrix) | Partial — unit tests only |
 
+Pre-release sign-off: [`release-checklist.md`](./release-checklist.md) per `traceability.md` §9.5.
+
 ---
 
 ## Regenerating Xcode project

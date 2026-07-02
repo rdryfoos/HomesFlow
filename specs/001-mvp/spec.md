@@ -1,4 +1,4 @@
-# Feature Specification: HomeFlow MVP
+# Feature Specification: HomesFlow MVP
 
 **Feature Branch**: `001-mvp`
 
@@ -6,13 +6,25 @@
 
 **Status**: Draft (clarified + planned)
 
-**Input**: `HomeFlow.prd.md` — full MVP scope for native iOS second-home management.
+**Input**: `HomesFlow.prd.md` — full MVP scope for native iOS second-home management.
 
 > IDs inherited from PRD. Do not mint new IDs in this file. See PRD § ID Registry.
 
 ## Intended Use
 
-HomeFlow helps primary homeowners manage a second home by sharing procedures, service contacts, and real-time task status with trusted family, caregivers, and guests — from iPhone or iPad, including offline.
+HomesFlow helps primary homeowners manage a second home by sharing procedures, service contacts, and real-time task status with trusted family, caregivers, and guests — from iPhone or iPad, including offline.
+
+## Risk & failure modes
+
+Per `traceability.md` §9.3.
+
+| Failure | User impact | Mitigation / trace |
+|---------|-------------|-------------------|
+| Unauthorized role escalation | Guest or revoked user changes data | RLS + `PermissionService`; AC-GUEST-02, AC-GUEST-05; fail closed |
+| Offline edit conflict | User's change silently lost or wrong status shown | Timestamp-wins + notification; AC-PROC-03, AC-HOME-03, AC-SYNC-01 |
+| Home photo upload before sync | Upload fails opaquely | Block until home synced; AC-HOME-08 |
+| Guest sees restricted content | Privacy leak across visibility tiers | Repository filters + deny UI; AC-GUEST-01, AC-GUEST-03 |
+| Sync failure in low connectivity | Stale UI, duplicate actions | Pending-sync indicators; AC-SYNC-04; offline queue (NFR-OFFL-01) |
 
 ## User Scenarios & Testing
 
@@ -77,10 +89,11 @@ Manager user updates procedure step status and manages step structure (add, rena
 1. **AC-PROC-01** — Given Manager user marks step Complete, then status updates for permitted users, the procedures list reflects the new aggregate status and progress immediately, and an activity log entry is created.
 2. **AC-PROC-02** — Given Manager user updates step beyond permission, then update blocked with permission error.
 3. **AC-PROC-03** — Given offline step conflict, when reconnect, then latest timestamp wins and overwritten user notified via activity log reference.
-4. **AC-PROC-04** — Given Owner or Manager user long-presses a step they can modify, then context menu offers Rename, Delete, Move Up, Move Down.
+4. **AC-PROC-04** — Given Owner or Manager user long-presses a step they can modify, then context menu offers Edit, Delete, Move Up, Move Down.
 5. **AC-PROC-05** — Given Owner or Manager user taps Add on Steps section, when they save a title, then new step appends at next sort order and syncs to permitted users.
 6. **AC-PROC-06** — Given Owner or Manager user creates, renames, reorders, or deletes a step, when change syncs, then it persists for permitted users and activity log entry created.
 7. **AC-PROC-07** — Given Guest views a procedure, then step structure controls (long-press menu, Add step) are unavailable and status is read-only.
+8. **AC-PROC-08** — Given a step has an attached photo, when user taps Photo attached, then photo opens in a modal preview; step row shows notes below title, pencil Edit left of status ellipsis (when editable), ellipsis rightmost.
 
 ---
 
@@ -181,7 +194,7 @@ All primary screens respect iOS accessibility settings, especially Dynamic Type 
 - **FR-NAV-01**: Home detail MUST expose four sections — **Procedures**, **Contacts**, **Files**, **People** — with device-appropriate navigation: iPhone uses full-bleed hero + horizontal segmented tabs; iPad uses compact left-column hero + vertical icon tabs and a **three-panel** layout (sidebar + section list + section detail) for every section (**AC-HOME-09…11**).
 - **FR-PROC-01**: System MUST support procedure lists with status (Not Started / In Progress / Complete / N/A).
 - **FR-PROC-02**: Procedures MUST contain ordered steps, each with independent status. Owner and Manager users MUST be able to create, rename, reorder, and delete steps on procedures they can modify (per visibility). Step status updates and structure edits MUST sync offline-capable.
-- **FR-PROC-03**: Procedures MUST support notes, photos, and document attachments.
+- **FR-PROC-03**: Procedure steps MUST support optional notes and photo attachments; permitted users edit via pencil control or long-press **Edit**; all viewers with access may tap **Photo attached** to preview.
 - **FR-GUEST-01**: Guest users MUST see only approved procedures and info.
 - **FR-GUEST-02**: System MUST support guest onboarding via email or SMS invite (MVP: shareable invite link + manual token accept — see Assumptions).
 - **FR-NOTIF-01**: System SHOULD support optional push notifications for status changes (MVP: defer wiring if needed; UI placeholder acceptable).
@@ -206,7 +219,7 @@ All primary screens respect iOS accessibility settings, especially Dynamic Type 
 - **ServiceProvider** — Vendor contact info scoped to a home.
 - **Document** — Categorized file/metadata with visibility level.
 - **Procedure** — Named checklist with overall status and category.
-- **Step** — Single ordered item within a procedure with its own status, title, and optional notes. Owner/Manager can manage step structure; Guest read-only.
+- **Step** — Single ordered item within a procedure with its own status, title, optional notes, and optional photo. Owner/Manager can manage step structure; Guest read-only.
 - **ActivityLogEntry** — Audit record of a change (who, what, when).
 
 ## Success Criteria

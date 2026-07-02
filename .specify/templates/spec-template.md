@@ -8,7 +8,19 @@
 
 **Input**: User description: "$ARGUMENTS"
 
-> Every requirement and AC MUST carry a durable ID per `traceability.md`. IDs are assigned at the PRD level in `HomeFlow.prd.md` — feature specs inherit them; do not mint new IDs here.
+> Every requirement and AC MUST carry a durable ID per `traceability.md`. IDs are assigned at the PRD level in `HomesFlow.prd.md` — feature specs inherit them; do not mint new IDs here.
+
+## Intended Use
+
+[One paragraph: who uses this feature, for what purpose, in what context.]
+
+## Risk & failure modes
+
+Per `traceability.md` §9.3 — list material failures, user impact, and mitigations traced to FR/AC IDs.
+
+| Failure | User impact | Mitigation / trace |
+|---------|-------------|-------------------|
+| [e.g. sync conflict on step status] | [e.g. surprising checklist state] | [e.g. AC-PROC-03, AC-SYNC-01] |
 
 ## User Scenarios & Testing *(mandatory)*
 
