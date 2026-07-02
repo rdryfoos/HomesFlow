@@ -26,16 +26,16 @@ HomeFlow is a responsive iOS app (iPhone and iPad) that empowers primary homeown
 
 ## User Stories
 
-**Persona: Primary Homeowner (Admin)**
+**Persona: Primary Homeowner (Owner)**
 
-* **US-ADMIN-01** — As an Admin, I want to add my second home's details, so that I can manage it remotely.
-* **US-ADMIN-02** — As an Admin, I want to invite adult children and service providers as users, so that they can help manage the home or access info they need.
-* **US-ADMIN-03** — As an Admin, I want to assign permissions to Edit or Guest users for each home, so that only trusted users see confidential info.
+* **US-ADMIN-01** — As an Owner, I want to add my second home's details, so that I can manage it remotely.
+* **US-ADMIN-02** — As an Owner, I want to invite adult children and service providers as users, so that they can help manage the home or access info they need.
+* **US-ADMIN-03** — As an Owner, I want to assign permissions to Manager or Guest users for each home, so that only trusted users see confidential info.
 
 **Persona: Adult Child/Caregiver (Edit User)**
 
-* **US-EDIT-01** — As an Edit user, I want to update maintenance tasks, so that others can see what's done or outstanding.
-* **US-EDIT-02** — As an Edit user, I want to view and modify service provider details, so I can coordinate repairs or services if needed.
+* **US-EDIT-01** — As a Manager user, I want to update maintenance tasks, so that others can see what's done or outstanding.
+* **US-EDIT-02** — As a Manager user, I want to view and modify service provider details, so I can coordinate repairs or services if needed.
 
 **Persona: Guest (Guest User)**
 
@@ -46,15 +46,15 @@ HomeFlow is a responsive iOS app (iPhone and iPad) that empowers primary homeown
 
 ## Functional Requirements
 
-* **FR-USER-01** (Priority: Critical) — Multi-role (Admin, Edit, Guest) invitation and access logic, scoped per home.
+* **FR-USER-01** (Priority: Critical) — Multi-role (Owner, Manager, Guest) invitation and access logic, scoped per home.
 * **FR-AUTH-01** (Priority: Critical) — Secure user authentication via OAuth or Apple ID sign-in.
-* **FR-USER-02** (Priority: Critical) — Admins can add, edit, remove users and assign roles.
+* **FR-USER-02** (Priority: Critical) — Owners can add, edit, remove users and assign roles.
 * **FR-HOME-01** (Priority: High) — Add/edit home properties with address, photos (display-optimized at upload and cached locally for hero display), and key info.
 * **FR-HOME-02** (Priority: High) — Service provider directory (propane, electric, internet, lawn care, etc.) with contacts and notes.
 * **FR-HOME-03** (Priority: High) — Editable, categorized documents for important details (UI section label: **Files**).
 * **FR-NAV-01** (Priority: High) — Home detail MUST expose four sections labeled **Procedures**, **Contacts**, **Files**, and **People** with device-appropriate navigation (iPhone: hero + horizontal tabs; iPad: compact left-column hero + vertical icon tabs, with a **three-panel** layout — sidebar, section list, and section detail — for every section).
 * **FR-PROC-01** (Priority: High) — Add/edit procedure lists (e.g., winterizing, arrival prep) with persistent status (Not Started / In Progress / Complete / N/A).
-* **FR-PROC-02** (Priority: High) — Procedures contain ordered steps, each with its own status. Admin and Edit users can **create, rename, reorder, and delete** steps on procedures they can modify (per visibility). Guests have read-only access to step content and status.
+* **FR-PROC-02** (Priority: High) — Procedures contain ordered steps, each with its own status. Owner and Manager users can **create, rename, reorder, and delete** steps on procedures they can modify (per visibility). Guests have read-only access to step content and status.
 * **FR-PROC-03** (Priority: High) — Attach notes, photos, or documents to procedures.
 * **FR-GUEST-01** (Priority: Medium) — Guest users view only approved procedures and info.
 * **FR-GUEST-02** (Priority: Medium) — Quick guest onboarding via email or SMS invite.
@@ -84,20 +84,20 @@ HomeFlow is a responsive iOS app (iPhone and iPad) that empowers primary homeown
   * **iPad**: no large hero above main content. Leading column shows a **compact home hero** (photo, name, address) that sets which home is in focus, then **vertical icon tabs** for Procedures, Contacts, Files, and People. The trailing area uses a **three-panel** pattern for **every** section: nested list (middle) and detail (right) inside the trailing column — e.g. procedure list | procedure detail, contact list | contact detail, file list | preview, member list | member detail. No duplicate home hero and no horizontal tab bar in the trailing area.
   * Return to **My Homes** from iPad home detail to switch homes (sidebar is not a persistent home picker while viewing a home).
   * Procedures list shows statuses; tap to drill into steps, update status, add comments or files.
-  * On procedure detail: **tap** a step to toggle complete; **long-press** a step (Admin/Edit) to rename, delete, or reorder; **Add** on the Steps section to create a new step.
+  * On procedure detail: **tap** a step to toggle complete; **long-press** a step (Owner/Manager) to rename, delete, or reorder; **Add** on the Steps section to create a new step.
   * Service provider list is searchable and editable by permitted users.
   * Files library holds house manuals, WiFi info, care instructions (segmented by visibility).
-* **Step 4:** User administration (Admins only): manage house users/roles from settings.
+* **Step 4:** User administration (Owners only): manage house users/roles from settings.
   * Clear prompts for what each user can access/change.
-* **Step 5:** Share information (Admins/Editors): quick share/copy/forward useful info to guests.
+* **Step 5:** Share information (Owners/Managers): quick share/copy/forward useful info to guests.
   * UI guides when info is visible to Guest role or more restricted.
 * **Step 6:** Updates are saved instantly; history of changes is visible.
 
 **Advanced Features & Edge Cases**
 
-* Admin can revoke access instantly if trust changes.
+* Owner can revoke access instantly if trust changes.
 * Steps within a procedure can be skipped/marked N/A (for flexibility).
-* Admin and Edit users can add, rename, reorder, or remove steps; changes sync and appear in the activity log.
+* Owner and Manager users can add, rename, reorder, or remove steps; changes sync and appear in the activity log.
 * If a user is removed, clarify what happens to associated procedures/notes.
 * Error handling: Unavailable features gracefully grayed out, clear messages if permissions are insufficient.
 
@@ -105,7 +105,7 @@ HomeFlow is a responsive iOS app (iPhone and iPad) that empowers primary homeown
 
 * Responsive adaptive UI for all iPhone/iPad orientations; iPhone and iPad use the same four section labels with layout adapted per device class.
 * **Accessibility (first-class)**: UI MUST respect iOS system settings — especially **Dynamic Type / text size**, VoiceOver, Reduce Motion, and sufficient contrast. Layouts MUST reflow at larger text sizes without clipping essential controls or requiring horizontal scrolling for primary content.
-* Procedure steps use checklist gestures: tap to complete, long-press for structure edits (Admin/Edit only).
+* Procedure steps use checklist gestures: tap to complete, long-press for structure edits (Owner/Manager only).
 * Home section tabs use friendly SF Symbol icons paired with labels; minimum 44×44 pt tap targets.
 * **Launch screen**: black background; green house icon + white **HomeFlow** wordmark at ~1.5× prior size with tighter icon-to-text spacing (@1x/@2x/@3x PNG assets in `LaunchLogo` imageset).
 * High-contrast text, large tap targets for accessibility.
@@ -203,45 +203,45 @@ Imagine Diane, a homeowner who spends most of her time in Florida, but owns a ch
 
 > Each AC is atomic — one independently testable assertion. IDs are immutable; see `traceability.md`.
 
-### US-ADMIN-01 / FR-HOME-01 — Admin adds second home details
+### US-ADMIN-01 / FR-HOME-01 — Owner adds second home details
 
-* **AC-HOME-01** — Given an authenticated Admin on a connected device, when they submit valid home details and photos, then the home is created and visible in their dashboard with correct data.
-* **AC-HOME-02** — Given an Admin submits incomplete/invalid home details, when they attempt to save, then validation errors are shown and the home is not created.
-* **AC-HOME-03** — Given an Admin edits home details while offline and another device edits the same home before sync, when both devices reconnect, then the version with the most recent timestamp is applied and a conflict log entry is created for audit.
-* **AC-HOME-06** — Given an Admin or Edit user uploads a home photo, when the photo is saved to Storage, then the client uploads a display-optimized JPEG bounded to a maximum pixel dimension (not full camera resolution).
+* **AC-HOME-01** — Given an authenticated Owner on a connected device, when they submit valid home details and photos, then the home is created and visible in their dashboard with correct data.
+* **AC-HOME-02** — Given an Owner submits incomplete/invalid home details, when they attempt to save, then validation errors are shown and the home is not created.
+* **AC-HOME-03** — Given an Owner edits home details while offline and another device edits the same home before sync, when both devices reconnect, then the version with the most recent timestamp is applied and a conflict log entry is created for audit.
+* **AC-HOME-06** — Given an Owner or Manager user uploads a home photo, when the photo is saved to Storage, then the client uploads a display-optimized JPEG bounded to a maximum pixel dimension (not full camera resolution).
 * **AC-HOME-07** — Given a user has previously loaded a home photo on this device, when they view the dashboard or home detail again, then the hero photo renders from local cache without re-downloading from Storage.
-* **AC-HOME-08** — Given a home record has not yet synced to the server, when an Admin or Edit user attempts to upload a photo, then the upload is blocked and the user sees actionable guidance to sync first (e.g., pull to refresh while online).
+* **AC-HOME-08** — Given a home record has not yet synced to the server, when an Owner or Manager user attempts to upload a photo, then the upload is blocked and the user sees actionable guidance to sync first (e.g., pull to refresh while online).
 * **AC-HOME-09** — Given a user views home detail on iPad (regular horizontal size class), when any section is selected, then the trailing area shows section content only — no full-bleed home hero and no horizontal section tab bar at the home level (nested section list | detail splits are allowed inside the trailing area).
 * **AC-HOME-10** — Given a user opens a home on iPad, when home detail is shown, then the leading column displays a compact home hero (photo, name, address) and vertically stacked tappable section entries with icon and label for Procedures, Contacts, Files, and People; the trailing area shows the selected section using a three-panel layout (sidebar already visible + section list + section detail) for **all four** sections.
 * **AC-HOME-11** — Given a user views home detail on any device, when section navigation is shown, then section labels read Procedures, Contacts, Files, and People (Files implements the document library).
 
-### US-ADMIN-02 / FR-USER-01 — Admin invites users
+### US-ADMIN-02 / FR-USER-01 — Owner invites users
 
-* **AC-USER-01** — Given an Admin provides an email/phone and role and sends an invite, when the invite is accepted, then the invitee is added to the home with the assigned role and receives appropriate permissions immediately.
-* **AC-USER-07** — Given an Admin creates an invite in MVP, when the invitee receives the shared invite link or token and signs in with the invited email, then they can accept the invite (paste token or open link) and join the home with the assigned role.
-* **AC-USER-02** — Given an Admin re-sends or revokes an invite before acceptance, when they revoke, then the invite token becomes invalid and the invitee cannot join with that token.
-* **AC-USER-03** — Given an Admin invites a user while offline and the invite is processed on another device first, when sync occurs, then the most recent action (invite or revoke) by timestamp determines invite state and the Admin receives a notification of the resolved outcome.
+* **AC-USER-01** — Given an Owner provides an email/phone and role and sends an invite, when the invite is accepted, then the invitee is added to the home with the assigned role and receives appropriate permissions immediately.
+* **AC-USER-07** — Given an Owner creates an invite in MVP, when the invitee receives the shared invite link or token and signs in with the invited email, then they can accept the invite (paste token or open link) and join the home with the assigned role.
+* **AC-USER-02** — Given an Owner re-sends or revokes an invite before acceptance, when they revoke, then the invite token becomes invalid and the invitee cannot join with that token.
+* **AC-USER-03** — Given an Owner invites a user while offline and the invite is processed on another device first, when sync occurs, then the most recent action (invite or revoke) by timestamp determines invite state and the Owner receives a notification of the resolved outcome.
 
-### US-ADMIN-03 / FR-USER-02 — Admin assigns permissions
+### US-ADMIN-03 / FR-USER-02 — Owner assigns permissions
 
-* **AC-USER-04** — Given an Admin assigns an Edit role to a user, when the user signs in, then they can create and modify procedures and service providers for that home.
-* **AC-USER-05** — Given an Admin assigns a Guest role to a user, when the guest signs in, then they see only guest-appropriate fields (e.g., WiFi, guest procedures) and cannot edit protected data.
-* **AC-USER-06** — Given concurrent role changes occur on multiple devices, when devices sync, then the change with the most recent timestamp wins and an admin-visible audit entry records the prior role.
+* **AC-USER-04** — Given an Owner assigns a Manager role to a user, when the user signs in, then they can create and modify procedures and service providers for that home.
+* **AC-USER-05** — Given an Owner assigns a Guest role to a user, when the guest signs in, then they see only guest-appropriate fields (e.g., WiFi, guest procedures) and cannot edit protected data.
+* **AC-USER-06** — Given concurrent role changes occur on multiple devices, when devices sync, then the change with the most recent timestamp wins and an owner-visible audit entry records the prior role.
 
-### US-EDIT-01 / FR-PROC-02 — Edit user updates maintenance tasks
+### US-EDIT-01 / FR-PROC-02 — Manager user updates maintenance tasks
 
-* **AC-PROC-01** — Given an Edit user views a procedure, when they mark a step Complete, then the step status updates for all users with appropriate visibility, the procedure's aggregate status and progress in the procedures list update immediately, and an activity log entry is created.
-* **AC-PROC-02** — Given an Edit user attempts to update a step beyond their permission (e.g., another home's admin-only procedure or step), when they submit the change, then the app blocks the update and shows a permission error.
-* **AC-PROC-03** — Given an Edit user updates a step while offline and another user updates the same step before sync, when both devices reconnect, then the update with the most recent timestamp is persisted and the other user receives a notification about the overwritten change with reference to the activity log.
-* **AC-PROC-04** — Given an Admin or Edit user long-presses a step on a procedure they can modify, when the context menu appears, then Rename, Delete, Move Up, and Move Down are available.
-* **AC-PROC-05** — Given an Admin or Edit user taps Add on the Steps section, when they enter a title and save, then a new step is appended at the next sort order and appears for permitted users after sync.
-* **AC-PROC-06** — Given an Admin or Edit user creates, renames, reorders, or deletes a step, when the change syncs, then it persists for permitted users and an activity log entry is created.
+* **AC-PROC-01** — Given a Manager user views a procedure, when they mark a step Complete, then the step status updates for all users with appropriate visibility, the procedure's aggregate status and progress in the procedures list update immediately, and an activity log entry is created.
+* **AC-PROC-02** — Given a Manager user attempts to update a step beyond their permission (e.g., another home's owner-only procedure or step), when they submit the change, then the app blocks the update and shows a permission error.
+* **AC-PROC-03** — Given a Manager user updates a step while offline and another user updates the same step before sync, when both devices reconnect, then the update with the most recent timestamp is persisted and the other user receives a notification about the overwritten change with reference to the activity log.
+* **AC-PROC-04** — Given an Owner or Manager user long-presses a step on a procedure they can modify, when the context menu appears, then Rename, Delete, Move Up, and Move Down are available.
+* **AC-PROC-05** — Given an Owner or Manager user taps Add on the Steps section, when they enter a title and save, then a new step is appended at the next sort order and appears for permitted users after sync.
+* **AC-PROC-06** — Given an Owner or Manager user creates, renames, reorders, or deletes a step, when the change syncs, then it persists for permitted users and an activity log entry is created.
 * **AC-PROC-07** — Given a Guest views a procedure, when they interact with steps, then step structure controls (long-press menu, Add step) are not available and step status remains read-only.
 
-### US-EDIT-02 / FR-HOME-02 — Edit user manages service providers
+### US-EDIT-02 / FR-HOME-02 — Manager user manages service providers
 
-* **AC-HOME-04** — Given an Edit user opens the service provider directory, when they search and select a provider, then they can edit contact details and changes are saved and propagated to permitted users.
-* **AC-HOME-05** — Given an Edit user edits a provider entry that an Admin later deletes on another device before sync, when both devices sync, then the most recent timestamp between edit and delete determines final state; if delete is most recent the provider is removed and the editor receives a notification that their edit was removed due to delete.
+* **AC-HOME-04** — Given a Manager user opens the service provider directory, when they search and select a provider, then they can edit contact details and changes are saved and propagated to permitted users.
+* **AC-HOME-05** — Given a Manager user edits a provider entry that an Owner later deletes on another device before sync, when both devices sync, then the most recent timestamp between edit and delete determines final state; if delete is most recent the provider is removed and the editor receives a notification that their edit was removed due to delete.
 
 ### US-GUEST-01 / FR-GUEST-01 — Guest sees guest-appropriate info only
 
@@ -273,16 +273,16 @@ Imagine Diane, a homeowner who spends most of her time in Florida, but owns a ch
 
 | ID | Type | Summary |
 |----|------|---------|
-| US-ADMIN-01 | User Story | Admin adds home details |
-| US-ADMIN-02 | User Story | Admin invites users |
-| US-ADMIN-03 | User Story | Admin assigns permissions |
-| US-EDIT-01 | User Story | Edit user updates tasks |
-| US-EDIT-02 | User Story | Edit user manages providers |
+| US-ADMIN-01 | User Story | Owner adds home details |
+| US-ADMIN-02 | User Story | Owner invites users |
+| US-ADMIN-03 | User Story | Owner assigns permissions |
+| US-EDIT-01 | User Story | Manager user updates tasks |
+| US-EDIT-02 | User Story | Manager user manages providers |
 | US-GUEST-01 | User Story | Guest sees limited info |
 | US-GUEST-02 | User Story | Guest views guest procedures |
 | FR-USER-01 | FR | Multi-role access per home |
 | FR-AUTH-01 | FR | OAuth / Apple sign-in |
-| FR-USER-02 | FR | Admin user management |
+| FR-USER-02 | FR | Owner user management |
 | FR-HOME-01 | FR | Home CRUD |
 | FR-HOME-02 | FR | Service provider directory |
 | FR-HOME-03 | FR | Document library (UI: Files) |

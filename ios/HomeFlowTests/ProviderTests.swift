@@ -111,7 +111,7 @@ final class ProviderContactLinkTests: XCTestCase {
             website: website,
             hours: nil,
             notes: nil,
-            visibility: .edit
+            visibility: .manager
         )
     }
 }

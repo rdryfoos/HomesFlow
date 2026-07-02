@@ -112,7 +112,7 @@ Section UI label **Files** implements document library (FR-HOME-03); code folder
 
 ## Invites (partial)
 
-- Admin: People tab → Invite → share `homeflow://invite?token=…` link (**AC-USER-07**)
+- Owner: People tab → Invite → share `homeflow://invite?token=…` link (**AC-USER-07**)
 - Invitee: Dashboard → Join with Invite → paste token; must sign in with **invited email**
 - `accept_invite(token)` RPC in migration `002`
 - Deep link / Universal Links **not wired** — manual token paste only

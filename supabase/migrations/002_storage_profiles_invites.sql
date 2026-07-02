@@ -59,7 +59,7 @@ $$;
 
 grant execute on function public.accept_invite(text) to authenticated;
 
--- home-photos: members read; admin/edit write
+-- home-photos: members read; owner/manager write
 create policy home_photos_select on storage.objects for select
   using (
     bucket_id = 'home-photos'
@@ -69,17 +69,17 @@ create policy home_photos_select on storage.objects for select
 create policy home_photos_insert on storage.objects for insert
   with check (
     bucket_id = 'home-photos'
-    and public.get_user_role(((storage.foldername(name))[1])::uuid) in ('admin', 'edit')
+    and public.get_user_role(((storage.foldername(name))[1])::uuid) in ('owner', 'manager')
   );
 
 create policy home_photos_update on storage.objects for update
   using (
     bucket_id = 'home-photos'
-    and public.get_user_role(((storage.foldername(name))[1])::uuid) in ('admin', 'edit')
+    and public.get_user_role(((storage.foldername(name))[1])::uuid) in ('owner', 'manager')
   );
 
 create policy home_photos_delete on storage.objects for delete
   using (
     bucket_id = 'home-photos'
-    and public.get_user_role(((storage.foldername(name))[1])::uuid) in ('admin', 'edit')
+    and public.get_user_role(((storage.foldername(name))[1])::uuid) in ('owner', 'manager')
   );

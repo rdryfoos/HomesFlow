@@ -10,7 +10,7 @@ struct InviteMemberView: View {
     @Environment(\.appEnvironment) private var appEnvironment
 
     @State private var email = ""
-    @State private var role: HomeRole = .edit
+    @State private var role: HomeRole = .manager
     @State private var errorMessage: String?
     @State private var createdInvite: InviteSummary?
     @State private var isSaving = false
@@ -24,8 +24,8 @@ struct InviteMemberView: View {
                         .keyboardType(.emailAddress)
                         .autocapitalization(.none)
                     Picker("Role", selection: $role) {
-                        Text("Edit").tag(HomeRole.edit)
-                        Text("Guest").tag(HomeRole.guest)
+                        Text(HomeRole.manager.displayName).tag(HomeRole.manager)
+                        Text(HomeRole.guest.displayName).tag(HomeRole.guest)
                     }
                 }
 

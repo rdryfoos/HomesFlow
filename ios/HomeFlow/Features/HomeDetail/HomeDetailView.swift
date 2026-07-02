@@ -24,7 +24,7 @@ enum HomeTab: String, CaseIterable, Identifiable {
         switch role {
         case .guest:
             return [.procedures, .contacts, .files]
-        case .admin, .edit:
+        case .owner, .manager:
             return allCases
         }
     }
@@ -49,7 +49,7 @@ struct HomeDetailView: View {
     }
 
     private var canEditHome: Bool {
-        userRole == .admin
+        userRole == .owner
     }
 
     init(home: HomeSummary) {

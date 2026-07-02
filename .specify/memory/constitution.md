@@ -18,7 +18,7 @@ Local caching and offline sync are core from day one. Conflict resolution follow
 
 ### IV. Role-Based Access
 
-Every data operation respects Admin / Edit / Guest roles per home. UI and API must fail closed — insufficient permission blocks the action with a clear message.
+Every data operation respects Owner / Manager / Guest roles per home. UI and API must fail closed — insufficient permission blocks the action with a clear message.
 
 ### V. End-to-End Traceability (NON-NEGOTIABLE)
 

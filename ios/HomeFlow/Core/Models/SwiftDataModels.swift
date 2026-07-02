@@ -71,7 +71,7 @@ final class CachedMembership {
     }
 
     var homeRole: HomeRole {
-        get { HomeRole(rawValue: role) ?? .guest }
+        get { HomeRole(migratingRawValue: role) ?? .guest }
         set { role = newValue.rawValue }
     }
 }
@@ -102,7 +102,7 @@ final class CachedInvite {
     }
 
     var homeRole: HomeRole {
-        get { HomeRole(rawValue: role) ?? .guest }
+        get { HomeRole(migratingRawValue: role) ?? .guest }
         set { role = newValue.rawValue }
     }
 
@@ -168,7 +168,7 @@ final class CachedProcedure {
         category: String? = nil,
         procedureDescription: String? = nil,
         status: ProcedureStatus = .notStarted,
-        visibility: Visibility = .edit,
+        visibility: Visibility = .manager,
         syncStatus: SyncStatus = .synced,
         serverUpdatedAt: Date? = nil
     ) {
@@ -189,7 +189,7 @@ final class CachedProcedure {
     }
 
     var procedureVisibility: Visibility {
-        get { Visibility(rawValue: visibility) ?? .edit }
+        get { Visibility(migratingRawValue: visibility) ?? .manager }
         set { visibility = newValue.rawValue }
     }
 
@@ -207,6 +207,7 @@ final class CachedProcedureStep {
     var title: String
     var status: String
     var notes: String?
+    var photoURL: String?
     var syncStatus: String
     var localUpdatedAt: Date
     var serverUpdatedAt: Date?
@@ -218,6 +219,7 @@ final class CachedProcedureStep {
         title: String,
         status: StepStatus = .notStarted,
         notes: String? = nil,
+        photoURL: String? = nil,
         syncStatus: SyncStatus = .synced,
         localUpdatedAt: Date = .now,
         serverUpdatedAt: Date? = nil
@@ -228,6 +230,7 @@ final class CachedProcedureStep {
         self.title = title
         self.status = status.rawValue
         self.notes = notes
+        self.photoURL = photoURL
         self.syncStatus = syncStatus.rawValue
         self.localUpdatedAt = localUpdatedAt
         self.serverUpdatedAt = serverUpdatedAt
@@ -270,7 +273,7 @@ final class CachedServiceProvider {
         website: String? = nil,
         hours: String? = nil,
         notes: String? = nil,
-        visibility: Visibility = .edit,
+        visibility: Visibility = .manager,
         syncStatus: SyncStatus = .pending,
         localUpdatedAt: Date = .now,
         serverUpdatedAt: Date? = nil
@@ -291,7 +294,7 @@ final class CachedServiceProvider {
     }
 
     var providerVisibility: Visibility {
-        get { Visibility(rawValue: visibility) ?? .edit }
+        get { Visibility(migratingRawValue: visibility) ?? .manager }
         set { visibility = newValue.rawValue }
     }
 

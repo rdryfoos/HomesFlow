@@ -5,68 +5,68 @@ import Foundation
 struct PermissionService: Sendable {
     func can(_ action: PermissionAction, entity: PermissionEntity, role: HomeRole) -> Bool {
         switch (action, entity, role) {
-        case (.create, .home, .admin):
+        case (.create, .home, .owner):
             return true
-        case (.update, .home, .admin), (.delete, .home, .admin):
+        case (.update, .home, .owner), (.delete, .home, .owner):
             return true
         case (.read, .home, _):
             return true
 
-        case (.create, .membership, .admin), (.update, .membership, .admin), (.delete, .membership, .admin):
+        case (.create, .membership, .owner), (.update, .membership, .owner), (.delete, .membership, .owner):
             return true
         case (.read, .membership, _):
             return true
 
-        case (_, .invite, .admin):
+        case (_, .invite, .owner):
             return true
         case (_, .invite, _):
             return false
 
         case (.read, .serviceProvider(let vis), let r):
             return visibilityAllows(role: r, visibility: vis)
-        case (.create, .serviceProvider, .admin), (.create, .serviceProvider, .edit):
+        case (.create, .serviceProvider, .owner), (.create, .serviceProvider, .manager):
             return true
-        case (.update, .serviceProvider, .admin), (.update, .serviceProvider, .edit):
+        case (.update, .serviceProvider, .owner), (.update, .serviceProvider, .manager):
             return true
-        case (.delete, .serviceProvider, .admin), (.delete, .serviceProvider, .edit):
+        case (.delete, .serviceProvider, .owner), (.delete, .serviceProvider, .manager):
             return true
 
         case (.read, .document(let vis), let r):
             return visibilityAllows(role: r, visibility: vis)
-        case (.create, .document, .admin), (.create, .document, .edit):
+        case (.create, .document, .owner), (.create, .document, .manager):
             return true
-        case (.update, .document, .admin), (.update, .document, .edit):
+        case (.update, .document, .owner), (.update, .document, .manager):
             return true
-        case (.delete, .document, .admin), (.delete, .document, .edit):
+        case (.delete, .document, .owner), (.delete, .document, .manager):
             return true
 
         case (.read, .procedure(let vis), let r):
             return visibilityAllows(role: r, visibility: vis)
-        case (.create, .procedure, .admin), (.create, .procedure, .edit):
+        case (.create, .procedure, .owner), (.create, .procedure, .manager):
             return true
-        case (.update, .procedure, .admin), (.update, .procedure, .edit):
+        case (.update, .procedure, .owner), (.update, .procedure, .manager):
             return true
-        case (.delete, .procedure, .admin), (.delete, .procedure, .edit):
+        case (.delete, .procedure, .owner), (.delete, .procedure, .manager):
             return true
 
         case (.read, .procedureStep(let vis), let r):
             return visibilityAllows(role: r, visibility: vis)
-        case (.updateStepStatus, .procedureStep(let vis), .admin):
-            return visibilityAllows(role: .admin, visibility: vis)
-        case (.updateStepStatus, .procedureStep(let vis), .edit):
-            return visibilityAllows(role: .edit, visibility: vis)
+        case (.updateStepStatus, .procedureStep(let vis), .owner):
+            return visibilityAllows(role: .owner, visibility: vis)
+        case (.updateStepStatus, .procedureStep(let vis), .manager):
+            return visibilityAllows(role: .manager, visibility: vis)
         case (.updateStepStatus, .procedureStep, .guest):
             return false
 
         // Step structure (create/rename/reorder/delete) — AC-PROC-04…07
-        case (.create, .procedureStep(let vis), .admin),
-             (.update, .procedureStep(let vis), .admin),
-             (.delete, .procedureStep(let vis), .admin):
-            return visibilityAllows(role: .admin, visibility: vis)
-        case (.create, .procedureStep(let vis), .edit),
-             (.update, .procedureStep(let vis), .edit),
-             (.delete, .procedureStep(let vis), .edit):
-            return visibilityAllows(role: .edit, visibility: vis)
+        case (.create, .procedureStep(let vis), .owner),
+             (.update, .procedureStep(let vis), .owner),
+             (.delete, .procedureStep(let vis), .owner):
+            return visibilityAllows(role: .owner, visibility: vis)
+        case (.create, .procedureStep(let vis), .manager),
+             (.update, .procedureStep(let vis), .manager),
+             (.delete, .procedureStep(let vis), .manager):
+            return visibilityAllows(role: .manager, visibility: vis)
         case (.create, .procedureStep, .guest),
              (.update, .procedureStep, .guest),
              (.delete, .procedureStep, .guest):
@@ -84,10 +84,10 @@ struct PermissionService: Sendable {
 
     func visibilityAllows(role: HomeRole, visibility: Visibility) -> Bool {
         switch role {
-        case .admin:
+        case .owner:
             return true
-        case .edit:
-            return visibility == .edit || visibility == .guest
+        case .manager:
+            return visibility == .manager || visibility == .guest
         case .guest:
             return visibility == .guest
         }

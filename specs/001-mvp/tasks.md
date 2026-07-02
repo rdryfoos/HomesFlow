@@ -73,7 +73,7 @@ Partial deliverables documented in [dev-notes.md](./dev-notes.md). **Do not** en
 
 ---
 
-## Phase 4: User Story — Admin creates/edits home (P1)
+## Phase 4: User Story — Owner creates/edits home (P1)
 
 **Goal**: Home CRUD + offline home edit — **US-ADMIN-01**
 
@@ -102,7 +102,7 @@ Partial deliverables documented in [dev-notes.md](./dev-notes.md). **Do not** en
 
 ---
 
-## Phase 5: User Story — Admin invites & roles (P1)
+## Phase 5: User Story — Owner invites & roles (P1)
 
 **Goal**: Invites, memberships, role enforcement — **US-ADMIN-02**, **US-ADMIN-03**
 
@@ -148,7 +148,7 @@ Partial deliverables documented in [dev-notes.md](./dev-notes.md). **Do not** en
 
 ---
 
-## Phase 7: User Story — Edit user procedures (P2)
+## Phase 7: User Story — Manager user procedures (P2)
 
 **Goal**: Procedure list, steps, status updates, step structure editing — **US-EDIT-01**
 
@@ -156,7 +156,7 @@ Partial deliverables documented in [dev-notes.md](./dev-notes.md). **Do not** en
 
 - [x] T041 [US-EDIT-01] Procedures list with progress (e.g. 2/6) in `ios/HomeFlow/Features/Procedures/` — **Traces**: FR-PROC-01, FR-PROC-02
 - [x] T042 [US-EDIT-01] Procedure detail: step checklist, status toggle, N/A option — **Traces**: FR-PROC-02, AC-PROC-01
-- [ ] T043 [US-EDIT-01] Step notes + photo attach (Storage) — **Traces**: FR-PROC-03 — *notes done; photos pending*
+- [x] T043 [US-EDIT-01] Step notes + photo attach (Storage) — **Traces**: FR-PROC-03
 - [x] T044 [US-EDIT-01] Block step update when permission insufficient — **Traces**: AC-PROC-02
 - [x] T045 [US-EDIT-01] Offline step conflict + notification — **Traces**: AC-PROC-03, AC-SYNC-01
 - [x] T046 [P] [US-EDIT-01] Recent activity section on procedure detail — **Traces**: FR-LOG-01, AC-PROC-01
@@ -170,13 +170,13 @@ Partial deliverables documented in [dev-notes.md](./dev-notes.md). **Do not** en
 - [x] T048 [P] [US-EDIT-01] Unit test `test_AC_PROC_01_step_complete_creates_log` — **Traces**: AC-PROC-01 — *ProcedureAggregatorTests*
 - [x] T049 [P] [US-EDIT-01] Unit test `test_AC_PROC_02_permission_denied_blocks_update` — **Traces**: AC-PROC-02
 - [x] T050 [US-EDIT-01] Unit test `test_AC_PROC_03_offline_step_conflict` — **Traces**: AC-PROC-03
-- [x] T050a [P] [US-EDIT-01] Unit test `test_AC_PROC_04_edit_can_manage_step_structure` — **Traces**: AC-PROC-04, AC-PROC-05 — *StepStructureTests*
+- [x] T050a [P] [US-EDIT-01] Unit test `test_AC_PROC_04_manager_can_manage_step_structure` — **Traces**: AC-PROC-04, AC-PROC-05 — *StepStructureTests*
 - [x] T050b [P] [US-EDIT-01] Unit test `test_AC_PROC_06_step_structure_change_logged` — **Traces**: AC-PROC-06 — *StepStructureTests*
 - [x] T050c [P] [US-EDIT-01] Unit test `test_AC_PROC_07_guest_no_step_structure_controls` — **Traces**: AC-PROC-07 — *StepStructureTests*
 
 ---
 
-## Phase 8: User Story — Edit user service providers (P2)
+## Phase 8: User Story — Manager user service providers (P2)
 
 **Goal**: Contacts tab = service provider directory — **US-EDIT-02**, **FR-HOME-02**
 
@@ -227,7 +227,7 @@ Partial deliverables documented in [dev-notes.md](./dev-notes.md). **Do not** en
 - [ ] T066 [P] [FR-NOTIF-01] Settings screen: account, notification toggle disabled (“Coming soon”) in `ios/HomeFlow/Features/Settings/` — **Traces**: FR-NOTIF-01
 - [ ] T066a [P] Accessibility baseline: Dynamic Type layouts, VoiceOver labels on section tabs, Reduce Motion, 44pt targets across dashboard/home/procedures — **Traces**: NFR-A11Y-01, AC-A11Y-01, AC-A11Y-02, AC-A11Y-03
 - [x] T067 [P] Sign out clears session — **Traces**: FR-AUTH-01 — *dashboard toolbar today; Settings screen Phase 10*
-- [ ] T068 Admin revoke member access → lose access on next sync — **Traces**: FR-USER-02
+- [ ] T068 Owner revoke member access → lose access on next sync — **Traces**: FR-USER-02
 
 ### Tests
 

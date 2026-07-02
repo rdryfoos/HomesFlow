@@ -356,9 +356,9 @@ private struct ProviderFormView: View {
                 }
                 Section {
                     Picker("Visible to", selection: $draft.visibility) {
-                        Text("Admins only").tag(Visibility.admin)
-                        Text("Admin & Edit").tag(Visibility.edit)
-                        Text("Everyone (incl. guests)").tag(Visibility.guest)
+                        ForEach(Visibility.allCases, id: \.self) { level in
+                            Text(level.displayName).tag(level)
+                        }
                     }
                 } footer: {
                     Text("Guests only see contacts marked visible to everyone.")

@@ -18,7 +18,7 @@
 
 **Decision**: Supabase (PostgreSQL, Auth, Storage, Realtime, RLS).
 
-**Rationale**: Clarify decision. Auth supports Apple + email/password. RLS maps cleanly to Admin/Edit/Guest per home. Realtime optional enhancement when online; offline handled client-side.
+**Rationale**: Clarify decision. Auth supports Apple + email/password. RLS maps cleanly to Owner/Manager/Guest per home. Realtime optional enhancement when online; offline handled client-side.
 
 **Alternatives rejected**: Firebase (less SQL-friendly for relational home/membership model); custom API server (too much ops for solo MVP).
 
@@ -78,7 +78,7 @@
 | Procedures | FR-PROC-* | Figma “Tasks” → Procedures in spec |
 | Contacts | FR-HOME-02 | Service providers directory only |
 | Files | FR-HOME-03 | Document library; UI label **Files** (not Documents) |
-| People | FR-USER-* | Members, invites, roles (Admin) |
+| People | FR-USER-* | Members, invites, roles (Owner) |
 
 **iPad home detail (D10b)**: Three-panel layout on every section — leading sidebar (compact hero + vertical tabs) + nested list | detail in the trailing area (**AC-HOME-09…10**, **FR-NAV-01**). iPad **My Homes** dashboard cards are tall (~528pt) with vertically centered photos. Return to **My Homes** to switch homes.
 

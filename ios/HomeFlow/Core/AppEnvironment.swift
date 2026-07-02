@@ -11,6 +11,7 @@ final class AppEnvironment: ObservableObject {
     let memberRepository: MemberRepository
     let procedureRepository: ProcedureRepository
     let providerRepository: ServiceProviderRepository
+    let procedureAttachmentService: ProcedureAttachmentService
 
     init(modelContext: ModelContext) {
         auth = SupabaseClientProvider.shared
@@ -21,6 +22,7 @@ final class AppEnvironment: ObservableObject {
             activityLog: activityLog
         )
         homePhotoService = HomePhotoService(client: auth.client)
+        procedureAttachmentService = ProcedureAttachmentService(client: auth.client)
         homeRepository = HomeRepository(
             modelContext: modelContext,
             auth: auth,
@@ -37,7 +39,8 @@ final class AppEnvironment: ObservableObject {
             modelContext: modelContext,
             auth: auth,
             activityLog: activityLog,
-            syncEngine: syncEngine
+            syncEngine: syncEngine,
+            attachmentService: procedureAttachmentService
         )
         providerRepository = ServiceProviderRepository(
             modelContext: modelContext,

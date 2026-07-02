@@ -32,7 +32,7 @@ struct MembersView: View {
             await reload()
         }
         .toolbar {
-            if viewModel.snapshot.currentUserRole == .admin {
+            if viewModel.snapshot.currentUserRole == .owner {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
                         showInviteSheet = true
@@ -69,7 +69,7 @@ struct MembersView: View {
         if let member = selectedMember {
             MemberDetailPanel(
                 member: member,
-                canManage: viewModel.snapshot.currentUserRole == .admin,
+                canManage: viewModel.snapshot.currentUserRole == .owner,
                 onRoleChange: { role in
                     Task {
                         await viewModel.updateRole(
@@ -108,7 +108,7 @@ struct MembersView: View {
             }
         } else {
             List {
-                membersSections(showRolePicker: viewModel.snapshot.currentUserRole == .admin)
+                membersSections(showRolePicker: viewModel.snapshot.currentUserRole == .owner)
             }
         }
     }
@@ -150,7 +150,7 @@ struct MembersView: View {
                 ForEach(viewModel.snapshot.pendingInvites) { invite in
                     InviteRow(
                         invite: invite,
-                        canRevoke: viewModel.snapshot.currentUserRole == .admin,
+                        canRevoke: viewModel.snapshot.currentUserRole == .owner,
                         onRevoke: {
                             Task {
                                 await viewModel.revoke(
@@ -182,16 +182,16 @@ private struct MemberDetailPanel: View {
             Section {
                 LabeledContent("Name", value: member.displayName)
                 LabeledContent("Email", value: member.email)
-                if canManage && member.role != .admin {
+                if canManage && member.role != .owner {
                     Picker("Role", selection: Binding(
                         get: { member.role },
                         set: { onRoleChange($0) }
                     )) {
-                        Text("Edit").tag(HomeRole.edit)
-                        Text("Guest").tag(HomeRole.guest)
+                        Text(HomeRole.manager.displayName).tag(HomeRole.manager)
+                        Text(HomeRole.guest.displayName).tag(HomeRole.guest)
                     }
                 } else {
-                    LabeledContent("Role", value: member.role.rawValue.capitalized)
+                    LabeledContent("Role", value: member.role.displayName)
                 }
             }
         }
@@ -212,17 +212,17 @@ private struct MemberRow: View {
                 Text(member.email).font(.caption).foregroundStyle(.secondary)
             }
             Spacer()
-            if canManage && member.role != .admin {
+            if canManage && member.role != .owner {
                 Picker("Role", selection: Binding(
                     get: { member.role },
                     set: { onRoleChange($0) }
                 )) {
-                    Text("Edit").tag(HomeRole.edit)
-                    Text("Guest").tag(HomeRole.guest)
+                    Text(HomeRole.manager.displayName).tag(HomeRole.manager)
+                    Text(HomeRole.guest.displayName).tag(HomeRole.guest)
                 }
                 .pickerStyle(.menu)
             } else {
-                Text(member.role.rawValue.capitalized)
+                Text(member.role.displayName)
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
             }
@@ -240,7 +240,7 @@ private struct InviteRow: View {
             HStack {
                 VStack(alignment: .leading, spacing: 2) {
                     Text(invite.email).font(.headline)
-                    Text("\(invite.role.rawValue.capitalized) · Pending")
+                    Text("\(invite.role.displayName) · Pending")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }

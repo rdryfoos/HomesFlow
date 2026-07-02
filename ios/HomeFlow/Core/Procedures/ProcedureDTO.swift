@@ -26,12 +26,14 @@ struct ProcedureStepDTO: Codable, Sendable {
     let title: String
     let status: StepStatus
     let notes: String?
+    let photoURL: String?
     let updatedAt: Date?
 
     enum CodingKeys: String, CodingKey {
         case id, title, status, notes
         case procedureId = "procedure_id"
         case sortOrder = "sort_order"
+        case photoURL = "photo_url"
         case updatedAt = "updated_at"
     }
 }
@@ -70,11 +72,18 @@ struct ProcedureStepSummary: Identifiable, Sendable, Hashable {
     let title: String
     let status: StepStatus
     let notes: String?
+    let photoURL: String?
 }
 
 enum StepMoveDirection: Sendable {
     case up
     case down
+}
+
+enum StepPhotoChange: Sendable {
+    case unchanged
+    case set(Data)
+    case remove
 }
 
 enum StepStructureAction: String, Sendable {

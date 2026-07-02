@@ -6,42 +6,42 @@ import XCTest
 final class StepStructurePermissionTests: XCTestCase {
     let permissions = PermissionService()
 
-    // T050a — AC-PROC-04: Admin and Edit can create, rename, reorder, and delete steps.
-    func test_AC_PROC_04_admin_can_manage_step_structure() {
+    // T050a — AC-PROC-04: Owner and Manager can create, rename, reorder, and delete steps.
+    func test_AC_PROC_04_owner_can_manage_step_structure() {
         for action in [PermissionAction.create, .update, .delete] {
             XCTAssertTrue(
                 permissions.can(
                     action,
-                    entity: .procedureStep(procedureVisibility: .admin),
-                    role: .admin
+                    entity: .procedureStep(procedureVisibility: .owner),
+                    role: .owner
                 ),
-                "Admin should be allowed to \(action) steps"
+                "Owner should be allowed to \(action) steps"
             )
         }
     }
 
-    func test_AC_PROC_04_edit_can_manage_step_structure() {
+    func test_AC_PROC_04_manager_can_manage_step_structure() {
         for action in [PermissionAction.create, .update, .delete] {
             XCTAssertTrue(
                 permissions.can(
                     action,
-                    entity: .procedureStep(procedureVisibility: .edit),
-                    role: .edit
+                    entity: .procedureStep(procedureVisibility: .manager),
+                    role: .manager
                 ),
-                "Edit should be allowed to \(action) steps on edit-visible procedures"
+                "Manager should be allowed to \(action) steps on manager-visible procedures"
             )
         }
     }
 
-    func test_AC_PROC_04_edit_cannot_manage_admin_only_procedure_steps() {
+    func test_AC_PROC_04_manager_cannot_manage_owner_only_procedure_steps() {
         for action in [PermissionAction.create, .update, .delete] {
             XCTAssertFalse(
                 permissions.can(
                     action,
-                    entity: .procedureStep(procedureVisibility: .admin),
-                    role: .edit
+                    entity: .procedureStep(procedureVisibility: .owner),
+                    role: .manager
                 ),
-                "Edit should not be allowed to \(action) steps on admin-only procedures"
+                "Manager should not be allowed to \(action) steps on owner-only procedures"
             )
         }
     }
@@ -117,7 +117,8 @@ final class StepStructureOrderingTests: XCTestCase {
                 sortOrder: order,
                 title: "Step \(order)",
                 status: .notStarted,
-                notes: nil
+                notes: nil,
+                photoURL: nil
             )
         }
     }

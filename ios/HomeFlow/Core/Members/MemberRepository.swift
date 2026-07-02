@@ -29,10 +29,10 @@ final class MemberRepository: ObservableObject {
 
     func createInvite(homeId: UUID, email: String, role: HomeRole) async throws -> InviteSummary {
         guard let userId = auth.session?.user.id else { throw AuthError.notSignedIn }
-        guard role == .edit || role == .guest else { throw MemberError.invalidInviteRole }
+        guard role == .manager || role == .guest else { throw MemberError.invalidInviteRole }
 
         let snapshot = try await fetchHomeMembers(homeId: homeId)
-        guard snapshot.currentUserRole == .admin else { throw MemberError.notAuthorized }
+        guard snapshot.currentUserRole == .owner else { throw MemberError.notAuthorized }
 
         let trimmedEmail = email.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
         guard trimmedEmail.contains("@") else { throw MemberError.invalidEmail }
@@ -85,7 +85,7 @@ final class MemberRepository: ObservableObject {
     func revokeInvite(homeId: UUID, inviteId: UUID) async throws {
         guard let userId = auth.session?.user.id else { throw AuthError.notSignedIn }
         let snapshot = try await fetchHomeMembers(homeId: homeId)
-        guard snapshot.currentUserRole == .admin else { throw MemberError.notAuthorized }
+        guard snapshot.currentUserRole == .owner else { throw MemberError.notAuthorized }
 
         struct RevokeUpdate: Encodable {
             let status: InviteStatus = .revoked
@@ -111,10 +111,10 @@ final class MemberRepository: ObservableObject {
 
     func updateMemberRole(homeId: UUID, membershipId: UUID, role: HomeRole) async throws {
         guard let userId = auth.session?.user.id else { throw AuthError.notSignedIn }
-        guard role != .admin else { throw MemberError.cannotAssignAdmin }
+        guard role != .owner else { throw MemberError.cannotAssignOwner }
 
         let snapshot = try await fetchHomeMembers(homeId: homeId)
-        guard snapshot.currentUserRole == .admin else { throw MemberError.notAuthorized }
+        guard snapshot.currentUserRole == .owner else { throw MemberError.notAuthorized }
         guard let member = snapshot.members.first(where: { $0.id == membershipId }) else {
             throw MemberError.notFound
         }
@@ -288,15 +288,15 @@ enum MemberError: LocalizedError {
     case notAuthorized
     case invalidEmail
     case invalidInviteRole
-    case cannotAssignAdmin
+    case cannotAssignOwner
     case notFound
 
     var errorDescription: String? {
         switch self {
         case .notAuthorized: "You don't have permission to manage members."
         case .invalidEmail: "Enter a valid email address."
-        case .invalidInviteRole: "Invites can only assign Edit or Guest roles."
-        case .cannotAssignAdmin: "Admin role is assigned to the home creator only."
+        case .invalidInviteRole: "Invites can only assign Manager or Guest roles."
+        case .cannotAssignOwner: "Owner role is assigned to the home creator only."
         case .notFound: "Member not found."
         }
     }

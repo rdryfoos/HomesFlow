@@ -1,4 +1,5 @@
 import SwiftUI
+import PhotosUI
 
 // @covers FR-PROC-02, FR-PROC-03, FR-LOG-01, AC-PROC-01, AC-PROC-02, AC-PROC-04, AC-PROC-05, AC-PROC-07, AC-GUEST-04
 
@@ -7,11 +8,9 @@ struct ProcedureDetailView: View {
     let procedureId: UUID
     @Environment(\.appEnvironment) private var appEnvironment
     @StateObject private var viewModel = ProcedureDetailViewModel()
-    @State private var notesStep: ProcedureStepSummary?
+    @State private var editingStep: ProcedureStepSummary?
     @State private var isAddingStep = false
     @State private var newStepTitle = ""
-    @State private var renameTarget: ProcedureStepSummary?
-    @State private var renameTitle = ""
     @State private var deleteTarget: ProcedureStepSummary?
 
     private var userRole: HomeRole {
@@ -39,23 +38,29 @@ struct ProcedureDetailView: View {
             await reload()
         }
         .task { await reload() }
-        .sheet(item: $notesStep) { step in
-            StepNotesEditor(
-                stepTitle: step.title,
-                initialNotes: step.notes ?? "",
-                onSave: { notes in
+        .sheet(item: $editingStep) { step in
+            StepEditorSheet(
+                homeId: home.id,
+                procedureId: procedureId,
+                step: step,
+                canEditTitle: viewModel.canManageStructure,
+                onSave: { title, notes, photoChange in
                     Task {
-                        await viewModel.updateNotes(
+                        await viewModel.updateStepDetails(
                             homeId: home.id,
                             procedureId: procedureId,
                             stepId: step.id,
+                            title: title,
                             notes: notes,
+                            photoChange: photoChange,
+                            canEditTitle: viewModel.canManageStructure,
                             userRole: userRole,
                             using: appEnvironment?.procedureRepository
                         )
                     }
                 }
             )
+            .environment(\.appEnvironment, appEnvironment)
         }
         .alert("Add Step", isPresented: $isAddingStep) {
             TextField("Step title", text: $newStepTitle)
@@ -74,30 +79,6 @@ struct ProcedureDetailView: View {
             }
         } message: {
             Text("The new step is added at the end of the list.")
-        }
-        .alert(
-            "Rename Step",
-            isPresented: Binding(
-                get: { renameTarget != nil },
-                set: { if !$0 { renameTarget = nil } }
-            )
-        ) {
-            TextField("Step title", text: $renameTitle)
-            Button("Cancel", role: .cancel) {}
-            Button("Save") {
-                guard let step = renameTarget else { return }
-                let title = renameTitle
-                Task {
-                    await viewModel.renameStep(
-                        homeId: home.id,
-                        procedureId: procedureId,
-                        stepId: step.id,
-                        title: title,
-                        userRole: userRole,
-                        using: appEnvironment?.procedureRepository
-                    )
-                }
-            }
         }
         .confirmationDialog(
             "Delete \"\(deleteTarget?.title ?? "step")\"?",
@@ -162,16 +143,15 @@ struct ProcedureDetailView: View {
                                 }
                             },
                             onEditNotes: {
-                                notesStep = step
+                                editingStep = step
                             }
                         )
                         .contextMenu {
                             if viewModel.canManageStructure {
                                 Button {
-                                    renameTitle = step.title
-                                    renameTarget = step
+                                    editingStep = step
                                 } label: {
-                                    Label("Rename", systemImage: "pencil")
+                                    Label("Edit", systemImage: "pencil")
                                 }
                                 Button {
                                     moveStep(step, direction: .up)
@@ -212,7 +192,7 @@ struct ProcedureDetailView: View {
                     }
                 } footer: {
                     if viewModel.canManageStructure {
-                        Text("Touch and hold a step to rename, reorder, or delete it.")
+                        Text("Touch and hold a step to edit, reorder, or delete it.")
                     } else if !viewModel.canEdit {
                         Text("Step statuses are read-only for guest accounts.")
                     }
@@ -289,19 +269,24 @@ private struct ProcedureStepRow: View {
                         .font(.caption)
                         .foregroundStyle(.tertiary)
                 }
+                if step.photoURL != nil {
+                    Label("Photo attached", systemImage: "photo")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
             }
 
             Spacer(minLength: 8)
 
             if canEdit {
                 Button(action: onEditNotes) {
-                    Image(systemName: step.notes?.isEmpty == false ? "note.text" : "square.and.pencil")
+                    Image(systemName: stepAccessoryIcon)
                         .font(.body)
                         .foregroundStyle(.secondary)
                         .frame(width: 28, height: 28)
                 }
                 .buttonStyle(.plain)
-                .accessibilityLabel("Edit notes for \(step.title)")
+                .accessibilityLabel(stepAccessoryAccessibilityLabel)
 
                 Menu {
                     ForEach(StepStatus.allCases, id: \.self) { status in
@@ -347,6 +332,16 @@ private struct ProcedureStepRow: View {
         case .notStarted, .inProgress:
             return .complete
         }
+    }
+
+    private var stepAccessoryIcon: String {
+        if step.photoURL != nil { return "photo" }
+        if step.notes?.isEmpty == false { return "note.text" }
+        return "square.and.pencil"
+    }
+
+    private var stepAccessoryAccessibilityLabel: String {
+        "Edit details for \(step.title)"
     }
 
     private func statusLabel(_ status: StepStatus) -> String {
@@ -404,34 +399,81 @@ private struct ActivityLogRow: View {
     }
 }
 
-private struct StepNotesEditor: View {
-    let stepTitle: String
-    let initialNotes: String
-    let onSave: (String) -> Void
+private struct StepEditorSheet: View {
+    let homeId: UUID
+    let procedureId: UUID
+    let step: ProcedureStepSummary
+    let canEditTitle: Bool
+    let onSave: (String?, String?, StepPhotoChange) -> Void
 
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.appEnvironment) private var appEnvironment
+    @State private var title: String
     @State private var notes: String
+    @State private var selectedPhoto: PhotosPickerItem?
+    @State private var selectedPhotoData: Data?
+    @State private var removeExistingPhoto = false
 
-    init(stepTitle: String, initialNotes: String, onSave: @escaping (String) -> Void) {
-        self.stepTitle = stepTitle
-        self.initialNotes = initialNotes
+    init(
+        homeId: UUID,
+        procedureId: UUID,
+        step: ProcedureStepSummary,
+        canEditTitle: Bool,
+        onSave: @escaping (String?, String?, StepPhotoChange) -> Void
+    ) {
+        self.homeId = homeId
+        self.procedureId = procedureId
+        self.step = step
+        self.canEditTitle = canEditTitle
         self.onSave = onSave
-        _notes = State(initialValue: initialNotes)
+        _title = State(initialValue: step.title)
+        _notes = State(initialValue: step.notes ?? "")
     }
 
     var body: some View {
         NavigationStack {
             Form {
-                Section {
+                if canEditTitle {
+                    Section("Title") {
+                        TextField("Step title", text: $title)
+                    }
+                }
+
+                Section("Notes") {
                     TextEditor(text: $notes)
-                        .frame(minHeight: 140)
+                        .frame(minHeight: 120)
+                }
+
+                Section {
+                    StepPhotoThumbnail(
+                        photoData: selectedPhotoData,
+                        storagePath: removeExistingPhoto ? nil : step.photoURL
+                    )
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 160)
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
+
+                    PhotosPicker(selection: $selectedPhoto, matching: .images) {
+                        Text(hasPhoto ? "Change photo" : "Add photo")
+                    }
+                    .onChange(of: selectedPhoto) { _, item in
+                        Task { await loadPhoto(from: item) }
+                    }
+
+                    if hasPhoto {
+                        Button("Remove photo", role: .destructive) {
+                            selectedPhoto = nil
+                            selectedPhotoData = nil
+                            removeExistingPhoto = true
+                        }
+                    }
                 } header: {
-                    Text(stepTitle)
+                    Text("Photo")
                 } footer: {
-                    Text("Notes are visible to everyone who can view this procedure.")
+                    Text("Notes and photos are visible to everyone who can view this procedure.")
                 }
             }
-            .navigationTitle("Step notes")
+            .navigationTitle("Edit Step")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -439,13 +481,101 @@ private struct StepNotesEditor: View {
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Save") {
-                        onSave(notes)
+                        let photoChange: StepPhotoChange
+                        if let selectedPhotoData {
+                            photoChange = .set(selectedPhotoData)
+                        } else if removeExistingPhoto {
+                            photoChange = .remove
+                        } else {
+                            photoChange = .unchanged
+                        }
+                        onSave(
+                            canEditTitle ? title : nil,
+                            notes,
+                            photoChange
+                        )
                         dismiss()
                     }
                 }
             }
         }
         .presentationDetents([.medium, .large])
+    }
+
+    private var hasPhoto: Bool {
+        selectedPhotoData != nil || (step.photoURL != nil && !removeExistingPhoto)
+    }
+
+    private func loadPhoto(from item: PhotosPickerItem?) async {
+        guard let item else {
+            selectedPhotoData = nil
+            return
+        }
+        if let data = try? await item.loadTransferable(type: Data.self) {
+            selectedPhotoData = data
+            removeExistingPhoto = false
+        }
+    }
+}
+
+private struct StepPhotoThumbnail: View {
+    @Environment(\.appEnvironment) private var appEnvironment
+
+    let photoData: Data?
+    let storagePath: String?
+
+    @State private var loadedImage: UIImage?
+
+    var body: some View {
+        Group {
+            if let image = displayedImage {
+                Image(uiImage: image)
+                    .resizable()
+                    .scaledToFill()
+            } else {
+                ZStack {
+                    RoundedRectangle(cornerRadius: 10)
+                        .fill(Color.secondary.opacity(0.12))
+                    Image(systemName: "photo")
+                        .font(.largeTitle)
+                        .foregroundStyle(.secondary)
+                }
+            }
+        }
+        .task(id: loadKey) {
+            await loadPhotoIfNeeded()
+        }
+    }
+
+    private var loadKey: String {
+        "\(storagePath ?? "")|\(photoData?.count ?? 0)"
+    }
+
+    private var displayedImage: UIImage? {
+        if let photoData, let image = UIImage(data: photoData) {
+            return image
+        }
+        return loadedImage
+    }
+
+    private func loadPhotoIfNeeded() async {
+        if photoData != nil {
+            loadedImage = photoData.flatMap(UIImage.init(data:))
+            return
+        }
+
+        guard let path = storagePath,
+              let repo = appEnvironment?.procedureRepository else {
+            loadedImage = nil
+            return
+        }
+
+        if let cached = repo.cachedStepPhoto(for: path) {
+            loadedImage = cached
+            return
+        }
+
+        loadedImage = try? await repo.loadStepPhoto(storagePath: path)
     }
 }
 
@@ -525,6 +655,41 @@ final class ProcedureDetailViewModel: ObservableObject {
                 procedureId: procedureId,
                 stepId: stepId,
                 status: status,
+                userRole: userRole
+            )
+            await refreshAfterMutation(
+                procedureId: procedureId,
+                homeId: homeId,
+                userRole: userRole,
+                using: repository
+            )
+            errorMessage = nil
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
+
+    func updateStepDetails(
+        homeId: UUID,
+        procedureId: UUID,
+        stepId: UUID,
+        title: String?,
+        notes: String?,
+        photoChange: StepPhotoChange,
+        canEditTitle: Bool,
+        userRole: HomeRole,
+        using repository: ProcedureRepository?
+    ) async {
+        guard let repository else { return }
+        do {
+            try await repository.updateStepDetails(
+                homeId: homeId,
+                procedureId: procedureId,
+                stepId: stepId,
+                title: title,
+                notes: notes,
+                photoChange: photoChange,
+                canEditTitle: canEditTitle,
                 userRole: userRole
             )
             await refreshAfterMutation(

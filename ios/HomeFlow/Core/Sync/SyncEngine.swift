@@ -166,6 +166,7 @@ final class SyncEngine: ObservableObject {
             let title: String
             let status: StepStatus
             let notes: String?
+            let photo_url: String?
         }
 
         try await client
@@ -176,7 +177,8 @@ final class SyncEngine: ObservableObject {
                 sort_order: step.sortOrder,
                 title: step.title,
                 status: step.stepStatus,
-                notes: step.notes
+                notes: step.notes,
+                photo_url: step.photoURL
             ))
             .execute()
 
@@ -212,6 +214,7 @@ final class SyncEngine: ObservableObject {
             let title: String
             let status: StepStatus
             let notes: String?
+            let photo_url: String?
         }
 
         try await client
@@ -220,7 +223,8 @@ final class SyncEngine: ObservableObject {
                 sort_order: step.sortOrder,
                 title: step.title,
                 status: step.stepStatus,
-                notes: step.notes
+                notes: step.notes,
+                photo_url: step.photoURL
             ))
             .eq("id", value: step.id.uuidString)
             .execute()
@@ -250,7 +254,8 @@ final class SyncEngine: ObservableObject {
                 sortOrder: $0.sortOrder,
                 title: $0.title,
                 status: $0.stepStatus,
-                notes: $0.notes
+                notes: $0.notes,
+                photoURL: $0.photoURL
             )
         }
         let aggregate = ProcedureAggregator.aggregateStatus(for: summaries)

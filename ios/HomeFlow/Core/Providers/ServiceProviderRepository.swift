@@ -46,7 +46,7 @@ final class ServiceProviderRepository: ObservableObject {
     }
 
     func canManageProviders(userRole: HomeRole) -> Bool {
-        permissions.can(.create, entity: .serviceProvider(visibility: .edit), role: userRole)
+        permissions.can(.create, entity: .serviceProvider(visibility: .manager), role: userRole)
     }
 
     // MARK: - Mutations

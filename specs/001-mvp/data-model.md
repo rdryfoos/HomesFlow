@@ -7,10 +7,10 @@ Supabase PostgreSQL schema. All tables include `updated_at timestamptz` for conf
 ## Enums
 
 ```sql
-create type home_role as enum ('admin', 'edit', 'guest');
+create type home_role as enum ('owner', 'manager', 'guest');
 create type step_status as enum ('not_started', 'in_progress', 'complete', 'na');
 create type procedure_status as enum ('not_started', 'in_progress', 'complete', 'na');
-create type visibility as enum ('admin', 'edit', 'guest');
+create type visibility as enum ('owner', 'manager', 'guest');
 create type invite_status as enum ('pending', 'accepted', 'revoked');
 ```
 
@@ -101,7 +101,7 @@ Pending invitations before user accepts.
 | website | text | |
 | hours | text | |
 | notes | text | |
-| visibility | visibility DEFAULT 'edit' | guest sees if visibility ≤ guest |
+| visibility | visibility DEFAULT 'manager' | guest sees if visibility ≤ guest |
 | created_at | timestamptz | |
 | updated_at | timestamptz | |
 
@@ -145,15 +145,16 @@ Pending invitations before user accepts.
 | id | uuid PK | |
 | procedure_id | uuid FK → procedures.id ON DELETE CASCADE | |
 | sort_order | int NOT NULL | Stable ordering; reorder updates this column |
-| title | text NOT NULL | Editable by Admin/Edit via long-press Rename |
+| title | text NOT NULL | Editable by Owner/Manager via long-press Rename |
 | status | step_status DEFAULT 'not_started' | |
 | notes | text | Free-text per run |
+| photo_url | text | Storage path in `procedure-attachments` bucket |
 | created_at | timestamptz | |
 | updated_at | timestamptz | |
 
 **Covers**: FR-PROC-02, FR-PROC-03, AC-PROC-01…07, AC-GUEST-04…05
 
-**Client UX (Admin/Edit)**: tap step → toggle complete; long-press → Rename / Delete / Move Up / Move Down; Steps section **Add** → insert at end. Guest: read-only — no structure controls.
+**Client UX (Owner/Manager)**: tap step → toggle complete; long-press → Rename / Delete / Move Up / Move Down; Steps section **Add** → insert at end. Guest: read-only — no structure controls.
 
 ### `activity_log`
 
@@ -175,7 +176,7 @@ Append-only audit trail.
 
 ## RLS policy summary
 
-| Table | Admin | Edit | Guest |
+| Table | Owner | Edit | Guest |
 |-------|-------|------|-------|
 | homes | CRUD own memberships | Read | Read |
 | memberships | CRUD | Read | Read own |
@@ -215,7 +216,7 @@ Cache tables mirror server schema plus:
 
 | Bucket | Path pattern | Access |
 |--------|--------------|--------|
-| home-photos | `{home_id}/{uuid}.jpg` | Members read; Admin/Edit write; client uploads display-optimized JPEG (AC-HOME-06) |
+| home-photos | `{home_id}/{uuid}.jpg` | Members read; Owner/Manager write; client uploads display-optimized JPEG (AC-HOME-06) |
 | documents | `{home_id}/{uuid}` | Per document visibility |
 | procedure-attachments | `{home_id}/{procedure_id}/{uuid}` | Per procedure visibility |
 

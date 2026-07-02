@@ -5,7 +5,7 @@ import SwiftUI
 struct GuestAccessDeniedView: View {
     var title: String = "Access restricted"
     var message: String =
-        "Your guest account cannot view this item. Ask the home admin if you need access."
+        "Your guest account cannot view this item. Ask the home owner if you need access."
 
     var body: some View {
         ContentUnavailableView(

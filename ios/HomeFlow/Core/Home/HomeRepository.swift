@@ -225,7 +225,7 @@ final class HomeRepository: ObservableObject {
         }
 
         if createdBy == userId {
-            return .admin
+            return .owner
         }
 
         return nil

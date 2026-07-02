@@ -16,7 +16,7 @@
 
 ## Summary
 
-Build a native iOS 17+ app (SwiftUI) backed by Supabase for second-home management: auth, multi-home dashboard, role-based access (Admin/Edit/Guest), procedures with step tracking, service providers, documents, activity log, and offline-first sync with timestamp-wins conflict resolution. Push notifications deferred; Settings toggle is UI-only.
+Build a native iOS 17+ app (SwiftUI) backed by Supabase for second-home management: auth, multi-home dashboard, role-based access (Owner/Manager/Guest), procedures with step tracking, service providers, documents, activity log, and offline-first sync with timestamp-wins conflict resolution. Push notifications deferred; Settings toggle is UI-only.
 
 ## Technical Context
 
@@ -128,7 +128,7 @@ supabase/
 | US-ADMIN-02/03 | Invites, membership roles, member list | AC-USER-01…06 |
 | NFR-OFFL-01 | Outbox, pull sync, conflict handler | AC-SYNC-01…03 |
 
-**Exit criteria**: Admin creates home offline, syncs; invites Edit user; conflict produces activity log entry.
+**Exit criteria**: Owner creates home offline, syncs; invites Manager user; conflict produces activity log entry.
 
 ### Phase 2 — P2 stories (procedures, providers)
 
@@ -137,7 +137,7 @@ supabase/
 | US-EDIT-01 | Procedure list, step checklist, status + structure updates | AC-PROC-01…07 |
 | US-EDIT-02 | Provider directory, search, edit | AC-HOME-04…05 |
 
-**Exit criteria**: Edit user updates step; Admin sees change after sync; provider edit/delete conflict handled.
+**Exit criteria**: Manager user updates step; Owner sees change after sync; provider edit/delete conflict handled.
 
 ### Phase 3 — P3 stories (guest, documents, polish)
 
@@ -146,7 +146,7 @@ supabase/
 | US-GUEST-01/02 | Guest-scoped views, read-only procedures | AC-GUEST-01…05 |
 | FR-HOME-03 | Files library (document entity) with visibility | AC-GUEST-01…03 |
 | FR-NOTIF-01 | Settings toggle (disabled, “Coming soon”) | deferred |
-| FR-LOG-01 | Activity log screen for Admin | all audit ACs |
+| FR-LOG-01 | Activity log screen for Owner | all audit ACs |
 
 **Exit criteria**: Guest cannot edit; unauthorized step attempt logged; SC-03 manual review pass.
 
@@ -215,11 +215,11 @@ The leading column is **not** a persistent home picker while viewing home detail
 
 | Gesture / control | Action | Roles |
 |-------------------|--------|-------|
-| Tap step row | Toggle complete ↔ not started | Admin, Edit |
-| Long-press step | Context menu: Rename, Delete, Move Up, Move Down | Admin, Edit |
-| Note icon | Edit step notes | Admin, Edit |
-| ⋯ menu | Set status (In progress, N/A, etc.) | Admin, Edit |
-| Steps section **Add** | Create new step at end | Admin, Edit |
+| Tap step row | Toggle complete ↔ not started | Owner, Edit |
+| Long-press step | Context menu: Rename, Delete, Move Up, Move Down | Owner, Edit |
+| Note icon | Edit step notes | Owner, Edit |
+| ⋯ menu | Set status (In progress, N/A, etc.) | Owner, Edit |
+| Steps section **Add** | Create new step at end | Owner, Edit |
 | (none) | Read-only steps and status | Guest |
 
 ### Accessibility (**NFR-A11Y-01**)

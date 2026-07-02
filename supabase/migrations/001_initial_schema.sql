@@ -2,10 +2,10 @@
 -- @covers FR-HOME-01, FR-USER-01, FR-PROC-01, FR-LOG-01, NFR-SEC-01
 
 -- Enums
-create type public.home_role as enum ('admin', 'edit', 'guest');
+create type public.home_role as enum ('owner', 'manager', 'guest');
 create type public.step_status as enum ('not_started', 'in_progress', 'complete', 'na');
 create type public.procedure_status as enum ('not_started', 'in_progress', 'complete', 'na');
-create type public.visibility as enum ('admin', 'edit', 'guest');
+create type public.visibility as enum ('owner', 'manager', 'guest');
 create type public.invite_status as enum ('pending', 'accepted', 'revoked');
 
 -- updated_at trigger
@@ -81,12 +81,12 @@ create trigger memberships_updated_at
   before update on public.memberships
   for each row execute function public.set_updated_at();
 
--- Auto-admin membership when home is created
+-- Auto-owner membership when home is created
 create or replace function public.handle_new_home()
 returns trigger as $$
 begin
   insert into public.memberships (home_id, user_id, role)
-  values (new.id, new.created_by, 'admin');
+  values (new.id, new.created_by, 'owner');
   return new;
 end;
 $$ language plpgsql security definer;
@@ -100,7 +100,7 @@ create table public.invites (
   id uuid primary key default gen_random_uuid(),
   home_id uuid not null references public.homes (id) on delete cascade,
   email text not null,
-  role public.home_role not null check (role in ('edit', 'guest')),
+  role public.home_role not null check (role in ('manager', 'guest')),
   token text not null unique,
   status public.invite_status not null default 'pending',
   invited_by uuid not null references public.profiles (id),
@@ -125,7 +125,7 @@ create table public.service_providers (
   website text,
   hours text,
   notes text,
-  visibility public.visibility not null default 'edit',
+  visibility public.visibility not null default 'manager',
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
@@ -141,7 +141,7 @@ create table public.documents (
   title text not null,
   category text,
   storage_path text,
-  visibility public.visibility not null default 'edit',
+  visibility public.visibility not null default 'manager',
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
@@ -158,7 +158,7 @@ create table public.procedures (
   category text,
   description text,
   status public.procedure_status not null default 'not_started',
-  visibility public.visibility not null default 'edit',
+  visibility public.visibility not null default 'manager',
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
@@ -177,6 +177,7 @@ create table public.procedure_steps (
   title text not null,
   status public.step_status not null default 'not_started',
   notes text,
+  photo_url text,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
@@ -220,8 +221,8 @@ $$ language sql stable security definer;
 create or replace function public.visibility_allows(p_role public.home_role, p_vis public.visibility)
 returns boolean as $$
   select case p_role
-    when 'admin' then true
-    when 'edit' then p_vis in ('edit', 'guest')
+    when 'owner' then true
+    when 'manager' then p_vis in ('manager', 'guest')
     when 'guest' then p_vis = 'guest'
   end
 $$ language sql immutable;
@@ -241,7 +242,7 @@ alter table public.activity_log enable row level security;
 create policy profiles_select on public.profiles for select using (id = auth.uid());
 create policy profiles_update on public.profiles for update using (id = auth.uid());
 
--- Homes: members read; admin write
+-- Homes: members read; owner write
 create policy homes_select on public.homes for select
   using (public.is_home_member(id));
 
@@ -249,28 +250,28 @@ create policy homes_insert on public.homes for insert
   with check (created_by = auth.uid());
 
 create policy homes_update on public.homes for update
-  using (public.get_user_role(id) = 'admin');
+  using (public.get_user_role(id) = 'owner');
 
 create policy homes_delete on public.homes for delete
-  using (public.get_user_role(id) = 'admin');
+  using (public.get_user_role(id) = 'owner');
 
 -- Memberships
 create policy memberships_select on public.memberships for select
   using (public.is_home_member(home_id));
 
 create policy memberships_insert on public.memberships for insert
-  with check (public.get_user_role(home_id) = 'admin');
+  with check (public.get_user_role(home_id) = 'owner');
 
 create policy memberships_update on public.memberships for update
-  using (public.get_user_role(home_id) = 'admin');
+  using (public.get_user_role(home_id) = 'owner');
 
 create policy memberships_delete on public.memberships for delete
-  using (public.get_user_role(home_id) = 'admin');
+  using (public.get_user_role(home_id) = 'owner');
 
--- Invites: admin only
+-- Invites: owner only
 create policy invites_all on public.invites for all
-  using (public.get_user_role(home_id) = 'admin')
-  with check (public.get_user_role(home_id) = 'admin');
+  using (public.get_user_role(home_id) = 'owner')
+  with check (public.get_user_role(home_id) = 'owner');
 
 -- Service providers
 create policy providers_select on public.service_providers for select
@@ -281,14 +282,14 @@ create policy providers_select on public.service_providers for select
 
 create policy providers_write on public.service_providers for insert
   with check (
-    public.get_user_role(home_id) in ('admin', 'edit')
+    public.get_user_role(home_id) in ('owner', 'manager')
   );
 
 create policy providers_update on public.service_providers for update
-  using (public.get_user_role(home_id) in ('admin', 'edit'));
+  using (public.get_user_role(home_id) in ('owner', 'manager'));
 
 create policy providers_delete on public.service_providers for delete
-  using (public.get_user_role(home_id) in ('admin', 'edit'));
+  using (public.get_user_role(home_id) in ('owner', 'manager'));
 
 -- Documents
 create policy documents_select on public.documents for select
@@ -298,13 +299,13 @@ create policy documents_select on public.documents for select
   );
 
 create policy documents_write on public.documents for insert
-  with check (public.get_user_role(home_id) in ('admin', 'edit'));
+  with check (public.get_user_role(home_id) in ('owner', 'manager'));
 
 create policy documents_update on public.documents for update
-  using (public.get_user_role(home_id) in ('admin', 'edit'));
+  using (public.get_user_role(home_id) in ('owner', 'manager'));
 
 create policy documents_delete on public.documents for delete
-  using (public.get_user_role(home_id) in ('admin', 'edit'));
+  using (public.get_user_role(home_id) in ('owner', 'manager'));
 
 -- Procedures
 create policy procedures_select on public.procedures for select
@@ -314,15 +315,15 @@ create policy procedures_select on public.procedures for select
   );
 
 create policy procedures_write on public.procedures for insert
-  with check (public.get_user_role(home_id) in ('admin', 'edit'));
+  with check (public.get_user_role(home_id) in ('owner', 'manager'));
 
 create policy procedures_update on public.procedures for update
-  using (public.get_user_role(home_id) in ('admin', 'edit'));
+  using (public.get_user_role(home_id) in ('owner', 'manager'));
 
 create policy procedures_delete on public.procedures for delete
-  using (public.get_user_role(home_id) in ('admin', 'edit'));
+  using (public.get_user_role(home_id) in ('owner', 'manager'));
 
--- Procedure steps: read via procedure access; update admin/edit
+-- Procedure steps: read via procedure access; update owner/manager
 create policy steps_select on public.procedure_steps for select
   using (
     exists (
@@ -338,7 +339,7 @@ create policy steps_insert on public.procedure_steps for insert
     exists (
       select 1 from public.procedures p
       where p.id = procedure_id
-        and public.get_user_role(p.home_id) in ('admin', 'edit')
+        and public.get_user_role(p.home_id) in ('owner', 'manager')
     )
   );
 
@@ -347,7 +348,7 @@ create policy steps_update on public.procedure_steps for update
     exists (
       select 1 from public.procedures p
       where p.id = procedure_id
-        and public.get_user_role(p.home_id) in ('admin', 'edit')
+        and public.get_user_role(p.home_id) in ('owner', 'manager')
         and public.visibility_allows(public.get_user_role(p.home_id), p.visibility)
     )
   );
@@ -357,7 +358,7 @@ create policy steps_delete on public.procedure_steps for delete
     exists (
       select 1 from public.procedures p
       where p.id = procedure_id
-        and public.get_user_role(p.home_id) in ('admin', 'edit')
+        and public.get_user_role(p.home_id) in ('owner', 'manager')
     )
   );
 

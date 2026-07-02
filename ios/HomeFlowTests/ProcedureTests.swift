@@ -38,7 +38,8 @@ final class ProcedureAggregatorTests: XCTestCase {
             sortOrder: 1,
             title: "Step",
             status: status,
-            notes: nil
+            notes: nil,
+            photoURL: nil
         )
     }
 }

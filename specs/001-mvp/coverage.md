@@ -34,9 +34,9 @@ CI fails if this file is stale. Source of truth: `HomeFlow.prd.md` registry × `
 | AC-HOME-10 | Implemented — test pending | T021a T021c | T024e | — |
 | AC-HOME-11 | Implemented — test pending | T021b | T024f T065 | — |
 | AC-PROC-01 | Verified | T042 T046 T048 | — | `test_AC_PROC_01_complete_and_na_steps_mark_procedure_complete`<br>`test_AC_PROC_01_completed_step_counts_toward_progress`<br>`test_AC_PROC_01_final_step_completion_marks_procedure_complete` |
-| AC-PROC-02 | Verified | T010 T044 T049 | — | `test_AC_PROC_02_edit_cannot_update_admin_only_step`<br>`test_AC_PROC_02_guest_cannot_update_guest_visible_step` |
+| AC-PROC-02 | Verified | T010 T044 T049 | — | `test_AC_PROC_02_guest_cannot_update_guest_visible_step`<br>`test_AC_PROC_02_manager_cannot_update_owner_only_step` |
 | AC-PROC-03 | Verified | T037 T045 T050 | — | `test_AC_PROC_03_local_newer_keeps_pending_local`<br>`test_AC_PROC_03_server_newer_overwrites_pending_local` |
-| AC-PROC-04 | Verified | T047b T050a | — | `test_AC_PROC_04_admin_can_manage_step_structure`<br>`test_AC_PROC_04_edit_can_manage_step_structure`<br>`test_AC_PROC_04_edit_cannot_manage_admin_only_procedure_steps` |
+| AC-PROC-04 | Verified | T047b T050a | — | `test_AC_PROC_04_manager_can_manage_step_structure`<br>`test_AC_PROC_04_manager_cannot_manage_owner_only_procedure_steps`<br>`test_AC_PROC_04_owner_can_manage_step_structure` |
 | AC-PROC-05 | Verified | T047b T050a | — | `test_AC_PROC_05_move_down_swaps_with_next_step`<br>`test_AC_PROC_05_move_is_noop_at_list_boundaries`<br>`test_AC_PROC_05_move_up_swaps_with_previous_step`<br>`test_AC_PROC_05_new_step_appends_at_end` |
 | AC-PROC-06 | Verified | T047a T050b | — | `test_AC_PROC_06_structure_changes_produce_activity_summaries` |
 | AC-PROC-07 | Verified | T047c T050c | — | `test_AC_PROC_07_guest_cannot_manage_step_structure` |
@@ -47,7 +47,7 @@ CI fails if this file is stale. Source of truth: `HomeFlow.prd.md` registry × `
 | AC-USER-01 | Implemented — test pending | T025 T026 | T030 | — |
 | AC-USER-02 | Implemented — test pending | T025 | T031 | — |
 | AC-USER-03 | Planned | — | T027 T033a | — |
-| AC-USER-04 | Verified | T028 | T032 | `test_AC_USER_04_edit_can_update_step` |
+| AC-USER-04 | Verified | T028 | T032 | `test_AC_USER_04_manager_can_update_step` |
 | AC-USER-05 | Verified | T028 T033 | — | `test_AC_USER_05_guest_role_read_only` |
 | AC-USER-06 | In progress | T028 T029 | T033b | — |
 | AC-USER-07 | In progress | T025 T026 | T033c | — |

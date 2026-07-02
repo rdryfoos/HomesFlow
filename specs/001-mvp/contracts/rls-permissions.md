@@ -4,7 +4,7 @@
 
 ## Role capabilities matrix
 
-| Action | Admin | Edit | Guest |
+| Action | Owner | Edit | Guest |
 |--------|:-----:|:----:|:-----:|
 | Create home | ✓ | — | — |
 | Edit home details | ✓ | — | — |
@@ -19,7 +19,7 @@
 | Settings / sign out | ✓ | ✓ | ✓ |
 
 † Only rows where `visibility = 'guest'`  
-‡ Only rows where `visibility` in (`edit`, `guest`)
+‡ Only rows where `visibility` in (`manager`, `guest`)
 
 ## SQL helper
 
@@ -36,7 +36,7 @@ $$ language sql stable security definer;
 ### `procedure_steps` — update
 
 ```sql
--- Edit and Admin can update steps on procedures they can access
+-- Edit and Owner can update steps on procedures they can access
 create policy "steps_update" on procedure_steps for update using (
   exists (
     select 1 from procedures p
@@ -44,8 +44,8 @@ create policy "steps_update" on procedure_steps for update using (
     where p.id = procedure_steps.procedure_id
       and m.user_id = auth.uid()
       and (
-        m.role = 'admin'
-        or (m.role = 'edit' and p.visibility in ('edit', 'guest'))
+        m.role = 'owner'
+        or (m.role = 'manager' and p.visibility in ('manager', 'guest'))
       )
   )
 );
@@ -61,7 +61,7 @@ Guest role has SELECT only policy filtered by `procedures.visibility = 'guest'`.
 
 ### Procedure step structure (client)
 
-Admin and Edit users who can `.update` a procedure (per visibility) MUST also be allowed to create, rename, reorder, and delete its steps. The UI exposes this via long-press context menu and an Add control on the Steps section (**AC-PROC-04**, **AC-PROC-05**). Guest users MUST NOT see structure controls (**AC-PROC-07**).
+Owner and Manager users who can `.update` a procedure (per visibility) MUST also be allowed to create, rename, reorder, and delete its steps. The UI exposes this via long-press context menu and an Add control on the Steps section (**AC-PROC-04**, **AC-PROC-05**). Guest users MUST NOT see structure controls (**AC-PROC-07**).
 
 ## Deep link / navigation guard
 

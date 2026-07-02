@@ -1,6 +1,7 @@
 import Foundation
 import SwiftData
 import Supabase
+import UIKit
 
 // @covers FR-PROC-01, FR-PROC-02, FR-PROC-03, AC-PROC-01, AC-PROC-02, AC-PROC-03, AC-PROC-04, AC-PROC-05, AC-PROC-06, AC-PROC-07, AC-GUEST-03, AC-GUEST-05, FR-GUEST-01
 
@@ -13,18 +14,29 @@ final class ProcedureRepository: ObservableObject {
     private let auth: SupabaseClientProvider
     private let activityLog: ActivityLogService
     private let syncEngine: SyncEngine
+    private let attachmentService: ProcedureAttachmentService
     private let permissions = PermissionService()
 
     init(
         modelContext: ModelContext,
         auth: SupabaseClientProvider,
         activityLog: ActivityLogService,
-        syncEngine: SyncEngine
+        syncEngine: SyncEngine,
+        attachmentService: ProcedureAttachmentService
     ) {
         self.modelContext = modelContext
         self.auth = auth
         self.activityLog = activityLog
         self.syncEngine = syncEngine
+        self.attachmentService = attachmentService
+    }
+
+    func cachedStepPhoto(for storagePath: String) -> UIImage? {
+        attachmentService.cachedImage(storagePath: storagePath)
+    }
+
+    func loadStepPhoto(storagePath: String) async throws -> UIImage {
+        try await attachmentService.loadImage(storagePath: storagePath)
     }
 
     func fetchProcedures(homeId: UUID, userRole: HomeRole) async throws -> [ProcedureSummary] {
@@ -360,6 +372,160 @@ final class ProcedureRepository: ObservableObject {
         )
     }
 
+    func updateStepDetails(
+        homeId: UUID,
+        procedureId: UUID,
+        stepId: UUID,
+        title: String?,
+        notes: String?,
+        photoChange: StepPhotoChange,
+        canEditTitle: Bool,
+        userRole: HomeRole
+    ) async throws {
+        guard let userId = auth.session?.user.id else { throw AuthError.notSignedIn }
+
+        guard let detail = cachedDetail(procedureId: procedureId, userRole: userRole) else {
+            throw ProcedureError.notFound
+        }
+
+        guard let step = detail.steps.first(where: { $0.id == stepId }) else {
+            throw ProcedureError.notFound
+        }
+
+        let trimmedTitle = title?.trimmingCharacters(in: .whitespacesAndNewlines)
+        let normalizedTitle = (trimmedTitle?.isEmpty == false) ? trimmedTitle : nil
+        let trimmedNotes = notes?.trimmingCharacters(in: .whitespacesAndNewlines)
+        let normalizedNotes = (trimmedNotes?.isEmpty == false) ? trimmedNotes : nil
+
+        let titleChanging = canEditTitle && normalizedTitle != nil && normalizedTitle != step.title
+        let notesChanging = normalizedNotes != step.notes
+        let photoChanging: Bool = switch photoChange {
+        case .unchanged: false
+        case .set: true
+        case .remove: step.photoURL != nil
+        }
+
+        guard titleChanging || notesChanging || photoChanging else { return }
+
+        if titleChanging {
+            guard permissions.can(
+                .update,
+                entity: .procedureStep(procedureVisibility: detail.visibility),
+                role: userRole
+            ) else {
+                throw ProcedureError.notAuthorized
+            }
+        }
+
+        if notesChanging || photoChanging {
+            guard permissions.can(
+                .updateStepStatus,
+                entity: .procedureStep(procedureVisibility: detail.visibility),
+                role: userRole
+            ) else {
+                if userRole == .guest {
+                    logUnauthorizedStepAttempt(
+                        homeId: homeId,
+                        actorId: userId,
+                        stepId: stepId,
+                        stepTitle: step.title,
+                        procedureTitle: detail.title,
+                        attemptedAction: "edit"
+                    )
+                }
+                throw ProcedureError.notAuthorized
+            }
+        }
+
+        guard let cachedStep = cachedStep(stepId) else { throw ProcedureError.notFound }
+
+        var newPhotoURL = step.photoURL
+        if photoChanging {
+            switch photoChange {
+            case .unchanged:
+                break
+            case .remove:
+                newPhotoURL = nil
+            case .set(let data):
+                guard NetworkMonitor.shared.isConnected else {
+                    throw ProcedureError.photoRequiresOnline
+                }
+                if cachedStep.sync == .pending {
+                    _ = await syncEngine.run()
+                }
+                if cachedStep.sync == .pending {
+                    throw ProcedureError.photoRequiresSync
+                }
+                do {
+                    newPhotoURL = try await attachmentService.uploadPhoto(
+                        homeId: homeId,
+                        procedureId: procedureId,
+                        imageData: data
+                    )
+                } catch {
+                    throw ProcedureError.photoUploadFailed(error.localizedDescription)
+                }
+            }
+        }
+
+        if titleChanging, let normalizedTitle {
+            cachedStep.title = normalizedTitle
+        }
+        if notesChanging {
+            cachedStep.notes = normalizedNotes
+        }
+        if photoChanging {
+            cachedStep.photoURL = newPhotoURL
+        }
+
+        cachedStep.localUpdatedAt = .now
+        cachedStep.sync = .pending
+
+        syncEngine.enqueue(
+            entityType: .procedureStep,
+            entityId: stepId,
+            operation: .update,
+            payload: ["procedure_id": procedureId.uuidString]
+        )
+
+        try modelContext.save()
+
+        if titleChanging, let normalizedTitle {
+            logStructureChange(
+                .renamed,
+                homeId: homeId,
+                actorId: userId,
+                stepId: stepId,
+                stepTitle: normalizedTitle,
+                procedureTitle: detail.title
+            )
+        }
+
+        if notesChanging || photoChanging {
+            var parts: [String] = []
+            if notesChanging { parts.append("notes") }
+            if photoChanging {
+                if case .remove = photoChange {
+                    parts.append("removed photo")
+                } else {
+                    parts.append("photo")
+                }
+            }
+            activityLog.append(
+                homeId: homeId,
+                actorId: userId,
+                entityType: "procedure_step",
+                entityId: stepId,
+                action: "details_updated",
+                summary: "Updated \(parts.joined(separator: " and ")) for \"\(cachedStep.title)\" in \(detail.title)"
+            )
+        }
+
+        if NetworkMonitor.shared.isConnected {
+            _ = await syncEngine.run()
+        }
+    }
+
     func updateStepNotes(
         homeId: UUID,
         procedureId: UUID,
@@ -494,7 +660,8 @@ final class ProcedureRepository: ObservableObject {
                         sortOrder: summary.sortOrder,
                         title: summary.title,
                         status: status,
-                        notes: summary.notes
+                        notes: summary.notes,
+                        photoURL: summary.photoURL
                     )
                 }
                 return summary
@@ -649,6 +816,7 @@ final class ProcedureRepository: ObservableObject {
                         title: row.title,
                         status: row.status,
                         notes: row.notes,
+                        photoURL: row.photoURL,
                         syncStatus: .synced,
                         serverUpdatedAt: row.updatedAt
                     ))
@@ -697,6 +865,7 @@ final class ProcedureRepository: ObservableObject {
         cached.title = row.title
         cached.stepStatus = row.status
         cached.notes = row.notes
+        cached.photoURL = row.photoURL
         cached.serverUpdatedAt = row.updatedAt
         cached.sync = .synced
     }
@@ -845,7 +1014,8 @@ final class ProcedureRepository: ObservableObject {
             sortOrder: cached.sortOrder,
             title: cached.title,
             status: cached.stepStatus,
-            notes: cached.notes
+            notes: cached.notes,
+            photoURL: cached.photoURL
         )
     }
 
@@ -857,11 +1027,20 @@ final class ProcedureRepository: ObservableObject {
 enum ProcedureError: LocalizedError {
     case notAuthorized
     case notFound
+    case photoRequiresOnline
+    case photoRequiresSync
+    case photoUploadFailed(String)
 
     var errorDescription: String? {
         switch self {
         case .notAuthorized: "You don't have permission to update this procedure."
         case .notFound: "Procedure not found."
+        case .photoRequiresOnline:
+            "You're offline. Connect to the internet before attaching a photo."
+        case .photoRequiresSync:
+            "Sync this step before attaching a photo."
+        case .photoUploadFailed(let message):
+            "Photo upload failed: \(message)"
         }
     }
 }

@@ -56,6 +56,7 @@
 		EFDD81EA5F10127E3496161A /* SupabaseClientProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A55055DFB89B27A44EE4537 /* SupabaseClientProvider.swift */; };
 		F589A08913ED650B9FC8A4A4 /* ProcedureDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD9CEBE86C62A6C52C2B01F4 /* ProcedureDetailView.swift */; };
 		FB51C829CDB77333656F2F27 /* HomePhotoService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 406453D16A208977207D35E2 /* HomePhotoService.swift */; };
+		D4E5F6A7B8C9012345678AB1 /* ProcedureAttachmentService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F6A7B8C9D0123456789ABC /* ProcedureAttachmentService.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -91,6 +92,7 @@
 		2F98B33798192E84DF26BF0A /* HomeDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeDTO.swift; sourceTree = "<group>"; };
 		33213B4805ED062B656B0320 /* HomeFlowUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeFlowUITests.swift; sourceTree = "<group>"; };
 		406453D16A208977207D35E2 /* HomePhotoService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomePhotoService.swift; sourceTree = "<group>"; };
+		E5F6A7B8C9D0123456789ABC /* ProcedureAttachmentService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProcedureAttachmentService.swift; sourceTree = "<group>"; };
 		432D7CF7139BF5BDF9FC17AF /* InviteMemberView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InviteMemberView.swift; sourceTree = "<group>"; };
 		43E0FB27793A0BD1FBB1A6E8 /* ProviderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProviderTests.swift; sourceTree = "<group>"; };
 		47557403984CE7BC85F709EF /* HomePhotoCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomePhotoCache.swift; sourceTree = "<group>"; };
@@ -103,7 +105,7 @@
 		6390873983914AE52C180D3D /* MemberRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberRepository.swift; sourceTree = "<group>"; };
 		6B473D8EF4DA4BB50AC1B691 /* StepStructureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StepStructureTests.swift; sourceTree = "<group>"; };
 		7A6207638303AF182C7C316A /* ProcedureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProcedureTests.swift; sourceTree = "<group>"; };
-		7B95B47C0C7A40048617B702 /* Secrets.Release.xcconfig.example */ = {isa = PBXFileReference; path = Secrets.Release.xcconfig.example; sourceTree = "<group>"; };
+		7B95B47C0C7A40048617B702 /* Secrets.Release.xcconfig.example */ = {isa = PBXFileReference; lastKnownFileType = text; path = Secrets.Release.xcconfig.example; sourceTree = "<group>"; };
 		7D4B91998F226F2A6A692880 /* NetworkMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMonitor.swift; sourceTree = "<group>"; };
 		8085E2B49EE2ABC4C37EF2A9 /* Secrets.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Secrets.xcconfig; sourceTree = "<group>"; };
 		93E2F5EF5359F25C77954DD6 /* ActivityLogDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityLogDTO.swift; sourceTree = "<group>"; };
@@ -113,7 +115,7 @@
 		9CF9D16647D19E7853C52246 /* PermissionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionService.swift; sourceTree = "<group>"; };
 		9F6DFA717D62C6B87A211F00 /* Secrets.Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Secrets.Release.xcconfig; sourceTree = "<group>"; };
 		A90748E3E2030839155D51E1 /* ContactsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsView.swift; sourceTree = "<group>"; };
-		B1DD90540655FA98347267C7 /* Secrets.xcconfig.example */ = {isa = PBXFileReference; path = Secrets.xcconfig.example; sourceTree = "<group>"; };
+		B1DD90540655FA98347267C7 /* Secrets.xcconfig.example */ = {isa = PBXFileReference; lastKnownFileType = text; path = Secrets.xcconfig.example; sourceTree = "<group>"; };
 		B8EA1C0B8D56E94220543B63 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C1CD4F9264B8E65BF4B75240 /* HomeFlowApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeFlowApp.swift; sourceTree = "<group>"; };
 		C68A188BA476640949CB88D1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -124,7 +126,7 @@
 		E07E4F3E611B1ECA6683BCDE /* ProceduresView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProceduresView.swift; sourceTree = "<group>"; };
 		E2BF3FC894DC970479F1FCA4 /* HomeDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeDetailView.swift; sourceTree = "<group>"; };
 		E8233B3D385B58C52FAC3D9E /* ActivityLogService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityLogService.swift; sourceTree = "<group>"; };
-		ECBB805D2DD0798C893D12DE /* HomeFlow.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = HomeFlow.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		ECBB805D2DD0798C893D12DE /* HomeFlow.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HomeFlow.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EE19DC9CF981703D7575F3C6 /* AppEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppEnvironment.swift; sourceTree = "<group>"; };
 		F03D4FA2371DADD21D2B444E /* EntityAccessState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityAccessState.swift; sourceTree = "<group>"; };
 		F3BFD92FD120F1ABCD3DD57D /* SyncEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncEngine.swift; sourceTree = "<group>"; };
@@ -372,6 +374,7 @@
 			children = (
 				47557403984CE7BC85F709EF /* HomePhotoCache.swift */,
 				406453D16A208977207D35E2 /* HomePhotoService.swift */,
+				E5F6A7B8C9D0123456789ABC /* ProcedureAttachmentService.swift */,
 			);
 			path = Storage;
 			sourceTree = "<group>";
@@ -516,7 +519,6 @@
 						ProvisioningStyle = Automatic;
 					};
 					98683CA64C9F06E51878D55A = {
-						DevelopmentTeam = "";
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -581,6 +583,7 @@
 				DF97B3DA56D40B5043E53A74 /* HomeHeroCard.swift in Sources */,
 				31C707E10E4E9C0E91C46140 /* HomePhotoCache.swift in Sources */,
 				FB51C829CDB77333656F2F27 /* HomePhotoService.swift in Sources */,
+				D4E5F6A7B8C9012345678AB1 /* ProcedureAttachmentService.swift in Sources */,
 				55E645CA22343F5DDB24009D /* HomeRepository.swift in Sources */,
 				513B8DEAA0D11D378A525E1C /* HomeSetupView.swift in Sources */,
 				0CAE9DBF9ADD5ECD3422AA3A /* InviteMemberView.swift in Sources */,
@@ -648,6 +651,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = HomeFlow/Resources/HomeFlow.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = Z2PVV7A8SG;
 				ENABLE_TESTABILITY = YES;
 				INFOPLIST_FILE = HomeFlow/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -735,6 +739,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = HomeFlow/Resources/HomeFlow.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = Z2PVV7A8SG;
 				ENABLE_TESTABILITY = YES;
 				INFOPLIST_FILE = HomeFlow/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (

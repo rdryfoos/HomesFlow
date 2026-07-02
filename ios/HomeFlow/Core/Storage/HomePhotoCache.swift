@@ -8,10 +8,10 @@ final class HomePhotoCache {
     private let memory = NSCache<NSString, UIImage>()
     private let directory: URL
 
-    init() {
+    init(directoryName: String = "HomePhotos") {
         memory.countLimit = 32
         let base = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first!
-        directory = base.appendingPathComponent("HomePhotos", isDirectory: true)
+        directory = base.appendingPathComponent(directoryName, isDirectory: true)
         try? FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
     }
 

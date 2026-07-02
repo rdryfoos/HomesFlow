@@ -63,7 +63,7 @@ struct ServiceProviderDraft: Sendable, Equatable {
     var website = ""
     var hours = ""
     var notes = ""
-    var visibility: Visibility = .edit
+    var visibility: Visibility = .manager
 
     init() {}
 

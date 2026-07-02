@@ -1,9 +1,27 @@
 import Foundation
 
 enum HomeRole: String, Codable, CaseIterable, Sendable {
-    case admin
-    case edit
+    case owner
+    case manager
     case guest
+
+    /// Maps legacy persisted values (`admin` / `edit`) after the Owner/Manager rename.
+    init?(migratingRawValue raw: String) {
+        switch raw {
+        case "owner", "admin": self = .owner
+        case "manager", "edit": self = .manager
+        case "guest": self = .guest
+        default: return nil
+        }
+    }
+
+    var displayName: String {
+        switch self {
+        case .owner: "Owner"
+        case .manager: "Manager"
+        case .guest: "Guest"
+        }
+    }
 }
 
 enum StepStatus: String, Codable, CaseIterable, Sendable {
@@ -21,9 +39,26 @@ enum ProcedureStatus: String, Codable, CaseIterable, Sendable {
 }
 
 enum Visibility: String, Codable, CaseIterable, Sendable {
-    case admin
-    case edit
+    case owner
+    case manager
     case guest
+
+    init?(migratingRawValue raw: String) {
+        switch raw {
+        case "owner", "admin": self = .owner
+        case "manager", "edit": self = .manager
+        case "guest": self = .guest
+        default: return nil
+        }
+    }
+
+    var displayName: String {
+        switch self {
+        case .owner: "Owners only"
+        case .manager: "Owners & Managers"
+        case .guest: "Everyone (incl. guests)"
+        }
+    }
 }
 
 enum InviteStatus: String, Codable, Sendable {

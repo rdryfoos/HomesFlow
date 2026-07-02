@@ -19,13 +19,13 @@ final class GuestTests: XCTestCase {
         )
 
         XCTAssertFalse(
-            permissions.can(.read, entity: .serviceProvider(visibility: .edit), role: .guest)
+            permissions.can(.read, entity: .serviceProvider(visibility: .manager), role: .guest)
         )
         XCTAssertFalse(
-            permissions.can(.read, entity: .procedure(visibility: .admin), role: .guest)
+            permissions.can(.read, entity: .procedure(visibility: .owner), role: .guest)
         )
         XCTAssertFalse(
-            permissions.can(.read, entity: .document(visibility: .edit), role: .guest)
+            permissions.can(.read, entity: .document(visibility: .manager), role: .guest)
         )
 
         XCTAssertFalse(
@@ -39,10 +39,10 @@ final class GuestTests: XCTestCase {
     // T063a — AC-GUEST-02: Restricted visibility is denied at the permission layer.
     func test_AC_GUEST_02_restricted_deep_link_denied() {
         XCTAssertFalse(
-            permissions.can(.read, entity: .procedure(visibility: .edit), role: .guest)
+            permissions.can(.read, entity: .procedure(visibility: .manager), role: .guest)
         )
         XCTAssertFalse(
-            permissions.can(.read, entity: .document(visibility: .admin), role: .guest)
+            permissions.can(.read, entity: .document(visibility: .owner), role: .guest)
         )
     }
 
@@ -87,7 +87,7 @@ final class GuestTests: XCTestCase {
     // T033 — AC-USER-05: Guest role is read-only across management surfaces.
     func test_AC_USER_05_guest_role_read_only() {
         XCTAssertEqual(HomeTab.visibleTabs(for: .guest), [.procedures, .contacts, .files])
-        XCTAssertEqual(HomeTab.visibleTabs(for: .admin), HomeTab.allCases)
+        XCTAssertEqual(HomeTab.visibleTabs(for: .owner), HomeTab.allCases)
         XCTAssertFalse(permissions.can(.read, entity: .activityLog, role: .guest))
         XCTAssertFalse(permissions.can(.create, entity: .membership, role: .guest))
     }
