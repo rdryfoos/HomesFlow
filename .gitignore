@@ -12,6 +12,8 @@ Thumbs.db
 
 # Xcode / iOS (when added)
 DerivedData/
+.derivedData/
+ios/ios/
 *.xcuserstate
 xcuserdata/
 build/

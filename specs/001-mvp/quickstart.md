@@ -18,9 +18,12 @@ See also: [dev-notes.md](./dev-notes.md) for implementation gotchas discovered d
 
 ```bash
 cd ~/Developer/HomeFlow
-cd ios && xcodegen generate   # if project.yml changed
-open HomeFlow.xcodeproj
+git pull
+cd ios && xcodegen generate   # required after pull when Swift files or project.yml changed
+open HomeFlow.xcodeproj       # open from ios/, not the repo root
 ```
+
+> **Build error “Cannot find type … in scope”** after pulling? Run `xcodegen generate` from `ios/`, then **Product → Clean Build Folder** (⇧⌘K) and rebuild.
 
 ---
 
