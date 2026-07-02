@@ -1,4 +1,4 @@
-# HomeFlow Glossary
+# HomesFlow Glossary
 
 Domain language for specs, plans, and code. When wording is ambiguous, this file wins (see constitution Hierarchy of Truth).
 
