@@ -1,4 +1,4 @@
-# Data Model: HomeFlow MVP
+# Data Model: HomesFlow MVP
 
 **Feature**: `001-mvp` | **Date**: 2026-06-28
 

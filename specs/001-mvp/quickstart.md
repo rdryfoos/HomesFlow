@@ -1,4 +1,4 @@
-# Quickstart: HomeFlow MVP
+# Quickstart: HomesFlow MVP
 
 **Feature**: `001-mvp` | **Updated**: 2026-06-28
 
@@ -142,7 +142,7 @@ Implementation status: [tasks.md](./tasks.md) (checkboxes) + [dev-notes.md](./de
 | Migrations | `supabase/migrations/` |
 | Debug secrets template | `ios/HomeFlow/Resources/Secrets.xcconfig.example` |
 | Release secrets template | `ios/HomeFlow/Resources/Secrets.Release.xcconfig.example` |
-| PRD | `HomeFlow.prd.md` |
+| PRD | `HomesFlow.prd.md` |
 
 ---
 

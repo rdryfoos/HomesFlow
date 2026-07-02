@@ -1,6 +1,6 @@
 # HomesFlow
 
-**PRD**: `HomeFlow.prd.md`  
+**PRD**: `HomesFlow.prd.md`  
 **Traceability**: `traceability.md`  
 **Constitution**: `.specify/memory/constitution.md`  
 **Glossary**: `glossary.md`  

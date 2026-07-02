@@ -1,6 +1,6 @@
 ---
 description: Regenerate coverage matrix and Golden Thread canvas after traceability changes
-globs: specs/001-mvp/tasks.md,HomeFlow.prd.md,specs/001-mvp/spec.md,ios/HomeFlow/**/*.swift,ios/HomeFlowTests/**/*.swift
+globs: specs/001-mvp/tasks.md,HomesFlow.prd.md,specs/001-mvp/spec.md,ios/HomeFlow/**/*.swift,ios/HomeFlowTests/**/*.swift
 alwaysApply: false
 ---
 
@@ -18,7 +18,7 @@ Then before marking the task complete:
 1. Run `bash scripts/check-traceability.sh --refresh` from the repo root.
    - Gate 2 check (must pass)
    - Regenerates `specs/001-mvp/coverage.md` (commit this with code changes)
-   - Updates the local Cursor canvas **HomeFlow Golden Thread — Coverage** (outside git; optional but recommended)
+   - Updates the local Cursor canvas **HomesFlow Golden Thread — Coverage** (outside git; optional but recommended)
 
 2. If Gate 2 fails, fix gaps or add pending test tasks — do not leave untracked ACs.
 

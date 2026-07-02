@@ -1,4 +1,4 @@
-# Implementation Plan: HomeFlow MVP
+# Implementation Plan: HomesFlow MVP
 
 **Branch**: `001-mvp` | **Date**: 2026-06-28 | **Spec**: [spec.md](./spec.md) | **Status**: [tasks.md](./tasks.md) · [dev-notes.md](./dev-notes.md)
 
@@ -209,7 +209,7 @@ The leading column is **not** a persistent home picker while viewing home detail
 
 **Dashboard**: Full-bleed photo hero cards with name/address overlay (FR-HOME-01). iPhone ~152pt; iPad ~528pt with vertically centered photos. Unsynced homes indicated (AC-SYNC-04).
 
-**Launch screen**: `LaunchLogo` @1x/@2x/@3x on black (`LaunchBackground`); wordmark ~1.5× prior size, reduced gap between green house icon and **HomeFlow** text.
+**Launch screen**: `LaunchLogo` @1x/@2x/@3x on black (`LaunchBackground`); wordmark ~1.5× prior size, reduced gap between green house icon and **HomesFlow** text.
 
 ### Procedure detail (trailing column on iPad; below tabs on iPhone)
 

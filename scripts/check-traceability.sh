@@ -22,7 +22,7 @@ cd "$(dirname "$0")/.."
 export LC_ALL=C
 
 ID_RE='(FR|NFR|AC|US)-[A-Z]{2,6}-[0-9]{2,}[a-z]?'
-PRD=HomeFlow.prd.md
+PRD=HomesFlow.prd.md
 SPEC=specs/001-mvp/spec.md
 TASKS=specs/001-mvp/tasks.md
 MATRIX=specs/001-mvp/coverage.md
@@ -183,10 +183,10 @@ emit_matrix() {
   done < <(grep '^AC-' "$tmp/prd.txt")
 
   {
-    echo "# Coverage Matrix: HomeFlow MVP"
+    echo "# Coverage Matrix: HomesFlow MVP"
     echo
     echo "**GENERATED FILE — do not edit.** Regenerate with \`bash scripts/check-traceability.sh --matrix\`."
-    echo "CI fails if this file is stale. Source of truth: \`HomeFlow.prd.md\` registry × \`tasks.md\` × \`@covers\` annotations × test names."
+    echo "CI fails if this file is stale. Source of truth: \`HomesFlow.prd.md\` registry × \`tasks.md\` × \`@covers\` annotations × test names."
     echo
     echo "## Summary"
     echo

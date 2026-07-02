@@ -2,7 +2,7 @@
 
 ### TL;DR
 
-HomeFlow is a responsive iOS app (iPhone and iPad) that empowers primary homeowners to easily manage a second home by sharing key information, procedures, and real-time statuses with trusted people such as family, caregivers, and guests. The app supports multiple user roles with granular access, organization of key house information (contact/service providers, procedures), and persistent procedure tracking—all tailored for usability on mobile devices.
+HomesFlow is a responsive iOS app (iPhone and iPad) that empowers primary homeowners to easily manage a second home by sharing key information, procedures, and real-time statuses with trusted people such as family, caregivers, and guests. The app supports multiple user roles with granular access, organization of key house information (contact/service providers, procedures), and persistent procedure tracking—all tailored for usability on mobile devices.
 
 ---
 
@@ -55,7 +55,7 @@ HomeFlow is a responsive iOS app (iPhone and iPad) that empowers primary homeown
 * **FR-NAV-01** (Priority: High) — Home detail MUST expose four sections labeled **Procedures**, **Contacts**, **Files**, and **People** with device-appropriate navigation (iPhone: hero + horizontal tabs; iPad: compact left-column hero + vertical icon tabs, with a **three-panel** layout — sidebar, section list, and section detail — for every section).
 * **FR-PROC-01** (Priority: High) — Add/edit procedure lists (e.g., winterizing, arrival prep) with persistent status (Not Started / In Progress / Complete / N/A).
 * **FR-PROC-02** (Priority: High) — Procedures contain ordered steps, each with its own status. Owner and Manager users can **create, rename, reorder, and delete** steps on procedures they can modify (per visibility). Guests have read-only access to step content and status.
-* **FR-PROC-03** (Priority: High) — Attach notes, photos, or documents to procedures.
+* **FR-PROC-03** (Priority: High) — Attach optional notes and photos to individual procedure steps (document attachments remain on the Files tab per FR-HOME-03).
 * **FR-GUEST-01** (Priority: Medium) — Guest users view only approved procedures and info.
 * **FR-GUEST-02** (Priority: Medium) — Quick guest onboarding via email or SMS invite.
 * **FR-NOTIF-01** (Priority: Medium) — Optional push notifications for changed statuses and new assignments.
@@ -84,7 +84,7 @@ HomeFlow is a responsive iOS app (iPhone and iPad) that empowers primary homeown
   * **iPad**: no large hero above main content. Leading column shows a **compact home hero** (photo, name, address) that sets which home is in focus, then **vertical icon tabs** for Procedures, Contacts, Files, and People. The trailing area uses a **three-panel** pattern for **every** section: nested list (middle) and detail (right) inside the trailing column — e.g. procedure list | procedure detail, contact list | contact detail, file list | preview, member list | member detail. No duplicate home hero and no horizontal tab bar in the trailing area.
   * Return to **My Homes** from iPad home detail to switch homes (sidebar is not a persistent home picker while viewing a home).
   * Procedures list shows statuses; tap to drill into steps, update status, add comments or files.
-  * On procedure detail: **tap** a step to toggle complete; **long-press** a step (Owner/Manager) to rename, delete, or reorder; **Add** on the Steps section to create a new step.
+  * On procedure detail: **tap** a step to toggle complete; **long-press** a step (Owner/Manager) to edit, delete, or reorder; tap the **pencil** to edit notes/photos; tap **Photo attached** to preview; **Add** on the Steps section to create a new step.
   * Service provider list is searchable and editable by permitted users.
   * Files library holds house manuals, WiFi info, care instructions (segmented by visibility).
 * **Step 4:** User administration (Owners only): manage house users/roles from settings.
@@ -107,7 +107,7 @@ HomeFlow is a responsive iOS app (iPhone and iPad) that empowers primary homeown
 * **Accessibility (first-class)**: UI MUST respect iOS system settings — especially **Dynamic Type / text size**, VoiceOver, Reduce Motion, and sufficient contrast. Layouts MUST reflow at larger text sizes without clipping essential controls or requiring horizontal scrolling for primary content.
 * Procedure steps use checklist gestures: tap to complete, long-press for structure edits (Owner/Manager only).
 * Home section tabs use friendly SF Symbol icons paired with labels; minimum 44×44 pt tap targets.
-* **Launch screen**: black background; green house icon + white **HomeFlow** wordmark at ~1.5× prior size with tighter icon-to-text spacing (@1x/@2x/@3x PNG assets in `LaunchLogo` imageset).
+* **Launch screen**: black background; green house icon + white **HomesFlow** wordmark at ~1.5× prior size with tighter icon-to-text spacing (@1x/@2x/@3x PNG assets in `LaunchLogo` imageset).
 * High-contrast text, large tap targets for accessibility.
 * Role-based UI: Users only see actions/features they're permitted for.
 * Large, visible status indicators for tasks.
@@ -116,7 +116,7 @@ HomeFlow is a responsive iOS app (iPhone and iPad) that empowers primary homeown
 
 ## Narrative
 
-Imagine Diane, a homeowner who spends most of her time in Florida, but owns a cherished oceanfront home in Maine. She worries each spring about getting the lawn tended, propane checked, and everything ready for summer visits. Previously, Diane painstakingly emailed procedures, WiFi passwords, and lawn schedules to family and caretakers—never sure if vital steps were missed or what had already been done. With HomeFlow, Diane sets up her second home's profile in minutes, delegating tasks and sharing info with her adult children, trusted handyman, and future guests. Each person sees only what they need, gets notified of tasks, and can update status, providing Jane peace of mind from anywhere. No more confusion—just clarity, control, and time saved for everyone.
+Imagine Diane, a homeowner who spends most of her time in Florida, but owns a cherished oceanfront home in Maine. She worries each spring about getting the lawn tended, propane checked, and everything ready for summer visits. Previously, Diane painstakingly emailed procedures, WiFi passwords, and lawn schedules to family and caretakers—never sure if vital steps were missed or what had already been done. With HomesFlow, Diane sets up her second home's profile in minutes, delegating tasks and sharing info with her adult children, trusted handyman, and future guests. Each person sees only what they need, gets notified of tasks, and can update status, providing Jane peace of mind from anywhere. No more confusion—just clarity, control, and time saved for everyone.
 
 ---
 
@@ -233,10 +233,11 @@ Imagine Diane, a homeowner who spends most of her time in Florida, but owns a ch
 * **AC-PROC-01** — Given a Manager user views a procedure, when they mark a step Complete, then the step status updates for all users with appropriate visibility, the procedure's aggregate status and progress in the procedures list update immediately, and an activity log entry is created.
 * **AC-PROC-02** — Given a Manager user attempts to update a step beyond their permission (e.g., another home's owner-only procedure or step), when they submit the change, then the app blocks the update and shows a permission error.
 * **AC-PROC-03** — Given a Manager user updates a step while offline and another user updates the same step before sync, when both devices reconnect, then the update with the most recent timestamp is persisted and the other user receives a notification about the overwritten change with reference to the activity log.
-* **AC-PROC-04** — Given an Owner or Manager user long-presses a step on a procedure they can modify, when the context menu appears, then Rename, Delete, Move Up, and Move Down are available.
+* **AC-PROC-04** — Given an Owner or Manager user long-presses a step on a procedure they can modify, when the context menu appears, then Edit, Delete, Move Up, and Move Down are available.
 * **AC-PROC-05** — Given an Owner or Manager user taps Add on the Steps section, when they enter a title and save, then a new step is appended at the next sort order and appears for permitted users after sync.
 * **AC-PROC-06** — Given an Owner or Manager user creates, renames, reorders, or deletes a step, when the change syncs, then it persists for permitted users and an activity log entry is created.
 * **AC-PROC-07** — Given a Guest views a procedure, when they interact with steps, then step structure controls (long-press menu, Add step) are not available and step status remains read-only.
+* **AC-PROC-08** — Given a user views a step with an attached photo, when they tap **Photo attached**, then the photo opens in a modal preview; step rows show notes below the title, a tappable photo indicator when present, a pencil **Edit** control (when permitted) to the left of the status ellipsis menu, and the ellipsis menu remains rightmost.
 
 ### US-EDIT-02 / FR-HOME-02 — Manager user manages service providers
 
@@ -303,7 +304,7 @@ Imagine Diane, a homeowner who spends most of her time in Florida, but owns a ch
 | NFR-A11Y-01 | NFR | iOS accessibility compliance |
 | AC-HOME-01 … AC-HOME-11 | AC | Home, provider & navigation scenarios |
 | AC-USER-01 … AC-USER-07 | AC | User invite & role scenarios |
-| AC-PROC-01 … AC-PROC-07 | AC | Procedure step scenarios |
+| AC-PROC-01 … AC-PROC-08 | AC | Procedure step scenarios |
 | AC-GUEST-01 … AC-GUEST-05 | AC | Guest access scenarios |
 | AC-SYNC-01 … AC-SYNC-04 | AC | Offline sync scenarios |
 | AC-A11Y-01 … AC-A11Y-03 | AC | Accessibility scenarios |

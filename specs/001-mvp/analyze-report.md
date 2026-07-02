@@ -1,4 +1,4 @@
-# Analyze Report: HomeFlow MVP
+# Analyze Report: HomesFlow MVP
 
 **Feature**: `001-mvp` | **Date**: 2026-06-28 | **Gate**: 1 (pre-implement)
 

@@ -1,4 +1,4 @@
-# Research: HomeFlow MVP
+# Research: HomesFlow MVP
 
 **Feature**: `001-mvp` | **Date**: 2026-06-28
 
