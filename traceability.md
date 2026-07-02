@@ -1,4 +1,4 @@
-# HomeFlow — Traceability Standard (Durable IDs)
+# HomesFlow — Traceability Standard (Durable IDs)
 
 Purpose: guarantee an unbroken chain from PRD requirement → spec → task → code → test, so that coverage and scope are *machine-checkable* rather than maintained by hand.
 
@@ -120,3 +120,22 @@ After this, the structure carries the rule forward automatically on every new fe
 3. Edit the two templates (§7).
 4. Add the CI coverage script (§6, Gate 2).
 5. From here, run `/speckit.specify` → `/speckit.clarify` → `/speckit.plan` → `/speckit.tasks` → `/speckit.analyze` (must be clean) → `/speckit.implement`.
+
+---
+
+## 9. Design controls mapping (DHF-aligned practice)
+
+The repo maps classical design-control concepts to concrete artifacts and objective evidence. **Verification** asks whether implementation matches specified requirements; **validation** asks whether users can achieve the intended use.
+
+| Design control | Repository artifact | Objective evidence |
+|---|---|---|
+| Governance & language | `constitution.md`, `glossary.md` | Version-controlled laws and domain terms used across specs, plans, and tests |
+| User needs | `HomesFlow.prd.md`, `specs/<feature>/spec.md` | Intended use, personas, acceptance criteria, risk notes |
+| Design inputs | `specs/<feature>/plan.md` | Data models, API contracts, task breakdown under constitution + glossary constraints |
+| Design outputs | Source code + migrations | Signed Git commits implementing the approved plan |
+| Design verification | XCTest unit/integration suites | CI test logs; `@covers` + `test_AC_*` naming per §6 |
+| Design validation | XCUITest + exploratory testing | E2E logs; qualitative feedback that critical flows work for real users |
+
+**Example flow** (winterization checklist): a constitution rule requires auditable cross-user state changes → the feature spec defines personas and ACs → `/speckit.plan` proposes Supabase tables, RLS, and SwiftUI structure → implementation is verified by XCTest and validated by XCUITest / manual sessions.
+
+Feature specs SHOULD call out intended use and material failure modes where relevant; trace those through plan, code, and tests using the ID chain in §4.

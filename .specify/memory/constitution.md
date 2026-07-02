@@ -1,6 +1,6 @@
-# HomeFlow Constitution
+# HomesFlow Constitution
 
-Non-negotiable laws for this codebase. Product requirements live in `HomeFlow.prd.md`. Traceability mechanics live in `traceability.md`.
+Non-negotiable laws for this codebase. Product requirements live in `HomesFlow.prd.md`. Traceability mechanics live in `traceability.md`.
 
 ## Core Principles
 
@@ -10,7 +10,7 @@ No production code without an approved feature spec, plan, and tasks under `spec
 
 ### II. Native iOS First
 
-HomeFlow ships as a native iOS app (Swift / SwiftUI) for iPhone and iPad. No Android, web, or desktop in the initial release (per PRD non-goals).
+HomesFlow ships as a native iOS app (Swift / SwiftUI) for iPhone and iPad. No Android, web, or desktop in the initial release (per PRD non-goals).
 
 ### III. Offline-Capable Sync (NON-NEGOTIABLE)
 
@@ -33,7 +33,7 @@ UI MUST respect iOS accessibility settings — especially Dynamic Type, VoiceOve
 ## Technology Constraints
 
 - **Client**: Swift / SwiftUI (iOS)
-- **Backend**: Supabase (PostgreSQL, auth, real-time sync) — see process doc for rationale
+- **Backend**: Supabase (PostgreSQL, auth, real-time sync) — see `specs/001-mvp/dev-notes.md` for rationale
 - **Process**: Spec Kit (`.specify/`, `specs/`)
 - **Testing**: XCTest / XCUITest when source exists
 
@@ -43,13 +43,13 @@ When documents conflict, higher layers win:
 
 1. This constitution (`.specify/memory/constitution.md`)
 2. `glossary.md`
-3. `HomeFlow.prd.md` (product requirements and AC registry)
+3. `HomesFlow.prd.md` (product requirements and AC registry)
 4. `specs/<feature>/spec.md` (feature slice derived from PRD)
 5. `specs/<feature>/plan.md` and `tasks.md`
 6. Source code
 
 ## Governance
 
-Amendments require a version bump and brief rationale. Process thinking lives in `README Architectural & Process Decisions.rtf` — it informs but does not override this file or the PRD.
+Amendments require a version bump and brief rationale. Traceability mechanics live in `traceability.md`; engineering and toolchain notes in `specs/001-mvp/dev-notes.md`. Neither overrides this file or the PRD.
 
 **Version**: 1.1.0 | **Ratified**: 2026-06-28 | **Last Amended**: 2026-07-01

@@ -4,6 +4,20 @@
 
 Operational learnings from `/speckit.implement` (Phases 0–5 partial). **Product requirements remain in [spec.md](./spec.md)** — this file is engineering-only.
 
+For traceability mechanics and design-control mapping, see [traceability.md](../../traceability.md). Archived process narrative: `process.deprecated.rtf`.
+
+---
+
+## Process & toolchain
+
+| Layer | Choice | Rationale |
+|-------|--------|-----------|
+| Process | Spec Kit (`.specify/`, `specs/`) | Spec-driven loops anchored in constitution, PRD, and traceability gates |
+| IDE / AI | Cursor | Agents operate on repo artifacts, not ad-hoc prompts |
+| Client | Swift / SwiftUI (iOS) | Native accessibility, performance, offline behavior |
+| Backend | Supabase (PostgreSQL, auth, Storage, realtime) | Typed data, household-scoped RLS, low-latency sync |
+| Delivery | GitHub + GitHub Actions | Source-controlled path to TestFlight / device builds |
+
 ---
 
 ## Environments
@@ -136,6 +150,17 @@ Section UI label **Files** implements document library (FR-HOME-03); code folder
 `scripts/check-traceability.sh` verifies the golden thread (registry drift, missing `Traces:`, untraced scope, untested ACs with no tracked task). Runs in CI via `.github/workflows/traceability.yml` on every push/PR; run locally with `bash scripts/check-traceability.sh`.
 
 Modes: `--matrix` regenerates [coverage.md](./coverage.md) (commit after traceability changes; CI fails if stale). `--canvas` updates the local **Golden Thread Coverage** Cursor canvas. `--refresh` runs Gate 2 + matrix + canvas — use after changing tasks, `@covers`, or tests. See `.cursor/rules/golden-thread-coverage.mdc`. The canvas helper (`scripts/update-golden-thread-canvas.py`) resolves and confines CLI paths to allowed directories before any file read/write.
+
+---
+
+## Platform readiness (planned)
+
+| Area | Target practice | Status |
+|------|-----------------|--------|
+| Schema evolution | Supabase migrations in Git (`supabase db push`); no manual dashboard DDL on staging/prod | In use |
+| Secrets | `Secrets*.xcconfig` gitignored; never commit service-role keys | In use |
+| Observability | Mobile crash/sync telemetry (e.g. Sentry for iOS), queued upload after reconnect | Not integrated |
+| Regression evals | Scripted sync/conflict scenario datasets in CI (SC-04 matrix) | Partial — unit tests only |
 
 ---
 

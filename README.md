@@ -1,23 +1,24 @@
-# HomeFlow
+# HomesFlow
 
 Native iOS app for managing a second home — built with Spec Kit.
 
-## Your three source documents
+## Core documents
 
 | Document | Role |
 |----------|------|
-| **`HomeFlow.prd.md`** | Product requirements, user stories, acceptance criteria |
+| **`HomesFlow.prd.md`** | Product requirements, user stories, acceptance criteria |
+| **`.specify/memory/constitution.md`** | Non-negotiable architectural and process laws |
 | **`traceability.md`** | How IDs flow from PRD → spec → tasks → code → tests |
-| **`README Architectural & Process Decisions.rtf`** | Process and stack thinking (not the product spec) |
+| **`specs/001-mvp/dev-notes.md`** | Engineering operational notes (environments, signing, gaps) |
 
 ## Repository layout
 
 ```text
 HomeFlow/
-├── HomeFlow.prd.md              ← product truth (you write / maintain)
+├── HomesFlow.prd.md              ← product truth (you write / maintain)
 ├── traceability.md              ← traceability mechanics
 ├── glossary.md                  ← domain terms
-├── README Architectural & Process Decisions.rtf
+├── process.deprecated.rtf       ← archived process narrative (superseded by markdown above)
 ├── .specify/                    ← Spec Kit (templates, scripts, constitution)
 │   └── memory/constitution.md   ← non-negotiable laws
 ├── ios/                         ← SwiftUI app (XcodeGen)
@@ -40,7 +41,7 @@ export SPECIFY_FEATURE_DIRECTORY=specs/001-mvp
 
 | Step | Command | Output |
 |------|---------|--------|
-| 1 | `/speckit.specify` | Fills `specs/001-mvp/spec.md` from `HomeFlow.prd.md` |
+| 1 | `/speckit.specify` | Fills `specs/001-mvp/spec.md` from `HomesFlow.prd.md` |
 | 2 | `/speckit.clarify` | Resolves open questions |
 | 3 | `/speckit.plan` | `plan.md`, `research.md`, `data-model.md` |
 | 4 | `/speckit.tasks` | `tasks.md` with `Traces:` fields |
@@ -58,7 +59,7 @@ cd ios && xcodegen generate && open HomeFlow.xcodeproj
 
 UI reference (non-authoritative): https://haze-rabbit-58180688.figma.site
 
-**Before step 1:** Add durable IDs to requirements and ACs in `HomeFlow.prd.md` per `traceability.md` §3.
+**Before step 1:** Add durable IDs to requirements and ACs in `HomesFlow.prd.md` per `traceability.md` §3.
 
 ## What not to duplicate
 
