@@ -1,4 +1,4 @@
-# HomeFlow
+# HomesFlow
 
 **PRD**: `HomeFlow.prd.md`  
 **Traceability**: `traceability.md`  
