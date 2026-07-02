@@ -48,6 +48,7 @@
 		8B4E453C70FCC3711FE17255 /* HomeFlowApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1CD4F9264B8E65BF4B75240 /* HomeFlowApp.swift */; };
 		98D395128DC314A7BF92629C /* FilesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DE98E4CAE9465C0C555B81B /* FilesView.swift */; };
 		A1D9E4AB3E0E3EE738F9A2AD /* EntityAccessState.swift in Sources */ = {isa = PBXBuildFile; fileRef = F03D4FA2371DADD21D2B444E /* EntityAccessState.swift */; };
+		A474563BC33EFBAB9319E47E /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AC9A5C94ADC16D096520014 /* SettingsView.swift */; };
 		B0E473DEA8305285F5BA7000 /* HomeValidatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 504099625C1A94B14A9E029F /* HomeValidatorTests.swift */; };
 		B8B2DDB29BBC436B18FD38B8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B8EA1C0B8D56E94220543B63 /* Assets.xcassets */; };
 		C66085F8C146521809D6E671 /* DomainEnums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53C5D96F41A0A87D10BD1AF6 /* DomainEnums.swift */; };
@@ -111,7 +112,8 @@
 		643018972A6E7883863E2521 /* ProcedureAttachmentService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProcedureAttachmentService.swift; sourceTree = "<group>"; };
 		6B473D8EF4DA4BB50AC1B691 /* StepStructureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StepStructureTests.swift; sourceTree = "<group>"; };
 		7A6207638303AF182C7C316A /* ProcedureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProcedureTests.swift; sourceTree = "<group>"; };
-		7B95B47C0C7A40048617B702 /* Secrets.Release.xcconfig.example */ = {isa = PBXFileReference; lastKnownFileType = text; path = Secrets.Release.xcconfig.example; sourceTree = "<group>"; };
+		7AC9A5C94ADC16D096520014 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		7B95B47C0C7A40048617B702 /* Secrets.Release.xcconfig.example */ = {isa = PBXFileReference; path = Secrets.Release.xcconfig.example; sourceTree = "<group>"; };
 		7D4B91998F226F2A6A692880 /* NetworkMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMonitor.swift; sourceTree = "<group>"; };
 		8085E2B49EE2ABC4C37EF2A9 /* Secrets.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Secrets.xcconfig; sourceTree = "<group>"; };
 		93E2F5EF5359F25C77954DD6 /* ActivityLogDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityLogDTO.swift; sourceTree = "<group>"; };
@@ -121,7 +123,7 @@
 		9CF9D16647D19E7853C52246 /* PermissionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionService.swift; sourceTree = "<group>"; };
 		9F6DFA717D62C6B87A211F00 /* Secrets.Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Secrets.Release.xcconfig; sourceTree = "<group>"; };
 		A90748E3E2030839155D51E1 /* ContactsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsView.swift; sourceTree = "<group>"; };
-		B1DD90540655FA98347267C7 /* Secrets.xcconfig.example */ = {isa = PBXFileReference; lastKnownFileType = text; path = Secrets.xcconfig.example; sourceTree = "<group>"; };
+		B1DD90540655FA98347267C7 /* Secrets.xcconfig.example */ = {isa = PBXFileReference; path = Secrets.xcconfig.example; sourceTree = "<group>"; };
 		B8EA1C0B8D56E94220543B63 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C1CD4F9264B8E65BF4B75240 /* HomeFlowApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeFlowApp.swift; sourceTree = "<group>"; };
 		C68A188BA476640949CB88D1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -132,7 +134,7 @@
 		E07E4F3E611B1ECA6683BCDE /* ProceduresView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProceduresView.swift; sourceTree = "<group>"; };
 		E2BF3FC894DC970479F1FCA4 /* HomeDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeDetailView.swift; sourceTree = "<group>"; };
 		E8233B3D385B58C52FAC3D9E /* ActivityLogService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityLogService.swift; sourceTree = "<group>"; };
-		ECBB805D2DD0798C893D12DE /* HomeFlow.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HomeFlow.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		ECBB805D2DD0798C893D12DE /* HomeFlow.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = HomeFlow.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EE19DC9CF981703D7575F3C6 /* AppEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppEnvironment.swift; sourceTree = "<group>"; };
 		F03D4FA2371DADD21D2B444E /* EntityAccessState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityAccessState.swift; sourceTree = "<group>"; };
 		F3BFD92FD120F1ABCD3DD57D /* SyncEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncEngine.swift; sourceTree = "<group>"; };
@@ -357,6 +359,14 @@
 			path = Documents;
 			sourceTree = "<group>";
 		};
+		B77323AF564B64A4C4D6FBC5 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				7AC9A5C94ADC16D096520014 /* SettingsView.swift */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
 		BD5DC9FC379B6212557B8733 /* Home */ = {
 			isa = PBXGroup;
 			children = (
@@ -453,6 +463,7 @@
 				5378D01D9D439F8FC5757004 /* Members */,
 				EF0904B38941A0F26B86FFB0 /* Procedures */,
 				79F381B2F5A4DBA8D6F3199A /* Providers */,
+				B77323AF564B64A4C4D6FBC5 /* Settings */,
 				6FB7EDE3FFB63DCF2E781F4B /* Shared */,
 			);
 			path = Features;
@@ -536,6 +547,7 @@
 						ProvisioningStyle = Automatic;
 					};
 					98683CA64C9F06E51878D55A = {
+						DevelopmentTeam = "";
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -619,6 +631,7 @@
 				38A8208AC8EF753DBC90C71C /* ProviderConflictResolver.swift in Sources */,
 				5E83017066D76879825E0B9F /* ServiceProviderDTO.swift in Sources */,
 				3C63311A691315D89EBC7BA3 /* ServiceProviderRepository.swift in Sources */,
+				A474563BC33EFBAB9319E47E /* SettingsView.swift in Sources */,
 				EFDD81EA5F10127E3496161A /* SupabaseClientProvider.swift in Sources */,
 				47452E66A214480A18D45100 /* SupabaseConfig.swift in Sources */,
 				42B2D02124FD78D2B2E51FA1 /* SwiftDataModels.swift in Sources */,
@@ -671,7 +684,6 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = HomeFlow/Resources/HomeFlow.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				DEVELOPMENT_TEAM = Z2PVV7A8SG;
 				ENABLE_TESTABILITY = YES;
 				INFOPLIST_FILE = HomeFlow/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -759,7 +771,6 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = HomeFlow/Resources/HomeFlow.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				DEVELOPMENT_TEAM = Z2PVV7A8SG;
 				ENABLE_TESTABILITY = YES;
 				INFOPLIST_FILE = HomeFlow/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (

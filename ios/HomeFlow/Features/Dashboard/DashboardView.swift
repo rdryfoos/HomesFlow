@@ -12,6 +12,7 @@ struct DashboardView: View {
     @State private var showJoinInvite = false
     @State private var selectedHomeId: UUID?
     @State private var showSyncAlert = false
+    @State private var showSettings = false
 
     var body: some View {
         Group {
@@ -28,6 +29,9 @@ struct DashboardView: View {
                 selectedHomeId = home.id
             }
             .environment(\.appEnvironment, appEnvironment)
+        }
+        .sheet(isPresented: $showSettings) {
+            SettingsView()
         }
         .sheet(isPresented: $showJoinInvite) {
             NavigationStack {
@@ -122,9 +126,12 @@ struct DashboardView: View {
             }
         }
         ToolbarItem(placement: .topBarTrailing) {
-            Button("Sign Out") {
-                Task { try? await SupabaseClientProvider.shared.signOut() }
+            Button {
+                showSettings = true
+            } label: {
+                Label("Settings", systemImage: "gearshape")
             }
+            .accessibilityLabel("Settings")
         }
     }
 

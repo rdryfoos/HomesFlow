@@ -65,7 +65,7 @@ CI fails if this file is stale. Source of truth: `HomesFlow.prd.md` registry × 
 | FR-HOME-03 | Implemented | T007 T065 | — |
 | FR-LOG-01 | Implemented | T012 T020 T029 T046 T061 | — |
 | FR-NAV-01 | Implemented | T021a T021b T021c | — |
-| FR-NOTIF-01 | Planned | — | T066 |
+| FR-NOTIF-01 | Implemented | T066 | — |
 | FR-PROC-01 | Implemented | T004 T041 | — |
 | FR-PROC-02 | Implemented | T041 T042 T047a | — |
 | FR-PROC-03 | Implemented | T007 T043 | — |

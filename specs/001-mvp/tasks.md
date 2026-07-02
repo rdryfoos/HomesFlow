@@ -226,9 +226,9 @@ Partial deliverables documented in [dev-notes.md](./dev-notes.md). **Do not** en
 ### Implementation
 
 - [x] T065 [FR-HOME-03] Files tab: documents list + upload + visibility in `ios/HomeFlow/Features/Documents/` — **Traces**: FR-HOME-03, AC-GUEST-01, AC-HOME-11
-- [ ] T066 [P] [FR-NOTIF-01] Settings screen: account, notification toggle disabled (“Coming soon”) in `ios/HomeFlow/Features/Settings/` — **Traces**: FR-NOTIF-01
+- [x] T066 [P] [FR-NOTIF-01] Settings screen: account, notification toggle disabled (“Coming soon”) in `ios/HomeFlow/Features/Settings/` — **Traces**: FR-NOTIF-01 — *gear icon on dashboard; email, sign out with confirmation, version*
 - [ ] T066a [P] Accessibility baseline: Dynamic Type layouts, VoiceOver labels on section tabs, Reduce Motion, 44pt targets across dashboard/home/procedures — **Traces**: NFR-A11Y-01, AC-A11Y-01, AC-A11Y-02, AC-A11Y-03
-- [x] T067 [P] Sign out clears session — **Traces**: FR-AUTH-01 — *dashboard toolbar today; Settings screen Phase 10*
+- [x] T067 [P] Sign out clears session — **Traces**: FR-AUTH-01 — *moved to Settings screen (T066) with confirmation dialog*
 - [ ] T068 Owner revoke member access → lose access on next sync — **Traces**: FR-USER-02
 
 ### Tests
