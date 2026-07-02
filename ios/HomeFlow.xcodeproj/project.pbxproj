@@ -44,11 +44,13 @@
 		6D31EA26BC9E44490EF26A08 /* ActivityLogDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93E2F5EF5359F25C77954DD6 /* ActivityLogDTO.swift */; };
 		7093B7E302B42215B90C4784 /* ProviderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43E0FB27793A0BD1FBB1A6E8 /* ProviderTests.swift */; };
 		770573BEE85C53FE8F453F2C /* MemberRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6390873983914AE52C180D3D /* MemberRepository.swift */; };
+		7BD83D1F34D62BC35F68BC9C /* SyncConflictMatrixTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC1347935136AC058B7170A9 /* SyncConflictMatrixTests.swift */; };
 		8B3075FC9E428CE58FC66133 /* PermissionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CF9D16647D19E7853C52246 /* PermissionService.swift */; };
 		8B4E453C70FCC3711FE17255 /* HomeFlowApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1CD4F9264B8E65BF4B75240 /* HomeFlowApp.swift */; };
 		98D395128DC314A7BF92629C /* FilesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DE98E4CAE9465C0C555B81B /* FilesView.swift */; };
 		A1D9E4AB3E0E3EE738F9A2AD /* EntityAccessState.swift in Sources */ = {isa = PBXBuildFile; fileRef = F03D4FA2371DADD21D2B444E /* EntityAccessState.swift */; };
 		A474563BC33EFBAB9319E47E /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AC9A5C94ADC16D096520014 /* SettingsView.swift */; };
+		AA822077F7E0B92FA8AA1CD1 /* PermissionRevertPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 617BF7D045D21B07E045F60B /* PermissionRevertPolicy.swift */; };
 		B0E473DEA8305285F5BA7000 /* HomeValidatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 504099625C1A94B14A9E029F /* HomeValidatorTests.swift */; };
 		B8B2DDB29BBC436B18FD38B8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B8EA1C0B8D56E94220543B63 /* Assets.xcassets */; };
 		C66085F8C146521809D6E671 /* DomainEnums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53C5D96F41A0A87D10BD1AF6 /* DomainEnums.swift */; };
@@ -108,6 +110,7 @@
 		53C5D96F41A0A87D10BD1AF6 /* DomainEnums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainEnums.swift; sourceTree = "<group>"; };
 		60414CD441B73249944E83F4 /* AuthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthView.swift; sourceTree = "<group>"; };
 		60FE5FF84A8E6F82314D7297 /* MemberDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberDTO.swift; sourceTree = "<group>"; };
+		617BF7D045D21B07E045F60B /* PermissionRevertPolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionRevertPolicy.swift; sourceTree = "<group>"; };
 		6390873983914AE52C180D3D /* MemberRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberRepository.swift; sourceTree = "<group>"; };
 		643018972A6E7883863E2521 /* ProcedureAttachmentService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProcedureAttachmentService.swift; sourceTree = "<group>"; };
 		6B473D8EF4DA4BB50AC1B691 /* StepStructureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StepStructureTests.swift; sourceTree = "<group>"; };
@@ -125,6 +128,7 @@
 		A90748E3E2030839155D51E1 /* ContactsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsView.swift; sourceTree = "<group>"; };
 		B1DD90540655FA98347267C7 /* Secrets.xcconfig.example */ = {isa = PBXFileReference; path = Secrets.xcconfig.example; sourceTree = "<group>"; };
 		B8EA1C0B8D56E94220543B63 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		BC1347935136AC058B7170A9 /* SyncConflictMatrixTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncConflictMatrixTests.swift; sourceTree = "<group>"; };
 		C1CD4F9264B8E65BF4B75240 /* HomeFlowApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeFlowApp.swift; sourceTree = "<group>"; };
 		C68A188BA476640949CB88D1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		CA433DFDC6F5CD99D427D78C /* HomeConflictResolverTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeConflictResolverTests.swift; sourceTree = "<group>"; };
@@ -159,6 +163,7 @@
 			isa = PBXGroup;
 			children = (
 				7D4B91998F226F2A6A692880 /* NetworkMonitor.swift */,
+				617BF7D045D21B07E045F60B /* PermissionRevertPolicy.swift */,
 				F3BFD92FD120F1ABCD3DD57D /* SyncEngine.swift */,
 			);
 			path = Sync;
@@ -303,6 +308,7 @@
 				7A6207638303AF182C7C316A /* ProcedureTests.swift */,
 				43E0FB27793A0BD1FBB1A6E8 /* ProviderTests.swift */,
 				6B473D8EF4DA4BB50AC1B691 /* StepStructureTests.swift */,
+				BC1347935136AC058B7170A9 /* SyncConflictMatrixTests.swift */,
 			);
 			path = HomeFlowTests;
 			sourceTree = "<group>";
@@ -622,6 +628,7 @@
 				770573BEE85C53FE8F453F2C /* MemberRepository.swift in Sources */,
 				4F540F1458642335C753E5AA /* MembersView.swift in Sources */,
 				2A02F0FC48E56B2DD0627BB2 /* NetworkMonitor.swift in Sources */,
+				AA822077F7E0B92FA8AA1CD1 /* PermissionRevertPolicy.swift in Sources */,
 				8B3075FC9E428CE58FC66133 /* PermissionService.swift in Sources */,
 				36775E348C7C11F6FE9C2B20 /* ProcedureAttachmentService.swift in Sources */,
 				270FC4BFF6C19BF842DFD03E /* ProcedureDTO.swift in Sources */,
@@ -650,6 +657,7 @@
 				CC9D432BCACD6BEBE748B66B /* ProcedureTests.swift in Sources */,
 				7093B7E302B42215B90C4784 /* ProviderTests.swift in Sources */,
 				25C17813674CCC5579D4CDFF /* StepStructureTests.swift in Sources */,
+				7BD83D1F34D62BC35F68BC9C /* SyncConflictMatrixTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

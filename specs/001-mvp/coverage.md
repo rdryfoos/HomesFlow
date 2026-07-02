@@ -9,8 +9,8 @@ CI fails if this file is stale. Source of truth: `HomesFlow.prd.md` registry × 
 |--------|-------|
 | Registry IDs | 62 |
 | Acceptance criteria | 35 |
-| ACs verified (test passing in suite) | 19 |
-| ACs implemented — test pending | 13 |
+| ACs verified (test passing in suite) | 21 |
+| ACs implemented — test pending | 11 |
 | ACs planned (tracked, not implemented) | 1 |
 
 ## Acceptance criteria
@@ -41,9 +41,9 @@ CI fails if this file is stale. Source of truth: `HomesFlow.prd.md` registry × 
 | AC-PROC-06 | Verified | T047a T050b | — | `test_AC_PROC_06_structure_changes_produce_activity_summaries` |
 | AC-PROC-07 | Verified | T047c T050c | — | `test_AC_PROC_07_guest_cannot_manage_step_structure` |
 | AC-PROC-08 | Implemented — test pending | T047d | T050d | — |
-| AC-SYNC-01 | Implemented — test pending | T011 T020 T034 T037 T045 T053 | T027 T038 T072 | — |
-| AC-SYNC-02 | Implemented — test pending | T011 | T035 T039 T072 | — |
-| AC-SYNC-03 | Implemented — test pending | T011 T036 | T040 T072 | — |
+| AC-SYNC-01 | Verified | T011 T020 T034 T037 T045 T053 T072 | T027 T038 | `test_AC_SYNC_01_conflict_decision_is_idempotent`<br>`test_AC_SYNC_01_home_timestamp_wins_matrix`<br>`test_AC_SYNC_01_provider_timestamp_wins_matrix`<br>`test_AC_SYNC_01_server_delete_matrix` |
+| AC-SYNC-02 | Implemented — test pending | T011 T072 | T035 T039 | — |
+| AC-SYNC-03 | Verified | T011 T036 T040 T072 | — | `test_AC_SYNC_03_permission_denied_revert_matrix` |
 | AC-SYNC-04 | Implemented — test pending | T015 T037 | T040a | — |
 | AC-USER-01 | Implemented — test pending | T025 T026 | T030 | — |
 | AC-USER-02 | Implemented — test pending | T025 | T031 | — |
@@ -81,7 +81,7 @@ CI fails if this file is stale. Source of truth: `HomesFlow.prd.md` registry × 
 | NFR-REL-01 | Planned | — | T072c |
 | NFR-SCALE-01 | Planned | — | T072b |
 | NFR-SEC-01 | Implemented | T003 T008 | — |
-| NFR-SYNC-01 | Planned | — | T072 T072a |
+| NFR-SYNC-01 | In progress | T072 | T072a |
 
 ## User stories
 

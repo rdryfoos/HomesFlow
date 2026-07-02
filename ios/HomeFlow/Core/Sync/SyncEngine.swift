@@ -455,6 +455,7 @@ final class SyncEngine: ObservableObject {
 
     private func revertPermissionDenied(entry: MutationOutboxEntry, message: String?) {
         let targetId = entry.entityId
+        let action = PermissionRevertPolicy.action(for: entry.op)
         switch entry.entity {
         case .home:
             if let home = try? modelContext.fetch(FetchDescriptor<CachedHome>(
@@ -466,8 +467,7 @@ final class SyncEngine: ObservableObject {
             if let step = try? modelContext.fetch(FetchDescriptor<CachedProcedureStep>(
                 predicate: #Predicate<CachedProcedureStep> { $0.id == targetId }
             )).first {
-                if entry.op == .insert {
-                    // Local-only step that the server rejected — discard it.
+                if action == .discardLocal {
                     modelContext.delete(step)
                 } else {
                     step.sync = .synced
@@ -477,7 +477,7 @@ final class SyncEngine: ObservableObject {
             if let provider = try? modelContext.fetch(FetchDescriptor<CachedServiceProvider>(
                 predicate: #Predicate<CachedServiceProvider> { $0.id == targetId }
             )).first {
-                if entry.op == .insert {
+                if action == .discardLocal {
                     modelContext.delete(provider)
                 } else {
                     provider.sync = .synced
@@ -487,7 +487,7 @@ final class SyncEngine: ObservableObject {
             if let document = try? modelContext.fetch(FetchDescriptor<CachedDocument>(
                 predicate: #Predicate<CachedDocument> { $0.id == targetId }
             )).first {
-                if entry.op == .insert {
+                if action == .discardLocal {
                     modelContext.delete(document)
                 } else {
                     document.sync = .synced

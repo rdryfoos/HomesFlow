@@ -141,7 +141,7 @@ Partial deliverables documented in [dev-notes.md](./dev-notes.md). **Do not** en
 
 - [ ] T038 [P] [NFR-OFFL-01] Unit test `test_AC_SYNC_01_offline_overwrite_notifies_loser` — **Traces**: AC-SYNC-01
 - [ ] T039 [P] [NFR-OFFL-01] Unit test `test_AC_SYNC_02_disjoint_fields_merge` — **Traces**: AC-SYNC-02
-- [ ] T040 [NFR-OFFL-01] Unit test `test_AC_SYNC_03_stale_permission_reverts` — **Traces**: AC-SYNC-03
+- [x] T040 [NFR-OFFL-01] Unit test `test_AC_SYNC_03_stale_permission_reverts` — **Traces**: AC-SYNC-03 — *covered by SyncConflictMatrixTests.test_AC_SYNC_03_permission_denied_revert_matrix over PermissionRevertPolicy*
 - [ ] T040a [P] [NFR-OFFL-01] Unit test `test_AC_SYNC_04_pending_sync_visible_on_dashboard` — **Traces**: AC-SYNC-04
 
 **Checkpoint**: P1 stories independently testable. ⏳ *Pending T027, sync tests, Procedures for full demo*
@@ -242,7 +242,7 @@ Partial deliverables documented in [dev-notes.md](./dev-notes.md). **Do not** en
 
 - [ ] T070 Run `/speckit.analyze` and fix all traceability violations — **Traces**: constitution traceability article
 - [ ] T071 [P] RLS integration tests against contracts/rls-permissions.md — **Traces**: FR-USER-01, FR-GUEST-01
-- [ ] T072 [P] Sync conflict matrix — target SC-04 (95% scripted scenarios) — **Traces**: SC-04, AC-SYNC-01, AC-SYNC-02, AC-SYNC-03, NFR-SYNC-01
+- [x] T072 [P] Sync conflict matrix — target SC-04 (95% scripted scenarios) — **Traces**: SC-04, AC-SYNC-01, AC-SYNC-02, AC-SYNC-03, NFR-SYNC-01 — *SyncConflictMatrixTests: timestamp-wins, delete-wins, idempotency, permission revert; AC-SYNC-02 field-merge scenarios pending T035*
 - [ ] T072a [P] Performance smoke: screen load & sync latency baselines — **Traces**: NFR-PERF-01, NFR-SYNC-01
 - [ ] T072b [P] Document NFR-SCALE-01 architecture assumptions in plan.md (no load test in MVP) — **Traces**: NFR-SCALE-01
 - [ ] T072c [P] Enable Xcode crash report collection / document NFR-REL-01 monitoring path — **Traces**: NFR-REL-01
