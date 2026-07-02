@@ -1,4 +1,4 @@
-# HomeFlow: Second Home Management App
+# HomesFlow: Second Home Management App
 
 ### TL;DR
 
