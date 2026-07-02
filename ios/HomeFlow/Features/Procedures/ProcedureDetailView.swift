@@ -19,108 +19,19 @@ struct ProcedureDetailView: View {
     }
 
     var body: some View {
-        List {
-            if let detail = viewModel.detail {
-                if let description = detail.description, !description.isEmpty {
-                    Section {
-                        Text(description)
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
-                    }
-                }
-
-                Section {
-                    ForEach(Array(detail.steps.enumerated()), id: \.element.id) { index, step in
-                        ProcedureStepRow(
-                            step: step,
-                            canEdit: viewModel.canEdit,
-                            onStatusChange: { status in
-                                Task {
-                                    await viewModel.updateStatus(
-                                        homeId: home.id,
-                                        procedureId: procedureId,
-                                        stepId: step.id,
-                                        status: status,
-                                        userRole: userRole,
-                                        using: appEnvironment?.procedureRepository
-                                    )
-                                }
-                            },
-                            onEditNotes: {
-                                notesStep = step
-                            }
-                        )
-                        .contextMenu {
-                            // Long-press step structure actions — Admin/Edit only (AC-PROC-04, AC-PROC-07)
-                            if viewModel.canManageStructure {
-                                Button {
-                                    renameTitle = step.title
-                                    renameTarget = step
-                                } label: {
-                                    Label("Rename", systemImage: "pencil")
-                                }
-                                Button {
-                                    moveStep(step, direction: .up)
-                                } label: {
-                                    Label("Move Up", systemImage: "arrow.up")
-                                }
-                                .disabled(index == 0)
-                                Button {
-                                    moveStep(step, direction: .down)
-                                } label: {
-                                    Label("Move Down", systemImage: "arrow.down")
-                                }
-                                .disabled(index == detail.steps.count - 1)
-                                Divider()
-                                Button(role: .destructive) {
-                                    deleteTarget = step
-                                } label: {
-                                    Label("Delete", systemImage: "trash")
-                                }
-                            }
-                        }
-                    }
-                } header: {
-                    HStack {
-                        Text("Steps")
-                        Spacer()
-                        if viewModel.canManageStructure {
-                            Button {
-                                newStepTitle = ""
-                                isAddingStep = true
-                            } label: {
-                                Label("Add step", systemImage: "plus")
-                                    .labelStyle(.iconOnly)
-                                    .frame(width: 28, height: 28)
-                            }
-                            .accessibilityLabel("Add step")
-                        }
-                    }
-                } footer: {
-                    if viewModel.canManageStructure {
-                        Text("Touch and hold a step to rename, reorder, or delete it.")
-                    }
-                }
-
-                if viewModel.canViewActivity {
-                    Section("Recent activity") {
-                        if viewModel.activity.isEmpty {
-                            Text("Activity will appear here when steps are updated.")
-                                .font(.subheadline)
-                                .foregroundStyle(.secondary)
-                        } else {
-                            ForEach(viewModel.activity) { entry in
-                                ActivityLogRow(entry: entry)
-                            }
-                        }
-                    }
-                }
+        Group {
+            if viewModel.accessDenied {
+                GuestAccessDeniedView(
+                    message: "This procedure is not shared with guest accounts."
+                )
+            } else {
+                procedureContent
             }
         }
         .navigationTitle(viewModel.detail?.title ?? "Procedure")
         .navigationBarTitleDisplayMode(.inline)
         .overlay {
-            if viewModel.isLoading && viewModel.detail == nil {
+            if viewModel.isLoading && viewModel.detail == nil && !viewModel.accessDenied {
                 ProgressView("Loading…")
             }
         }
@@ -218,6 +129,109 @@ struct ProcedureDetailView: View {
             Button("OK", role: .cancel) {}
         } message: {
             Text(viewModel.errorMessage ?? "")
+        }
+    }
+
+    @ViewBuilder
+    private var procedureContent: some View {
+        List {
+            if let detail = viewModel.detail {
+                if let description = detail.description, !description.isEmpty {
+                    Section {
+                        Text(description)
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+
+                Section {
+                    ForEach(Array(detail.steps.enumerated()), id: \.element.id) { index, step in
+                        ProcedureStepRow(
+                            step: step,
+                            canEdit: viewModel.canEdit,
+                            onStatusChange: { status in
+                                Task {
+                                    await viewModel.updateStatus(
+                                        homeId: home.id,
+                                        procedureId: procedureId,
+                                        stepId: step.id,
+                                        status: status,
+                                        userRole: userRole,
+                                        using: appEnvironment?.procedureRepository
+                                    )
+                                }
+                            },
+                            onEditNotes: {
+                                notesStep = step
+                            }
+                        )
+                        .contextMenu {
+                            if viewModel.canManageStructure {
+                                Button {
+                                    renameTitle = step.title
+                                    renameTarget = step
+                                } label: {
+                                    Label("Rename", systemImage: "pencil")
+                                }
+                                Button {
+                                    moveStep(step, direction: .up)
+                                } label: {
+                                    Label("Move Up", systemImage: "arrow.up")
+                                }
+                                .disabled(index == 0)
+                                Button {
+                                    moveStep(step, direction: .down)
+                                } label: {
+                                    Label("Move Down", systemImage: "arrow.down")
+                                }
+                                .disabled(index == detail.steps.count - 1)
+                                Divider()
+                                Button(role: .destructive) {
+                                    deleteTarget = step
+                                } label: {
+                                    Label("Delete", systemImage: "trash")
+                                }
+                            }
+                        }
+                    }
+                } header: {
+                    HStack {
+                        Text("Steps")
+                        Spacer()
+                        if viewModel.canManageStructure {
+                            Button {
+                                newStepTitle = ""
+                                isAddingStep = true
+                            } label: {
+                                Label("Add step", systemImage: "plus")
+                                    .labelStyle(.iconOnly)
+                                    .frame(width: 28, height: 28)
+                            }
+                            .accessibilityLabel("Add step")
+                        }
+                    }
+                } footer: {
+                    if viewModel.canManageStructure {
+                        Text("Touch and hold a step to rename, reorder, or delete it.")
+                    } else if !viewModel.canEdit {
+                        Text("Step statuses are read-only for guest accounts.")
+                    }
+                }
+
+                if viewModel.canViewActivity {
+                    Section("Recent activity") {
+                        if viewModel.activity.isEmpty {
+                            Text("Activity will appear here when steps are updated.")
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
+                        } else {
+                            ForEach(viewModel.activity) { entry in
+                                ActivityLogRow(entry: entry)
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -442,6 +456,7 @@ final class ProcedureDetailViewModel: ObservableObject {
     @Published var canEdit = false
     @Published var canManageStructure = false
     @Published var canViewActivity = false
+    @Published var accessDenied = false
     @Published var isLoading = false
     @Published var errorMessage: String?
 
@@ -453,6 +468,26 @@ final class ProcedureDetailViewModel: ObservableObject {
     ) async {
         isLoading = true
         defer { isLoading = false }
+
+        switch repository.procedureAccessState(procedureId: procedureId, userRole: userRole) {
+        case .accessDenied:
+            accessDenied = true
+            detail = nil
+            activity = []
+            canEdit = false
+            canManageStructure = false
+            canViewActivity = false
+            errorMessage = nil
+            return
+        case .notFound:
+            accessDenied = false
+            detail = nil
+            errorMessage = ProcedureError.notFound.localizedDescription
+            return
+        case .allowed:
+            accessDenied = false
+        }
+
         do {
             detail = try await repository.fetchProcedureDetail(
                 procedureId: procedureId,

@@ -2,7 +2,7 @@ import Foundation
 import SwiftData
 import Supabase
 
-// @covers FR-PROC-01, FR-PROC-02, FR-PROC-03, AC-PROC-01, AC-PROC-02, AC-PROC-03, AC-PROC-04, AC-PROC-05, AC-PROC-06, AC-PROC-07
+// @covers FR-PROC-01, FR-PROC-02, FR-PROC-03, AC-PROC-01, AC-PROC-02, AC-PROC-03, AC-PROC-04, AC-PROC-05, AC-PROC-06, AC-PROC-07, AC-GUEST-03, AC-GUEST-05, FR-GUEST-01
 
 @MainActor
 final class ProcedureRepository: ObservableObject {
@@ -40,6 +40,19 @@ final class ProcedureRepository: ObservableObject {
             try await pullProcedures(homeId: homeId)
         }
         return cachedDetail(procedureId: procedureId, userRole: userRole)
+    }
+
+    /// Whether a procedure exists in cache and is readable for the role (AC-GUEST-02).
+    func procedureAccessState(procedureId: UUID, userRole: HomeRole) -> EntityAccessState {
+        guard let procedure = rawCachedProcedure(procedureId) else { return .notFound }
+        guard permissions.can(
+            .read,
+            entity: .procedure(visibility: procedure.procedureVisibility),
+            role: userRole
+        ) else {
+            return .accessDenied
+        }
+        return .allowed
     }
 
     func canUpdateSteps(for procedure: ProcedureDetail, userRole: HomeRole) -> Bool {
@@ -361,6 +374,16 @@ final class ProcedureRepository: ObservableObject {
             entity: .procedureStep(procedureVisibility: detail.visibility),
             role: userRole
         ) else {
+            if userRole == .guest, let step = detail.steps.first(where: { $0.id == stepId }) {
+                logUnauthorizedStepAttempt(
+                    homeId: homeId,
+                    actorId: userId,
+                    stepId: stepId,
+                    stepTitle: step.title,
+                    procedureTitle: detail.title,
+                    attemptedAction: "edit notes on"
+                )
+            }
             throw ProcedureError.notAuthorized
         }
 
@@ -426,6 +449,16 @@ final class ProcedureRepository: ObservableObject {
             entity: .procedureStep(procedureVisibility: detail.visibility),
             role: userRole
         ) else {
+            if userRole == .guest, let step = detail.steps.first(where: { $0.id == stepId }) {
+                logUnauthorizedStepAttempt(
+                    homeId: homeId,
+                    actorId: userId,
+                    stepId: stepId,
+                    stepTitle: step.title,
+                    procedureTitle: detail.title,
+                    attemptedAction: "update"
+                )
+            }
             throw ProcedureError.notAuthorized
         }
 
@@ -529,13 +562,22 @@ final class ProcedureRepository: ObservableObject {
 
         for row in rows {
             if let cached = existing.first(where: { $0.id == row.id }) {
-                if cached.sync == .pending { continue }
+                if cached.sync == .pending {
+                    guard let serverAt = row.updatedAt,
+                          let priorServerAt = cached.serverUpdatedAt,
+                          serverAt > priorServerAt else { continue }
+                    removeOutboxEntries(for: cached.id)
+                    syncEngine.postNotification(
+                        "Your offline edit to \(row.title) was overwritten by a newer update."
+                    )
+                }
                 cached.title = row.title
                 cached.category = row.category
                 cached.procedureDescription = row.description
                 cached.procedureStatus = row.status
                 cached.procedureVisibility = row.visibility
                 cached.serverUpdatedAt = row.updatedAt
+                cached.sync = .synced
             } else {
                 modelContext.insert(CachedProcedure(
                     id: row.id,
@@ -727,11 +769,40 @@ final class ProcedureRepository: ObservableObject {
         }
     }
 
-    private func cachedDetail(procedureId: UUID, userRole: HomeRole) -> ProcedureDetail? {
+    private func rawCachedProcedure(_ procedureId: UUID) -> CachedProcedure? {
         let procTarget = procedureId
-        guard let procedure = try? modelContext.fetch(FetchDescriptor<CachedProcedure>(
+        return try? modelContext.fetch(FetchDescriptor<CachedProcedure>(
             predicate: #Predicate<CachedProcedure> { $0.id == procTarget }
-        )).first else { return nil }
+        )).first
+    }
+
+    private func logUnauthorizedStepAttempt(
+        homeId: UUID,
+        actorId: UUID,
+        stepId: UUID,
+        stepTitle: String,
+        procedureTitle: String,
+        attemptedAction: String
+    ) {
+        activityLog.append(
+            homeId: homeId,
+            actorId: actorId,
+            entityType: "procedure_step",
+            entityId: stepId,
+            action: "unauthorized_attempt",
+            summary: "Unauthorized attempt to \(attemptedAction) step \"\(stepTitle)\" in \(procedureTitle)"
+        )
+    }
+
+    private func removeOutboxEntries(for entityId: UUID) {
+        let entries = (try? modelContext.fetch(FetchDescriptor<MutationOutboxEntry>())) ?? []
+        for entry in entries where entry.entityId == entityId {
+            modelContext.delete(entry)
+        }
+    }
+
+    private func cachedDetail(procedureId: UUID, userRole: HomeRole) -> ProcedureDetail? {
+        guard let procedure = rawCachedProcedure(procedureId) else { return nil }
 
         guard permissions.can(
             .read,

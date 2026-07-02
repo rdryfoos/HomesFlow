@@ -55,7 +55,7 @@ struct AuthView: View {
                     Text("Apple Sign-In + email/password per FR-AUTH-01")
                 }
             }
-            .navigationTitle("HomeFlow")
+            .navigationTitle("HomesFlow")
         }
         .onChange(of: auth.isAuthenticated) { _, isAuthenticated in
             if isAuthenticated {

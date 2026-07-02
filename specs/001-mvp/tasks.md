@@ -15,7 +15,7 @@
 | 5 Invites & roles | **Partial** | Deep links T026; offline conflict T027; unit tests |
 | 6 Offline sync | **Partial** | Field merge T035; full sync tests |
 | 7 Procedures | **Mostly complete** | Photo attach T043 |
-| 8–10 P2/P3 features | **Partial** | Contacts done (Phase 8); guest views, Files, Settings next |
+| 8–10 P2/P3 features | **Partial** | Phase 9 guest views done; Files, Settings next |
 | 11 Hardening | Not started | Re-run analyze after P1 checkpoint |
 
 Partial deliverables documented in [dev-notes.md](./dev-notes.md). **Do not** encode implementation details in [spec.md](./spec.md).
@@ -119,7 +119,7 @@ Partial deliverables documented in [dev-notes.md](./dev-notes.md). **Do not** en
 - [ ] T030 [P] [US-ADMIN-02] Unit test `test_AC_USER_01_invite_accepted_grants_role` — **Traces**: AC-USER-01
 - [ ] T031 [P] [US-ADMIN-02] Unit test `test_AC_USER_02_revoked_token_invalid` — **Traces**: AC-USER-02
 - [ ] T032 [US-ADMIN-03] Unit test `test_AC_USER_04_edit_role_can_modify_procedures` — **Traces**: AC-USER-04
-- [ ] T033 [US-ADMIN-03] Unit test `test_AC_USER_05_guest_role_read_only` — **Traces**: AC-USER-05
+- [x] T033 [US-ADMIN-03] Unit test `test_AC_USER_05_guest_role_read_only` — **Traces**: AC-USER-05 — *GuestTests*
 - [ ] T033a [P] [US-ADMIN-02] Unit test `test_AC_USER_03_offline_invite_conflict` — **Traces**: AC-USER-03
 - [ ] T033b [US-ADMIN-03] Unit test `test_AC_USER_06_concurrent_role_change_audit` — **Traces**: AC-USER-06
 - [ ] T033c [P] [US-ADMIN-02] Unit test `test_AC_USER_07_paste_token_accepts_invite` — **Traces**: AC-USER-07
@@ -200,19 +200,19 @@ Partial deliverables documented in [dev-notes.md](./dev-notes.md). **Do not** en
 
 ### Implementation
 
-- [ ] T057 [US-GUEST-01] Visibility filtering on providers, documents, procedures — **Traces**: AC-GUEST-01, FR-GUEST-01
-- [ ] T058 [US-GUEST-01] Navigation guard: deny restricted content with message — **Traces**: AC-GUEST-02
-- [ ] T059 [US-GUEST-01] Offline visibility sync — **Traces**: AC-GUEST-03
-- [ ] T060 [US-GUEST-02] Guest procedure detail read-only (no status edits) — **Traces**: AC-GUEST-04
-- [ ] T061 [US-GUEST-02] Reject guest step status change + audit unauthorized attempt — **Traces**: AC-GUEST-05, FR-LOG-01
+- [x] T057 [US-GUEST-01] Visibility filtering on providers, documents, procedures — **Traces**: AC-GUEST-01, FR-GUEST-01 — *repository filters + guest tabs; documents when T065*
+- [x] T058 [US-GUEST-01] Navigation guard: deny restricted content with message — **Traces**: AC-GUEST-02 — *GuestAccessDeniedView + access state checks*
+- [x] T059 [US-GUEST-01] Offline visibility sync — **Traces**: AC-GUEST-03 — *timestamp-wins procedure/provider merge*
+- [x] T060 [US-GUEST-02] Guest procedure detail read-only (no status edits) — **Traces**: AC-GUEST-04 — *canEdit false + footer hint*
+- [x] T061 [US-GUEST-02] Reject guest step status change + audit unauthorized attempt — **Traces**: AC-GUEST-05, FR-LOG-01 — *permission gate + activity log*
 
 ### Tests
 
-- [ ] T062 [P] [US-GUEST-01] Unit test `test_AC_GUEST_01_guest_fields_only` — **Traces**: AC-GUEST-01
-- [ ] T063 [P] [US-GUEST-02] Unit test `test_AC_GUEST_05_unauthorized_step_rejected` — **Traces**: AC-GUEST-05
-- [ ] T063a [P] [US-GUEST-01] Unit test `test_AC_GUEST_02_restricted_deep_link_denied` — **Traces**: AC-GUEST-02
-- [ ] T063b [P] [US-GUEST-01] Unit test `test_AC_GUEST_03_offline_visibility_sync` — **Traces**: AC-GUEST-03
-- [ ] T063c [P] [US-GUEST-02] Unit test `test_AC_GUEST_04_guest_procedure_read_only` — **Traces**: AC-GUEST-04
+- [x] T062 [P] [US-GUEST-01] Unit test `test_AC_GUEST_01_guest_fields_only` — **Traces**: AC-GUEST-01 — *GuestTests*
+- [x] T063 [P] [US-GUEST-02] Unit test `test_AC_GUEST_05_unauthorized_step_rejected` — **Traces**: AC-GUEST-05 — *PermissionServiceTests*
+- [x] T063a [P] [US-GUEST-01] Unit test `test_AC_GUEST_02_restricted_deep_link_denied` — **Traces**: AC-GUEST-02 — *GuestTests*
+- [x] T063b [P] [US-GUEST-01] Unit test `test_AC_GUEST_03_offline_visibility_sync` — **Traces**: AC-GUEST-03 — *GuestTests*
+- [x] T063c [P] [US-GUEST-02] Unit test `test_AC_GUEST_04_guest_procedure_read_only` — **Traces**: AC-GUEST-04 — *GuestTests*
 - [ ] T064 [US-GUEST-01] XCUITest: guest cannot edit provider — **Traces**: AC-GUEST-01, SC-03
 
 ---

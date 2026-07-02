@@ -29,20 +29,7 @@ struct ContactsView: View {
                 NavigationSplitView {
                     contactsList(useSelection: true)
                 } detail: {
-                    if let provider = filteredProviders.first(where: { $0.id == selectedProviderId }) {
-                        ProviderDetailView(
-                            provider: provider,
-                            canEdit: viewModel.canManage,
-                            onEdit: { formMode = .edit(provider) },
-                            onDelete: { deleteProvider(provider) }
-                        )
-                    } else {
-                        ContentUnavailableView(
-                            "Select a contact",
-                            systemImage: "person.crop.circle",
-                            description: Text("Choose a service provider from the list.")
-                        )
-                    }
+                    providerDetailPanel
                 }
             } else {
                 contactsList(useSelection: false)
@@ -64,6 +51,46 @@ struct ContactsView: View {
             Button("OK", role: .cancel) {}
         } message: {
             Text(viewModel.errorMessage ?? "")
+        }
+    }
+
+    @ViewBuilder
+    private var providerDetailPanel: some View {
+        if let providerId = selectedProviderId ?? filteredProviders.first?.id,
+           let repo = appEnvironment?.providerRepository {
+            switch repo.providerAccessState(providerId: providerId, userRole: userRole) {
+            case .accessDenied:
+                GuestAccessDeniedView(
+                    message: "This contact is not shared with guest accounts."
+                )
+            case .notFound:
+                ContentUnavailableView(
+                    "Contact not found",
+                    systemImage: "person.crop.circle",
+                    description: Text("This contact may have been removed.")
+                )
+            case .allowed:
+                if let provider = filteredProviders.first(where: { $0.id == providerId }) {
+                    ProviderDetailView(
+                        provider: provider,
+                        canEdit: viewModel.canManage,
+                        onEdit: { formMode = .edit(provider) },
+                        onDelete: { deleteProvider(provider) }
+                    )
+                } else {
+                    ContentUnavailableView(
+                        "Select a contact",
+                        systemImage: "person.crop.circle",
+                        description: Text("Choose a service provider from the list.")
+                    )
+                }
+            }
+        } else {
+            ContentUnavailableView(
+                "Select a contact",
+                systemImage: "person.crop.circle",
+                description: Text("Choose a service provider from the list.")
+            )
         }
     }
 

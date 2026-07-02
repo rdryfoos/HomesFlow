@@ -2,7 +2,7 @@ import Foundation
 import SwiftData
 import Supabase
 
-// @covers FR-HOME-02, AC-HOME-04, AC-HOME-05, AC-SYNC-01
+// @covers FR-HOME-02, AC-HOME-04, AC-GUEST-01, FR-GUEST-01, AC-HOME-05, AC-SYNC-01
 
 @MainActor
 final class ServiceProviderRepository: ObservableObject {
@@ -31,6 +31,18 @@ final class ServiceProviderRepository: ObservableObject {
             try await pullProviders(homeId: homeId)
         }
         return cachedSummaries(homeId: homeId, userRole: userRole)
+    }
+
+    func providerAccessState(providerId: UUID, userRole: HomeRole) -> EntityAccessState {
+        guard let provider = cachedProvider(providerId) else { return .notFound }
+        guard permissions.can(
+            .read,
+            entity: .serviceProvider(visibility: provider.providerVisibility),
+            role: userRole
+        ) else {
+            return .accessDenied
+        }
+        return .allowed
     }
 
     func canManageProviders(userRole: HomeRole) -> Bool {

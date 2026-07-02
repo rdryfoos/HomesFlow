@@ -1,6 +1,6 @@
 import SwiftUI
 
-// @covers FR-HOME-01, FR-NAV-01, FR-USER-02, AC-HOME-09, AC-HOME-10, AC-HOME-11, AC-A11Y-02
+// @covers FR-HOME-01, FR-NAV-01, FR-USER-02, AC-HOME-09, AC-HOME-10, AC-HOME-11, AC-A11Y-02, AC-GUEST-01, AC-USER-05
 
 enum HomeTab: String, CaseIterable, Identifiable {
     case procedures = "Procedures"
@@ -18,6 +18,16 @@ enum HomeTab: String, CaseIterable, Identifiable {
         case .people: "person.2"
         }
     }
+
+    /// Tabs visible for the signed-in member's role (AC-USER-05, AC-GUEST-01).
+    static func visibleTabs(for role: HomeRole) -> [HomeTab] {
+        switch role {
+        case .guest:
+            return [.procedures, .contacts, .files]
+        case .admin, .edit:
+            return allCases
+        }
+    }
 }
 
 struct HomeDetailView: View {
@@ -29,6 +39,18 @@ struct HomeDetailView: View {
     @State private var selectedTab: HomeTab = .procedures
     @State private var showEditHome = false
     @State private var displayedHome: HomeSummary
+
+    private var userRole: HomeRole {
+        displayedHome.currentUserRole ?? .guest
+    }
+
+    private var visibleTabs: [HomeTab] {
+        HomeTab.visibleTabs(for: userRole)
+    }
+
+    private var canEditHome: Bool {
+        userRole == .admin
+    }
 
     init(home: HomeSummary) {
         self.home = home
@@ -49,6 +71,11 @@ struct HomeDetailView: View {
             }
             .environment(\.appEnvironment, appEnvironment)
         }
+        .onChange(of: visibleTabs) { _, tabs in
+            if !tabs.contains(selectedTab) {
+                selectedTab = tabs.first ?? .procedures
+            }
+        }
     }
 
     // MARK: - iPhone
@@ -57,11 +84,12 @@ struct HomeDetailView: View {
         VStack(spacing: 0) {
             HomeHeroCard(home: displayedHome, style: .detail)
 
-            HomeSectionTabBar(
-                selectedTab: $selectedTab,
-                axis: .horizontal,
-                reduceMotion: reduceMotion
-            )
+                HomeSectionTabBar(
+                    selectedTab: $selectedTab,
+                    tabs: visibleTabs,
+                    axis: .horizontal,
+                    reduceMotion: reduceMotion
+                )
             .padding(.horizontal)
             .padding(.vertical, 12)
 
@@ -71,8 +99,10 @@ struct HomeDetailView: View {
         .navigationTitle("")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                editHomeButton
+            if canEditHome {
+                ToolbarItem(placement: .topBarTrailing) {
+                    editHomeButton
+                }
             }
         }
     }
@@ -87,8 +117,10 @@ struct HomeDetailView: View {
             tabContent
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .toolbar {
-                    ToolbarItem(placement: .topBarTrailing) {
-                        editHomeButton
+                    if canEditHome {
+                        ToolbarItem(placement: .topBarTrailing) {
+                            editHomeButton
+                        }
                     }
                 }
         }
@@ -115,6 +147,7 @@ struct HomeDetailView: View {
 
                 HomeSectionTabBar(
                     selectedTab: $selectedTab,
+                    tabs: visibleTabs,
                     axis: .vertical,
                     reduceMotion: reduceMotion
                 )
@@ -156,6 +189,7 @@ struct HomeDetailView: View {
 
 private struct HomeSectionTabBar: View {
     @Binding var selectedTab: HomeTab
+    let tabs: [HomeTab]
     let axis: Axis
     let reduceMotion: Bool
 
@@ -164,14 +198,14 @@ private struct HomeSectionTabBar: View {
             if axis == .horizontal {
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 8) {
-                        ForEach(HomeTab.allCases) { tab in
+                        ForEach(tabs) { tab in
                             tabButton(for: tab)
                         }
                     }
                 }
             } else {
                 VStack(spacing: 4) {
-                    ForEach(HomeTab.allCases) { tab in
+                    ForEach(tabs) { tab in
                         tabButton(for: tab)
                     }
                 }

@@ -25,11 +25,13 @@
 		42B2D02124FD78D2B2E51FA1 /* SwiftDataModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 202D9DB27925A958E207D429 /* SwiftDataModels.swift */; };
 		47452E66A214480A18D45100 /* SupabaseConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10EF2773A56AA32BB0F9C556 /* SupabaseConfig.swift */; };
 		48C127EED88CD74CF221603F /* HomeFlowUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33213B4805ED062B656B0320 /* HomeFlowUITests.swift */; };
+		494456ADCA18C6A53CD89E76 /* GuestAccessDeniedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19A3C4630942F4E31CAAEAC6 /* GuestAccessDeniedView.swift */; };
 		4F540F1458642335C753E5AA /* MembersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA4B516924C9EC3C8731B3B /* MembersView.swift */; };
 		513B8DEAA0D11D378A525E1C /* HomeSetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 048692BBFBC56BDDBCF04E0F /* HomeSetupView.swift */; };
 		55E645CA22343F5DDB24009D /* HomeRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BC05990017639DD3D616C1C /* HomeRepository.swift */; };
 		567510031EA05B1113D6FC6B /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FD7A866773F9C47EAFBED1B /* DashboardView.swift */; };
 		59DBFDAE670BD9E8E0F6875D /* HomeConflictResolverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA433DFDC6F5CD99D427D78C /* HomeConflictResolverTests.swift */; };
+		5CC09948945E04A86A960E3B /* GuestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9778204DA07FBBA89DAC39C5 /* GuestTests.swift */; };
 		5E83017066D76879825E0B9F /* ServiceProviderDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE7E24F815721CD882949EF3 /* ServiceProviderDTO.swift */; };
 		5FF8919A11BADF5CCEF374EC /* SyncEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3BFD92FD120F1ABCD3DD57D /* SyncEngine.swift */; };
 		605EDF407675D470942F7983 /* Secrets.Release.xcconfig.example in Resources */ = {isa = PBXBuildFile; fileRef = 7B95B47C0C7A40048617B702 /* Secrets.Release.xcconfig.example */; };
@@ -42,6 +44,7 @@
 		8B3075FC9E428CE58FC66133 /* PermissionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CF9D16647D19E7853C52246 /* PermissionService.swift */; };
 		8B4E453C70FCC3711FE17255 /* HomeFlowApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1CD4F9264B8E65BF4B75240 /* HomeFlowApp.swift */; };
 		98D395128DC314A7BF92629C /* FilesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DE98E4CAE9465C0C555B81B /* FilesView.swift */; };
+		A1D9E4AB3E0E3EE738F9A2AD /* EntityAccessState.swift in Sources */ = {isa = PBXBuildFile; fileRef = F03D4FA2371DADD21D2B444E /* EntityAccessState.swift */; };
 		B0E473DEA8305285F5BA7000 /* HomeValidatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 504099625C1A94B14A9E029F /* HomeValidatorTests.swift */; };
 		B8B2DDB29BBC436B18FD38B8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B8EA1C0B8D56E94220543B63 /* Assets.xcassets */; };
 		C66085F8C146521809D6E671 /* DomainEnums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53C5D96F41A0A87D10BD1AF6 /* DomainEnums.swift */; };
@@ -80,6 +83,7 @@
 		103C467D720CFB0C691B33D0 /* ServiceProviderRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceProviderRepository.swift; sourceTree = "<group>"; };
 		10EF2773A56AA32BB0F9C556 /* SupabaseConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseConfig.swift; sourceTree = "<group>"; };
 		11A8B51F014C45340EA18A53 /* ProcedureDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProcedureDTO.swift; sourceTree = "<group>"; };
+		19A3C4630942F4E31CAAEAC6 /* GuestAccessDeniedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuestAccessDeniedView.swift; sourceTree = "<group>"; };
 		202D9DB27925A958E207D429 /* SwiftDataModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftDataModels.swift; sourceTree = "<group>"; };
 		24584D4D48852644D6901B29 /* HomeHeroCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeHeroCard.swift; sourceTree = "<group>"; };
 		2DE98E4CAE9465C0C555B81B /* FilesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilesView.swift; sourceTree = "<group>"; };
@@ -99,16 +103,17 @@
 		6390873983914AE52C180D3D /* MemberRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberRepository.swift; sourceTree = "<group>"; };
 		6B473D8EF4DA4BB50AC1B691 /* StepStructureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StepStructureTests.swift; sourceTree = "<group>"; };
 		7A6207638303AF182C7C316A /* ProcedureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProcedureTests.swift; sourceTree = "<group>"; };
-		7B95B47C0C7A40048617B702 /* Secrets.Release.xcconfig.example */ = {isa = PBXFileReference; lastKnownFileType = text; path = Secrets.Release.xcconfig.example; sourceTree = "<group>"; };
+		7B95B47C0C7A40048617B702 /* Secrets.Release.xcconfig.example */ = {isa = PBXFileReference; path = Secrets.Release.xcconfig.example; sourceTree = "<group>"; };
 		7D4B91998F226F2A6A692880 /* NetworkMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMonitor.swift; sourceTree = "<group>"; };
 		8085E2B49EE2ABC4C37EF2A9 /* Secrets.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Secrets.xcconfig; sourceTree = "<group>"; };
 		93E2F5EF5359F25C77954DD6 /* ActivityLogDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityLogDTO.swift; sourceTree = "<group>"; };
+		9778204DA07FBBA89DAC39C5 /* GuestTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuestTests.swift; sourceTree = "<group>"; };
 		9ADD6A2E347D891C2C1B0E8D /* PermissionServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionServiceTests.swift; sourceTree = "<group>"; };
 		9BC05990017639DD3D616C1C /* HomeRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeRepository.swift; sourceTree = "<group>"; };
 		9CF9D16647D19E7853C52246 /* PermissionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionService.swift; sourceTree = "<group>"; };
 		9F6DFA717D62C6B87A211F00 /* Secrets.Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Secrets.Release.xcconfig; sourceTree = "<group>"; };
 		A90748E3E2030839155D51E1 /* ContactsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsView.swift; sourceTree = "<group>"; };
-		B1DD90540655FA98347267C7 /* Secrets.xcconfig.example */ = {isa = PBXFileReference; lastKnownFileType = text; path = Secrets.xcconfig.example; sourceTree = "<group>"; };
+		B1DD90540655FA98347267C7 /* Secrets.xcconfig.example */ = {isa = PBXFileReference; path = Secrets.xcconfig.example; sourceTree = "<group>"; };
 		B8EA1C0B8D56E94220543B63 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C1CD4F9264B8E65BF4B75240 /* HomeFlowApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeFlowApp.swift; sourceTree = "<group>"; };
 		C68A188BA476640949CB88D1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -119,8 +124,9 @@
 		E07E4F3E611B1ECA6683BCDE /* ProceduresView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProceduresView.swift; sourceTree = "<group>"; };
 		E2BF3FC894DC970479F1FCA4 /* HomeDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeDetailView.swift; sourceTree = "<group>"; };
 		E8233B3D385B58C52FAC3D9E /* ActivityLogService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityLogService.swift; sourceTree = "<group>"; };
-		ECBB805D2DD0798C893D12DE /* HomeFlow.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HomeFlow.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		ECBB805D2DD0798C893D12DE /* HomeFlow.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = HomeFlow.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EE19DC9CF981703D7575F3C6 /* AppEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppEnvironment.swift; sourceTree = "<group>"; };
+		F03D4FA2371DADD21D2B444E /* EntityAccessState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityAccessState.swift; sourceTree = "<group>"; };
 		F3BFD92FD120F1ABCD3DD57D /* SyncEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncEngine.swift; sourceTree = "<group>"; };
 		FB98B14D16CF895A989665D2 /* ProcedureRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProcedureRepository.swift; sourceTree = "<group>"; };
 		FD9CEBE86C62A6C52C2B01F4 /* ProcedureDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProcedureDetailView.swift; sourceTree = "<group>"; };
@@ -163,6 +169,14 @@
 				6390873983914AE52C180D3D /* MemberRepository.swift */,
 			);
 			path = Members;
+			sourceTree = "<group>";
+		};
+		3200E355A09E4A3527E2FD40 /* Guest */ = {
+			isa = PBXGroup;
+			children = (
+				19A3C4630942F4E31CAAEAC6 /* GuestAccessDeniedView.swift */,
+			);
+			path = Guest;
 			sourceTree = "<group>";
 		};
 		46948D206745A33A05E8C71B /* Supabase */ = {
@@ -272,6 +286,7 @@
 		8A0E5A011EF2FBDD2859008C /* HomeFlowTests */ = {
 			isa = PBXGroup;
 			children = (
+				9778204DA07FBBA89DAC39C5 /* GuestTests.swift */,
 				CA433DFDC6F5CD99D427D78C /* HomeConflictResolverTests.swift */,
 				504099625C1A94B14A9E029F /* HomeValidatorTests.swift */,
 				9ADD6A2E347D891C2C1B0E8D /* PermissionServiceTests.swift */,
@@ -296,6 +311,7 @@
 			isa = PBXGroup;
 			children = (
 				53C5D96F41A0A87D10BD1AF6 /* DomainEnums.swift */,
+				F03D4FA2371DADD21D2B444E /* EntityAccessState.swift */,
 				202D9DB27925A958E207D429 /* SwiftDataModels.swift */,
 			);
 			path = Models;
@@ -410,6 +426,7 @@
 				513985728A2F638732FC5627 /* Auth */,
 				C1603E5AFA92D679D2188F06 /* Dashboard */,
 				1502EC18C3DF34D9CFB5822C /* Documents */,
+				3200E355A09E4A3527E2FD40 /* Guest */,
 				7079D0674329DD5C3AB98513 /* Home */,
 				9FC2B3C04C2333ECEA2024B6 /* HomeDetail */,
 				815E94B7479A6AD1712E465F /* HomeSetup */,
@@ -499,6 +516,7 @@
 						ProvisioningStyle = Automatic;
 					};
 					98683CA64C9F06E51878D55A = {
+						DevelopmentTeam = "";
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -553,7 +571,9 @@
 				E5D3DB13ECBF4283A7204C73 /* ContactsView.swift in Sources */,
 				567510031EA05B1113D6FC6B /* DashboardView.swift in Sources */,
 				C66085F8C146521809D6E671 /* DomainEnums.swift in Sources */,
+				A1D9E4AB3E0E3EE738F9A2AD /* EntityAccessState.swift in Sources */,
 				98D395128DC314A7BF92629C /* FilesView.swift in Sources */,
+				494456ADCA18C6A53CD89E76 /* GuestAccessDeniedView.swift in Sources */,
 				0490A5F0EE3A097FF3219F32 /* HomeConflictResolver.swift in Sources */,
 				16B0967312FC459C46CF3788 /* HomeDTO.swift in Sources */,
 				22C4DB5844C270556B1C7E3A /* HomeDetailView.swift in Sources */,
@@ -587,6 +607,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5CC09948945E04A86A960E3B /* GuestTests.swift in Sources */,
 				59DBFDAE670BD9E8E0F6875D /* HomeConflictResolverTests.swift in Sources */,
 				B0E473DEA8305285F5BA7000 /* HomeValidatorTests.swift in Sources */,
 				2DD10E22B53C7F762C0C8E24 /* PermissionServiceTests.swift in Sources */,
@@ -627,7 +648,6 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = HomeFlow/Resources/HomeFlow.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				DEVELOPMENT_TEAM = Z2PVV7A8SG;
 				ENABLE_TESTABILITY = YES;
 				INFOPLIST_FILE = HomeFlow/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -715,7 +735,6 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = HomeFlow/Resources/HomeFlow.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				DEVELOPMENT_TEAM = Z2PVV7A8SG;
 				ENABLE_TESTABILITY = YES;
 				INFOPLIST_FILE = HomeFlow/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
