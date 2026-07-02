@@ -1,4 +1,4 @@
-# Dev Notes: HomeFlow MVP Implementation
+# Dev Notes: HomesFlow MVP Implementation
 
 **Feature**: `001-mvp` | **Updated**: 2026-06-28
 
@@ -135,7 +135,7 @@ Section UI label **Files** implements document library (FR-HOME-03); code folder
 
 `scripts/check-traceability.sh` verifies the golden thread (registry drift, missing `Traces:`, untraced scope, untested ACs with no tracked task). Runs in CI via `.github/workflows/traceability.yml` on every push/PR; run locally with `bash scripts/check-traceability.sh`.
 
-Modes: `--matrix` regenerates [coverage.md](./coverage.md) (commit after traceability changes; CI fails if stale). `--canvas` updates the local **Golden Thread Coverage** Cursor canvas. `--refresh` runs Gate 2 + matrix + canvas — use after changing tasks, `@covers`, or tests. See `.cursor/rules/golden-thread-coverage.mdc`.
+Modes: `--matrix` regenerates [coverage.md](./coverage.md) (commit after traceability changes; CI fails if stale). `--canvas` updates the local **Golden Thread Coverage** Cursor canvas. `--refresh` runs Gate 2 + matrix + canvas — use after changing tasks, `@covers`, or tests. See `.cursor/rules/golden-thread-coverage.mdc`. The canvas helper (`scripts/update-golden-thread-canvas.py`) resolves and confines CLI paths to allowed directories before any file read/write.
 
 ---
 

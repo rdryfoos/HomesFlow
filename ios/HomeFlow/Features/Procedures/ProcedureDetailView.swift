@@ -1,7 +1,7 @@
 import SwiftUI
 import PhotosUI
 
-// @covers FR-PROC-02, FR-PROC-03, FR-LOG-01, AC-PROC-01, AC-PROC-02, AC-PROC-04, AC-PROC-05, AC-PROC-07, AC-GUEST-04
+// @covers FR-PROC-02, FR-PROC-03, FR-LOG-01, AC-PROC-01, AC-PROC-02, AC-PROC-04, AC-PROC-05, AC-PROC-07, AC-PROC-08, AC-GUEST-04
 
 struct ProcedureDetailView: View {
     let home: HomeSummary
@@ -12,6 +12,7 @@ struct ProcedureDetailView: View {
     @State private var isAddingStep = false
     @State private var newStepTitle = ""
     @State private var deleteTarget: ProcedureStepSummary?
+    @State private var photoPreviewStep: ProcedureStepSummary?
 
     private var userRole: HomeRole {
         home.currentUserRole ?? .guest
@@ -36,6 +37,9 @@ struct ProcedureDetailView: View {
         }
         .refreshable {
             await reload()
+        }
+        .sheet(item: $photoPreviewStep) { step in
+            StepPhotoPreviewSheet(step: step)
         }
         .task { await reload() }
         .sheet(item: $editingStep) { step in
@@ -142,8 +146,11 @@ struct ProcedureDetailView: View {
                                     )
                                 }
                             },
-                            onEditNotes: {
+                            onEditDetails: {
                                 editingStep = step
+                            },
+                            onViewPhoto: {
+                                photoPreviewStep = step
                             }
                         )
                         .contextMenu {
@@ -243,7 +250,8 @@ private struct ProcedureStepRow: View {
     let step: ProcedureStepSummary
     let canEdit: Bool
     let onStatusChange: (StepStatus) -> Void
-    let onEditNotes: () -> Void
+    let onEditDetails: () -> Void
+    let onViewPhoto: () -> Void
 
     private var isStruckThrough: Bool {
         step.status == .complete || step.status == .na
@@ -260,33 +268,36 @@ private struct ProcedureStepRow: View {
                     .strikethrough(isStruckThrough, color: .secondary)
                     .foregroundStyle(isStruckThrough ? .secondary : .primary)
                 if let notes = step.notes, !notes.isEmpty {
-                    Text(notes)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                        .strikethrough(isStruckThrough, color: .secondary)
-                } else if canEdit {
-                    Text("Add note")
-                        .font(.caption)
-                        .foregroundStyle(.tertiary)
+                    StepAttachmentRow(
+                        systemImage: "text.alignleft",
+                        text: notes,
+                        struckThrough: isStruckThrough
+                    )
                 }
                 if step.photoURL != nil {
-                    Label("Photo attached", systemImage: "photo")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                    Button(action: onViewPhoto) {
+                        StepAttachmentRow(
+                            systemImage: "photo",
+                            text: "Photo attached",
+                            struckThrough: isStruckThrough
+                        )
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel("View photo for \(step.title)")
                 }
             }
 
             Spacer(minLength: 8)
 
             if canEdit {
-                Button(action: onEditNotes) {
-                    Image(systemName: stepAccessoryIcon)
+                Button(action: onEditDetails) {
+                    Image(systemName: "pencil")
                         .font(.body)
                         .foregroundStyle(.secondary)
                         .frame(width: 28, height: 28)
                 }
                 .buttonStyle(.plain)
-                .accessibilityLabel(stepAccessoryAccessibilityLabel)
+                .accessibilityLabel("Edit details for \(step.title)")
 
                 Menu {
                     ForEach(StepStatus.allCases, id: \.self) { status in
@@ -334,22 +345,32 @@ private struct ProcedureStepRow: View {
         }
     }
 
-    private var stepAccessoryIcon: String {
-        if step.photoURL != nil { return "photo" }
-        if step.notes?.isEmpty == false { return "note.text" }
-        return "square.and.pencil"
-    }
-
-    private var stepAccessoryAccessibilityLabel: String {
-        "Edit details for \(step.title)"
-    }
-
     private func statusLabel(_ status: StepStatus) -> String {
         switch status {
         case .notStarted: "Not started"
         case .inProgress: "In progress"
         case .complete: "Complete"
         case .na: "N/A"
+        }
+    }
+}
+
+private struct StepAttachmentRow: View {
+    let systemImage: String
+    let text: String
+    var struckThrough = false
+
+    var body: some View {
+        HStack(alignment: .top, spacing: 4) {
+            Image(systemName: systemImage)
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .frame(width: 14, alignment: .center)
+            Text(text)
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .strikethrough(struckThrough, color: .secondary)
+                .multilineTextAlignment(.leading)
         }
     }
 }
@@ -518,11 +539,40 @@ private struct StepEditorSheet: View {
     }
 }
 
+private struct StepPhotoPreviewSheet: View {
+    let step: ProcedureStepSummary
+
+    @Environment(\.dismiss) private var dismiss
+
+    var body: some View {
+        NavigationStack {
+            ScrollView {
+                StepPhotoThumbnail(
+                    photoData: nil,
+                    storagePath: step.photoURL,
+                    contentMode: .fit
+                )
+                .frame(maxWidth: .infinity)
+                .padding()
+            }
+            .navigationTitle(step.title)
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Done") { dismiss() }
+                }
+            }
+        }
+        .presentationDetents([.medium, .large])
+    }
+}
+
 private struct StepPhotoThumbnail: View {
     @Environment(\.appEnvironment) private var appEnvironment
 
     let photoData: Data?
     let storagePath: String?
+    var contentMode: ContentMode = .fill
 
     @State private var loadedImage: UIImage?
 
@@ -531,7 +581,7 @@ private struct StepPhotoThumbnail: View {
             if let image = displayedImage {
                 Image(uiImage: image)
                     .resizable()
-                    .scaledToFill()
+                    .aspectRatio(contentMode: contentMode)
             } else {
                 ZStack {
                     RoundedRectangle(cornerRadius: 10)
