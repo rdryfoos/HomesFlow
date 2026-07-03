@@ -60,7 +60,7 @@ HomesFlow is a responsive iOS app (iPhone and iPad) that empowers primary homeow
 * **FR-GUEST-02** (Priority: Medium) — Quick guest onboarding via email or SMS invite.
 * **FR-NOTIF-01** (Priority: Medium) — Optional push notifications for changed statuses and new assignments.
 * **FR-LOG-01** (Priority: Medium) — History log of changes for accountability.
-* **FR-LOG-02** (Priority: Medium) — User-authored **Log Book**: Owners and Managers write free-form log entries at household scope or attached to a procedure, viewable in a unified chronological log alongside activity history. Entries are append-only offline, editable only within a grace window that starts at server receipt. Guests have no Log Book access.
+* **FR-LOG-02** (Priority: Medium) — User-authored **Log Book**: Owners and Managers write free-form log entries at household scope or attached to a procedure, viewable in a unified chronological log alongside activity history. Entries are append-only offline, editable only within a 10-minute grace window that starts at server receipt. Guests have no Log Book access.
 
 ---
 
@@ -261,14 +261,14 @@ Imagine Diane, a homeowner who spends most of her time in Florida, but owns a ch
 
 ### Cross-cutting / NFR-OFFL-01 — Offline sync & conflict resolution
 
-> Conflict model evolution (decided 2026-07-03, source: story map): v1 ships timestamp-wins (AC-SYNC-01, implemented and verified). The model is being refined to be **data-type-aware**: terminal step statuses are protected (AC-SYNC-05), genuine status conflicts go to human resolution (AC-SYNC-06), and structural actions are connectivity-gated (AC-SYNC-07). Field-level merge (AC-SYNC-02) is deferred to a later phase alongside version vectors.
+> Conflict model evolution (decided 2026-07-03, source: story map; refined same day): v1 ships timestamp-wins (AC-SYNC-01, implemented and verified). The model is refined to be **data-type-aware**: terminal step statuses are protected (AC-SYNC-05), other status conflicts resolve automatically with loser notification — no human conflict-resolution UI (AC-SYNC-06), and structural actions are connectivity-gated (AC-SYNC-07). Field-level merge (AC-SYNC-02) is deferred to a later phase alongside version vectors.
 
 * **AC-SYNC-01** — Given any user makes an update while offline, when the device reconnects, then the client syncs changes and the server resolves conflicts with most-recent timestamp wins; the client surfaces a notification when their offline change was overwritten.
 * **AC-SYNC-02** — Given two users modify different fields of the same entity while offline, when sync occurs, then both non-conflicting changes are merged and persisted, and an audit record notes the combined update. *(Deferred to post-MVP phase — see conflict model evolution note.)*
 * **AC-SYNC-03** — Given a user attempts an action that depends on stale permissions cached offline, when syncing, then if the server denies the action, the client reverts the change and shows a permission error with guidance to retry.
 * **AC-SYNC-04** — Given local changes or homes are pending sync to the server, when the user views the dashboard, then unsynced homes are visibly indicated and the user can pull to refresh to retry sync while online.
 * **AC-SYNC-05** — Given a step is marked Complete or N/A on one device, when a concurrent offline update from another device would change that step's status, then sync never silently regresses the Complete/N/A status; the conflicting update is surfaced instead of auto-applied.
-* **AC-SYNC-06** — Given two devices make genuinely conflicting status changes to the same step or procedure while offline, when both sync, then the conflict is surfaced to a permitted user for human resolution rather than silently resolved.
+* **AC-SYNC-06** — Given two devices make conflicting status changes to the same step or procedure while offline, when both sync, then the server resolves automatically (most-recent timestamp, subject to AC-SYNC-05 terminal-status protection) and the user whose change lost receives a notification with an activity-log reference and guidance to re-apply their change if still needed.
 * **AC-SYNC-07** — Given a device is offline, when the user attempts a structural action (create/rename/reorder/delete steps, procedures, providers, or membership changes), then the action is disabled or blocked with clear messaging; structural actions require connectivity.
 
 ### Cross-cutting / FR-LOG-02 — Log Book
@@ -276,7 +276,7 @@ Imagine Diane, a homeowner who spends most of her time in Florida, but owns a ch
 * **AC-LOG-01** — Given an Owner or Manager opens the Log Book for a home, when they write and save a household-scope entry, then the entry appears in the unified log with author and timestamp.
 * **AC-LOG-02** — Given an Owner or Manager views a procedure, when they write a procedure-scope log entry, then the entry is attached to that procedure and also appears in the unified log.
 * **AC-LOG-03** — Given a permitted user writes a log entry while offline, when the device reconnects, then the entry syncs append-only (no conflict resolution needed) and appears for other permitted users.
-* **AC-LOG-04** — Given a log entry has synced to the server, when the author attempts to edit it, then editing is allowed only within a grace window that starts at server receipt; after the window the entry is immutable.
+* **AC-LOG-04** — Given a log entry has synced to the server, when the author attempts to edit it, then editing is allowed only within a **10-minute** grace window that starts at server receipt; after the window the entry is immutable.
 * **AC-LOG-05** — Given a permitted user opens the unified log view, when entries exist at both household and procedure scope, then entries are shown chronologically and can be filtered by scope.
 * **AC-LOG-06** — Given a Guest is signed in, when they attempt to view the Log Book directly or via deep link, then access is denied with a clear message.
 

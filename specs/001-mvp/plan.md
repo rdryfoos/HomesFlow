@@ -157,6 +157,14 @@ supabase/
 - RLS policy verification against `contracts/rls-permissions.md`
 - Accessibility: Dynamic Type, VoiceOver, Reduce Motion manual pass (**AC-A11Y-01…03**)
 
+### Phase 5 — Conflict model evolution (added 2026-07-03; tasks.md Phase 12)
+
+Data-type-aware refinement of the shipped timestamp-wins model (**AC-SYNC-05…07**): terminal step statuses (Complete / N/A) never silently regress; other status conflicts auto-resolve with loser notification and re-apply guidance (no resolution UI); structural actions connectivity-gated. Field-level merge (AC-SYNC-02) deferred post-MVP with version vectors. See data-model.md "Conflict semantics" table.
+
+### Phase 6 — Log Book (added 2026-07-03; tasks.md Phase 13)
+
+User-authored log entries at household or procedure scope (**FR-LOG-02**, **AC-LOG-01…06**): unified chronological view with scope filter, offline append-only via outbox, 10-minute edit grace window from server receipt, no Guest access. New table `log_book_entries` (see data-model.md); requires new migration + RLS.
+
 ## UI Architecture
 
 **Authority**: PRD + spec. [Figma prototype](https://haze-rabbit-58180688.figma.site) is visual reference only — implement with native SwiftUI patterns, not as a web port.

@@ -263,8 +263,8 @@ Partial deliverables documented in [dev-notes.md](./dev-notes.md). **Do not** en
 
 - [ ] T074 [NFR-OFFL-01] Protect terminal step statuses: sync never silently regresses Complete/N/A; surface conflicting update — **Traces**: AC-SYNC-05
 - [ ] T074a [P] [NFR-OFFL-01] Unit test `test_AC_SYNC_05_terminal_status_never_silently_regressed` — **Traces**: AC-SYNC-05
-- [ ] T075 [NFR-OFFL-01] Surface genuine status conflicts for human resolution (conflict queue + resolution UI) — **Traces**: AC-SYNC-06
-- [ ] T075a [P] [NFR-OFFL-01] Unit test `test_AC_SYNC_06_genuine_conflict_surfaced_for_resolution` — **Traces**: AC-SYNC-06
+- [ ] T075 [NFR-OFFL-01] Auto-resolve status conflicts (timestamp, subject to AC-SYNC-05) + notify losing user with activity-log reference and re-apply guidance — no resolution UI (2026-07-03 decision) — **Traces**: AC-SYNC-06
+- [ ] T075a [P] [NFR-OFFL-01] Unit test `test_AC_SYNC_06_losing_user_notified_with_reapply_guidance` — **Traces**: AC-SYNC-06
 - [ ] T076 [NFR-OFFL-01] Connectivity-gate structural actions (step/procedure/provider CRUD, membership) when offline — **Traces**: AC-SYNC-07
 - [ ] T076a [P] [NFR-OFFL-01] Unit test `test_AC_SYNC_07_structural_actions_blocked_offline` — **Traces**: AC-SYNC-07
 
@@ -280,7 +280,7 @@ Partial deliverables documented in [dev-notes.md](./dev-notes.md). **Do not** en
 - [ ] T078 [FR-LOG-02] Write household-scope log entry — **Traces**: AC-LOG-01
 - [ ] T079 [FR-LOG-02] Write procedure-scope log entry from procedure detail — **Traces**: AC-LOG-02
 - [ ] T080 [FR-LOG-02] Offline append-only log entry sync — **Traces**: AC-LOG-03
-- [ ] T081 [FR-LOG-02] Grace-window editing (window starts at server receipt; immutable after) — **Traces**: AC-LOG-04
+- [ ] T081 [FR-LOG-02] Grace-window editing (10 minutes from server receipt; immutable after) — **Traces**: AC-LOG-04
 - [ ] T082 [FR-LOG-02] Unified chronological log view with scope filter — **Traces**: AC-LOG-05
 - [ ] T083 [FR-LOG-02] Deny Guest access to Log Book including deep links — **Traces**: AC-LOG-06
 

@@ -14,7 +14,7 @@ HomesFlow ships as a native iOS app (Swift / SwiftUI) for iPhone and iPad. No An
 
 ### III. Offline-Capable Sync (NON-NEGOTIABLE)
 
-Local caching and offline sync are core from day one. Conflict resolution follows the PRD: most-recent timestamp wins; users are notified when their offline change is overwritten.
+Local caching and offline sync are core from day one. Conflict resolution follows the PRD's data-type-aware model (AC-SYNC-01, AC-SYNC-05…07): conflicts resolve automatically by most-recent timestamp, except that terminal step statuses (Complete / N/A) are never silently regressed; the losing user is always notified with guidance to re-apply. Structural actions require connectivity. The PRD's Offline sync AC section is authoritative for the per-data-type rules.
 
 ### IV. Role-Based Access
 
@@ -52,4 +52,6 @@ When documents conflict, higher layers win:
 
 Amendments require a version bump and brief rationale. Traceability mechanics live in `traceability.md`; engineering and toolchain notes in `specs/001-mvp/dev-notes.md`. Neither overrides this file or the PRD.
 
-**Version**: 1.1.0 | **Ratified**: 2026-06-28 | **Last Amended**: 2026-07-01
+**Version**: 1.2.0 | **Ratified**: 2026-06-28 | **Last Amended**: 2026-07-03
+
+**1.2.0 rationale**: Principle III previously hardcoded blanket timestamp-wins. Amended to defer to the PRD's data-type-aware conflict model (story-map decision 2026-07-03): automatic resolution with loser notification, terminal-status protection, connectivity-gated structural actions. Keeps the constitution stable as per-data-type rules evolve in the PRD.

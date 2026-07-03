@@ -174,6 +174,23 @@ Append-only audit trail.
 
 **Covers**: FR-LOG-01, AC-HOME-03, AC-PROC-01, AC-GUEST-05
 
+### `log_book_entries`
+
+User-authored Log Book (FR-LOG-02, added 2026-07-03; Phase 13 — not yet migrated).
+
+| Column | Type | Notes |
+|--------|------|-------|
+| id | uuid PK | Client-generated for offline append (AC-LOG-03) |
+| home_id | uuid FK → homes.id | |
+| procedure_id | uuid FK → procedures.id, nullable | Null = household scope (AC-LOG-01); set = procedure scope (AC-LOG-02) |
+| author_id | uuid FK → profiles.id | |
+| body | text | Free-form entry |
+| created_at | timestamptz | Client write time |
+| received_at | timestamptz | Server receipt; starts the 10-minute edit grace window (AC-LOG-04) |
+| edited_at | timestamptz, nullable | Must be within `received_at + 10 min`, enforced server-side |
+
+RLS: Owner/Manager read + insert; author-only update within grace window; **no Guest access** (AC-LOG-06). Append-only offline via outbox — no conflict resolution needed (AC-LOG-03).
+
 ## RLS policy summary
 
 | Table | Owner | Edit | Guest |
@@ -186,6 +203,7 @@ Append-only audit trail.
 | procedures | CRUD | CRUD if visibility≤edit | Read if visibility=guest |
 | procedure_steps | CRUD | CRUD if parent procedure visibility≤edit | Read only |
 | activity_log | Read + insert | Read + insert | Read own home |
+| log_book_entries | Read + insert; author edit in grace window | Read + insert; author edit in grace window | — (no access, AC-LOG-06) |
 
 Helper SQL function: `get_user_role(home_id uuid) returns home_role` — used in all policies.
 
@@ -211,6 +229,15 @@ Cache tables mirror server schema plus:
 | created_at | Queue time |
 
 **Covers**: NFR-OFFL-01, AC-SYNC-01…03
+
+### Conflict semantics (data-type-aware, 2026-07-03)
+
+| Data type | Rule |
+|-----------|------|
+| Step/procedure status | Timestamp-wins, **except** terminal statuses (Complete / N/A) never silently regress (AC-SYNC-05); loser notified with re-apply guidance (AC-SYNC-06) |
+| Entity field edits | Timestamp-wins whole-record (AC-SYNC-01); field-level merge (AC-SYNC-02) deferred post-MVP |
+| Structural actions (step/procedure/provider CRUD, memberships) | Connectivity-gated — blocked offline (AC-SYNC-07) |
+| Log Book entries | Append-only; no conflicts by construction (AC-LOG-03) |
 
 ## Storage buckets
 

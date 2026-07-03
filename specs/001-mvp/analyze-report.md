@@ -1,10 +1,12 @@
 # Analyze Report: HomesFlow MVP
 
-**Feature**: `001-mvp` | **Date**: 2026-06-28 | **Gate**: 1 (pre-implement)
+**Feature**: `001-mvp` | **Date**: 2026-07-03 (original Gate 1 run 2026-06-28; addendum below)
 
 ## Verdict: **PASS** (after remediation)
 
 All blocking violations resolved in `tasks.md` during this analyze run.
+
+> **2026-07-03 addendum**: Registry has since grown to 79 IDs / 50 ACs with FR-LOG-02 + AC-LOG-01…06 (Log Book, tasks.md Phase 13) and AC-SYNC-05…07 (data-type-aware conflict model, Phase 12); AC-SYNC-02 deferred post-MVP. A same-day consistency scan found and fixed: constitution Principle III hardcoding timestamp-wins (amended to 1.2.0), FR-PROC-02 contradicting AC-SYNC-07 (structure edits now connectivity-gated), undefined grace window (now 10 minutes), AC-SYNC-06 human-resolution ambiguity (now auto-resolve + loser notification), missing `log_book_entries` in data-model.md, plan.md unaware of Phases 12–13, and glossary drift. Matrix below reflects the original 31-AC registry; current authoritative coverage lives in [coverage.md](./coverage.md) (generated, CI-enforced).
 
 ---
 

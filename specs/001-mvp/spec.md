@@ -149,14 +149,14 @@ All roles can read and write while offline; sync on reconnect with deterministic
 
 **Acceptance Scenarios**:
 
-> **Conflict model evolution** (2026-07-03, from story map): v1 timestamp-wins (AC-SYNC-01) is shipped and verified. The model is being refined to be **data-type-aware**: AC-SYNC-05…07 below. Field-level merge (AC-SYNC-02) is deferred to a post-MVP phase alongside version vectors.
+> **Conflict model evolution** (2026-07-03, from story map; refined same day): v1 timestamp-wins (AC-SYNC-01) is shipped and verified. The model is refined to be **data-type-aware**: AC-SYNC-05…07 below. Resolution stays automatic — no human conflict-resolution UI; the loser is notified and can re-apply. Field-level merge (AC-SYNC-02) is deferred to a post-MVP phase alongside version vectors.
 
 1. **AC-SYNC-01** — Given offline update, when reconnect, then sync runs with timestamp-wins rule and overwrite notification if applicable.
 2. **AC-SYNC-02** — Given non-conflicting field edits offline, when sync, then changes merged and audit record created. *(Deferred post-MVP.)*
 3. **AC-SYNC-03** — Given stale cached permissions offline, when sync denied by server, then change reverted and permission error shown.
 4. **AC-SYNC-04** — Given local changes or homes pending sync, when user views dashboard, then unsynced homes are visibly indicated and user can pull to refresh while online.
 5. **AC-SYNC-05** — Given a step is Complete or N/A, when a concurrent offline update conflicts, then sync never silently regresses the terminal status; the conflict is surfaced instead.
-6. **AC-SYNC-06** — Given genuinely conflicting status changes from two devices, when both sync, then the conflict is surfaced to a permitted user for human resolution.
+6. **AC-SYNC-06** — Given conflicting status changes from two devices, when both sync, then the server resolves automatically (most-recent timestamp, subject to AC-SYNC-05) and the losing user is notified with an activity-log reference and guidance to re-apply.
 7. **AC-SYNC-07** — Given a device is offline, when the user attempts a structural action (step/procedure/provider CRUD, membership changes), then the action is disabled or blocked with clear messaging.
 
 ---
@@ -194,7 +194,7 @@ Owners and Managers write free-form log entries — household-scope or attached 
 1. **AC-LOG-01** — Given an Owner or Manager opens the Log Book, when they save a household-scope entry, then it appears in the unified log with author and timestamp.
 2. **AC-LOG-02** — Given an Owner or Manager views a procedure, when they write a procedure-scope entry, then it is attached to the procedure and appears in the unified log.
 3. **AC-LOG-03** — Given a permitted user writes an entry offline, when the device reconnects, then the entry syncs append-only and appears for other permitted users.
-4. **AC-LOG-04** — Given an entry has synced, when the author edits it, then editing is allowed only within a grace window starting at server receipt; afterwards the entry is immutable.
+4. **AC-LOG-04** — Given an entry has synced, when the author edits it, then editing is allowed only within a 10-minute grace window starting at server receipt; afterwards the entry is immutable.
 5. **AC-LOG-05** — Given entries exist at both scopes, when a permitted user opens the unified log, then entries are chronological and filterable by scope.
 6. **AC-LOG-06** — Given a Guest is signed in, when they attempt to view the Log Book directly or via deep link, then access is denied with a clear message.
 
@@ -222,13 +222,13 @@ Owners and Managers write free-form log entries — household-scope or attached 
 - **FR-HOME-03**: System MUST provide categorized documents with visibility controls (UI section label: **Files**). Permitted users add files from camera, photo library, or file browser; file detail offers Preview via system Quick Look with metadata and actions below.
 - **FR-NAV-01**: Home detail MUST expose four sections — **Procedures**, **Contacts**, **Files**, **People** — with device-appropriate navigation: iPhone uses full-bleed hero + horizontal segmented tabs; iPad uses compact left-column hero + vertical icon tabs and a **three-panel** layout (sidebar + section list + section detail) for every section (**AC-HOME-09…11**).
 - **FR-PROC-01**: System MUST support procedure lists with status (Not Started / In Progress / Complete / N/A).
-- **FR-PROC-02**: Procedures MUST contain ordered steps, each with independent status. Owner and Manager users MUST be able to create, rename, reorder, and delete steps on procedures they can modify (per visibility). Step status updates and structure edits MUST sync offline-capable.
+- **FR-PROC-02**: Procedures MUST contain ordered steps, each with independent status. Owner and Manager users MUST be able to create, rename, reorder, and delete steps on procedures they can modify (per visibility). Step **status updates** MUST sync offline-capable; step **structure edits** (create/rename/reorder/delete) require connectivity per **AC-SYNC-07**.
 - **FR-PROC-03**: Procedure steps MUST support optional notes and photo attachments; permitted users edit via pencil control or long-press **Edit**; all viewers with access may tap **Photo attached** to preview.
 - **FR-GUEST-01**: Guest users MUST see only approved procedures and info.
 - **FR-GUEST-02**: System MUST support guest onboarding via email or SMS invite (MVP: shareable invite link + manual token accept — see Assumptions).
 - **FR-NOTIF-01**: System SHOULD support optional push notifications for status changes (MVP: defer wiring if needed; UI placeholder acceptable).
 - **FR-LOG-01**: System MUST record an activity log of significant changes.
-- **FR-LOG-02**: Owners and Managers MUST be able to write free-form Log Book entries at household or procedure scope, shown in a unified chronological log; entries are append-only offline and editable only within a grace window starting at server receipt; Guests have no Log Book access (**AC-LOG-01…06**).
+- **FR-LOG-02**: Owners and Managers MUST be able to write free-form Log Book entries at household or procedure scope, shown in a unified chronological log; entries are append-only offline and editable only within a 10-minute grace window starting at server receipt; Guests have no Log Book access (**AC-LOG-01…06**).
 
 ### Non-Functional Requirements
 
@@ -272,7 +272,7 @@ Owners and Managers write free-form log entries — household-scope or attached 
 - **Dashboard UX**: Home list uses full-bleed photo hero cards with name/address overlay (FR-HOME-01). iPhone cards ~152pt tall; **iPad dashboard cards ~528pt** with vertically centered photos and `locationLabel` (full address or city/state). iPhone home detail repeats full-bleed hero above horizontal section tabs. iPad home detail uses compact hero in leading column only; trailing area is three-panel (section list | detail) per section (**AC-HOME-09…10**, **FR-NAV-01**).
 - **Home sections (UI labels)**: **Procedures** | **Contacts** | **Files** | **People**. *Files* is the user-facing name for the document library (FR-HOME-03); data model entity remains *Document*.
 - **App branding**: Branded app icon and static launch screen (black background, green house + white wordmark; @1x/@2x/@3x `LaunchLogo` assets ~1.5× prior size, tighter icon-to-text spacing).
-- "Most recent timestamp wins" uses server `updated_at` at sync acceptance time. The conflict model is evolving to be data-type-aware (AC-SYNC-05…07: protect terminal step statuses, human resolution for genuine conflicts, connectivity-gated structural actions); field-level merge (AC-SYNC-02) and version vectors are deferred post-MVP.
+- "Most recent timestamp wins" uses server `updated_at` at sync acceptance time. The conflict model is evolving to be data-type-aware (AC-SYNC-05…07: protect terminal step statuses, automatic resolution with loser notification, connectivity-gated structural actions); field-level merge (AC-SYNC-02) and version vectors are deferred post-MVP.
 - Offline: local SwiftData cache + outbox queue; sync on reconnect; pending-sync homes indicated on dashboard (AC-SYNC-04).
 - **Step assignees**: Out of MVP scope (prototype shows assignees; ignore for v1).
 - **Contacts tab**: Implements **service providers** only (FR-HOME-02); no separate key-contacts entity.
