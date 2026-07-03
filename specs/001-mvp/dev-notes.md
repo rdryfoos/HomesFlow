@@ -86,6 +86,7 @@ Safari visiting `https://<ref>.supabase.co` and seeing `{"error":"requested path
 - **AC-HOME-07**: hero cards load from disk/memory cache keyed by storage path; signed URLs cached ~55 min; dashboard prefetches after home list load (max **2 concurrent** downloads per NFR-PERF-01)
 - **AC-HOME-13 / NFR-PERF-01**: file Quick Look preview streams download to temp via `URLSession.download` — avoids holding entire files in RAM
 - **AC-HOME-08**: sync-before-photo gating extracted to `HomePhotoSyncGate` (unit tested); iPad layout ACs (AC-HOME-09…11, T024d–f) rely on **manual iPad pass** until snapshot/XCUITest infra lands
+- **FR-USER-02 (T068)**: owner removes member via swipe or detail action → confirmation → `memberships` row deleted (RLS owner-only); revoked user loses access on next sync since `is_home_member` fails closed. Removal requires connectivity (`MemberError.offlineRemoval`); gating in `MemberRemovalPolicy`
 - **AC-SYNC-04**: pending-sync cloud icons on home heroes, sync issue banners, pull-to-refresh on dashboard
 - `HomeConflictResolver` + activity log on home edit conflicts (timestamp wins)
 - Full field-level merge (AC-SYNC-02) and invite offline conflicts **not yet implemented**

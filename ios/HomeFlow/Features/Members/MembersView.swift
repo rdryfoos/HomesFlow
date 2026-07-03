@@ -10,6 +10,7 @@ struct MembersView: View {
     @StateObject private var viewModel = MembersViewModel()
     @State private var showInviteSheet = false
     @State private var selectedMemberId: UUID?
+    @State private var memberPendingRemoval: MemberSummary?
 
     var body: some View {
         Group {
@@ -64,6 +65,29 @@ struct MembersView: View {
         } message: {
             Text(viewModel.errorMessage ?? "")
         }
+        // FR-USER-02: owner removes member; access lost on next sync.
+        .confirmationDialog(
+            "Remove \(memberPendingRemoval?.displayName ?? "member")?",
+            isPresented: Binding(
+                get: { memberPendingRemoval != nil },
+                set: { if !$0 { memberPendingRemoval = nil } }
+            ),
+            titleVisibility: .visible
+        ) {
+            Button("Remove from home", role: .destructive) {
+                guard let member = memberPendingRemoval else { return }
+                memberPendingRemoval = nil
+                Task {
+                    await viewModel.remove(
+                        homeId: home.id,
+                        membershipId: member.id,
+                        using: appEnvironment?.memberRepository
+                    )
+                }
+            }
+        } message: {
+            Text("They will lose access to this home on their next sync.")
+        }
     }
 
     @ViewBuilder
@@ -72,6 +96,10 @@ struct MembersView: View {
             MemberDetailPanel(
                 member: member,
                 canManage: viewModel.snapshot.currentUserRole == .owner,
+                canRemove: MemberRemovalPolicy.canRemove(
+                    currentUserRole: viewModel.snapshot.currentUserRole,
+                    memberRole: member.role
+                ),
                 onRoleChange: { role in
                     Task {
                         await viewModel.updateRole(
@@ -81,7 +109,8 @@ struct MembersView: View {
                             using: appEnvironment?.memberRepository
                         )
                     }
-                }
+                },
+                onRemove: { memberPendingRemoval = member }
             )
         } else if viewModel.isLoading {
             ProgressView("Loading members…")
@@ -143,6 +172,17 @@ struct MembersView: View {
                         }
                     )
                     .tag(member.id)
+                    .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                        if MemberRemovalPolicy.canRemove(
+                            currentUserRole: viewModel.snapshot.currentUserRole,
+                            memberRole: member.role
+                        ) {
+                            Button("Remove", role: .destructive) {
+                                memberPendingRemoval = member
+                            }
+                            .accessibilityLabel("Remove \(member.displayName)")
+                        }
+                    }
                 }
             }
         }
@@ -177,7 +217,9 @@ struct MembersView: View {
 private struct MemberDetailPanel: View {
     let member: MemberSummary
     let canManage: Bool
+    let canRemove: Bool
     let onRoleChange: (HomeRole) -> Void
+    let onRemove: () -> Void
 
     var body: some View {
         List {
@@ -194,6 +236,13 @@ private struct MemberDetailPanel: View {
                     }
                 } else {
                     LabeledContent("Role", value: member.role.displayName)
+                }
+            }
+
+            if canRemove {
+                Section {
+                    Button("Remove from home", role: .destructive, action: onRemove)
+                        .accessibilityLabel("Remove \(member.displayName) from home")
                 }
             }
         }
@@ -296,6 +345,16 @@ final class MembersViewModel: ObservableObject {
         guard let repository else { return }
         do {
             try await repository.revokeInvite(homeId: homeId, inviteId: inviteId)
+            snapshot = try await repository.fetchHomeMembers(homeId: homeId)
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
+
+    func remove(homeId: UUID, membershipId: UUID, using repository: MemberRepository?) async {
+        guard let repository else { return }
+        do {
+            try await repository.removeMember(homeId: homeId, membershipId: membershipId)
             snapshot = try await repository.fetchHomeMembers(homeId: homeId)
         } catch {
             errorMessage = error.localizedDescription

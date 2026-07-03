@@ -73,7 +73,7 @@ CI fails if this file is stale. Source of truth: `HomesFlow.prd.md` registry × 
 | FR-PROC-02 | Implemented | T041 T042 T047a | — |
 | FR-PROC-03 | Implemented | T007 T043 | — |
 | FR-USER-01 | In progress | T004 T005 T010 | T071 |
-| FR-USER-02 | In progress | T025 T028 | T068 |
+| FR-USER-02 | Implemented | T025 T028 T068 | — |
 
 ## Non-functional requirements
 

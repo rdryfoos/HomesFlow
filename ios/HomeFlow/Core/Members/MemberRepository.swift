@@ -141,6 +141,40 @@ final class MemberRepository: ObservableObject {
         )
     }
 
+    /// FR-USER-02: Owner removes a member; RLS `memberships_delete` enforces
+    /// owner-only server-side. Revoked user loses access on next sync
+    /// (`is_home_member` fails closed once the membership row is gone).
+    func removeMember(homeId: UUID, membershipId: UUID) async throws {
+        guard let userId = auth.session?.user.id else { throw AuthError.notSignedIn }
+        guard NetworkMonitor.shared.isConnected else { throw MemberError.offlineRemoval }
+
+        let snapshot = try await fetchHomeMembers(homeId: homeId)
+        guard let member = snapshot.members.first(where: { $0.id == membershipId }) else {
+            throw MemberError.notFound
+        }
+        try MemberRemovalPolicy.validate(
+            currentUserRole: snapshot.currentUserRole,
+            memberRole: member.role
+        )
+
+        try await auth.client
+            .from("memberships")
+            .delete()
+            .eq("id", value: membershipId.uuidString)
+            .execute()
+
+        try await pullMembersAndInvites(homeId: homeId)
+
+        activityLog.append(
+            homeId: homeId,
+            actorId: userId,
+            entityType: "membership",
+            entityId: membershipId,
+            action: "removed",
+            summary: "Removed \(member.email) (\(member.role.rawValue)) from home"
+        )
+    }
+
     func acceptInvite(token: String) async throws -> UUID {
         guard auth.session != nil else { throw AuthError.notSignedIn }
 
@@ -289,6 +323,8 @@ enum MemberError: LocalizedError {
     case invalidEmail
     case invalidInviteRole
     case cannotAssignOwner
+    case cannotRemoveOwner
+    case offlineRemoval
     case notFound
 
     var errorDescription: String? {
@@ -297,6 +333,8 @@ enum MemberError: LocalizedError {
         case .invalidEmail: "Enter a valid email address."
         case .invalidInviteRole: "Invites can only assign Manager or Guest roles."
         case .cannotAssignOwner: "Owner role is assigned to the home creator only."
+        case .cannotRemoveOwner: "The home owner can't be removed."
+        case .offlineRemoval: "Connect to the internet to remove a member."
         case .notFound: "Member not found."
         }
     }
