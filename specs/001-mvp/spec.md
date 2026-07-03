@@ -49,6 +49,9 @@ An Owner creates a home profile with address, photos, and key info, then sees it
 7. **AC-HOME-09** — Given iPad regular width home detail, when any section selected, then trailing area shows section content only at the home level (no home hero or horizontal tabs; nested section list | detail allowed).
 8. **AC-HOME-10** — Given iPad home detail, when any section selected, then leading column shows compact hero + vertical tabs and trailing area uses three-panel layout (section list + section detail) for Procedures, Contacts, Files, and People.
 9. **AC-HOME-11** — Given home detail on any device, when section navigation shown, then labels are Procedures, Contacts, Files, and People.
+10. **AC-HOME-12** — Given permitted user views a section list (Contacts, Files, People), then a single add action appears as toolbar primary action with parallel construction (plus icon + accessible label) opening the create sheet; no add action without permission.
+11. **AC-HOME-13** — Given user opens file detail, then inline preview renders first (images/PDFs inline; placeholder otherwise) with metadata, share/download, and management actions below.
+12. **AC-HOME-14** — Given Owner or Manager adds a file, then camera, photo library, and file browser sources are offered, all feeding the same metadata flow.
 
 ---
 
@@ -190,7 +193,7 @@ All primary screens respect iOS accessibility settings, especially Dynamic Type 
 - **FR-USER-02**: Owners MUST be able to add, edit, remove users and assign roles.
 - **FR-HOME-01**: System MUST support add/edit home properties with address, photos (display-optimized at upload, locally cached for hero display), and key info.
 - **FR-HOME-02**: System MUST provide a searchable service provider directory with contacts and notes.
-- **FR-HOME-03**: System MUST provide categorized documents with visibility controls (UI section label: **Files**).
+- **FR-HOME-03**: System MUST provide categorized documents with visibility controls (UI section label: **Files**). Permitted users add files from camera, photo library, or file browser; file detail shows an inline preview first with metadata and actions below.
 - **FR-NAV-01**: Home detail MUST expose four sections — **Procedures**, **Contacts**, **Files**, **People** — with device-appropriate navigation: iPhone uses full-bleed hero + horizontal segmented tabs; iPad uses compact left-column hero + vertical icon tabs and a **three-panel** layout (sidebar + section list + section detail) for every section (**AC-HOME-09…11**).
 - **FR-PROC-01**: System MUST support procedure lists with status (Not Started / In Progress / Complete / N/A).
 - **FR-PROC-02**: Procedures MUST contain ordered steps, each with independent status. Owner and Manager users MUST be able to create, rename, reorder, and delete steps on procedures they can modify (per visibility). Step status updates and structure edits MUST sync offline-capable.

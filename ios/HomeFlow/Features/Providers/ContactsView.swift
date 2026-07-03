@@ -1,6 +1,6 @@
 import SwiftUI
 
-// @covers FR-HOME-02, FR-NAV-01, AC-HOME-04
+// @covers FR-HOME-02, FR-NAV-01, AC-HOME-04, AC-HOME-12
 
 struct ContactsView: View {
     let home: HomeSummary

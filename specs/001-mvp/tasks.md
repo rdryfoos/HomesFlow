@@ -226,6 +226,10 @@ Partial deliverables documented in [dev-notes.md](./dev-notes.md). **Do not** en
 ### Implementation
 
 - [x] T065 [FR-HOME-03] Files tab: documents list + upload + visibility in `ios/HomeFlow/Features/Documents/` — **Traces**: FR-HOME-03, AC-GUEST-01, AC-HOME-11
+- [x] T065a [FR-HOME-03] Standardize section add actions on the Contacts pattern (plus icon, primary action, accessible label) across Contacts, Files, People — **Traces**: AC-HOME-12
+- [x] T065b [FR-HOME-03] File detail: inline preview first (images/PDF; placeholder otherwise), metadata and actions below — **Traces**: AC-HOME-13
+- [x] T065c [FR-HOME-03] File sources: camera capture, photo library, and file browser feeding one metadata flow — **Traces**: AC-HOME-14
+- [ ] T065d [P] [FR-HOME-03] Tests for section add parity, file preview, and file sources — **Traces**: AC-HOME-12, AC-HOME-13, AC-HOME-14
 - [x] T066 [P] [FR-NOTIF-01] Settings screen: account, notification toggle disabled (“Coming soon”) in `ios/HomeFlow/Features/Settings/` — **Traces**: FR-NOTIF-01 — *gear icon on dashboard; email, sign out with confirmation, version*
 - [ ] T066a [P] Accessibility baseline: Dynamic Type layouts, VoiceOver labels on section tabs, Reduce Motion, 44pt targets across dashboard/home/procedures — **Traces**: NFR-A11Y-01, AC-A11Y-01, AC-A11Y-02, AC-A11Y-03
 - [x] T067 [P] Sign out clears session — **Traces**: FR-AUTH-01 — *moved to Settings screen (T066) with confirmation dialog*

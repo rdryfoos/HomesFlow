@@ -61,7 +61,9 @@
 		</dict>
 	</array>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>HomesFlow uses your photo library to add home photos.</string>
+	<string>HomesFlow uses your photo library to add home photos and files.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>HomesFlow uses the camera to capture photos of documents and add them to your home's files.</string>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSExceptionDomains</key>

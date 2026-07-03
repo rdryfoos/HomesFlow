@@ -51,7 +51,7 @@ HomesFlow is a responsive iOS app (iPhone and iPad) that empowers primary homeow
 * **FR-USER-02** (Priority: Critical) — Owners can add, edit, remove users and assign roles.
 * **FR-HOME-01** (Priority: High) — Add/edit home properties with address, photos (display-optimized at upload and cached locally for hero display), and key info.
 * **FR-HOME-02** (Priority: High) — Service provider directory (propane, electric, internet, lawn care, etc.) with contacts and notes.
-* **FR-HOME-03** (Priority: High) — Editable, categorized documents for important details (UI section label: **Files**).
+* **FR-HOME-03** (Priority: High) — Editable, categorized documents for important details (UI section label: **Files**). Permitted users add files from the **camera**, **photo library**, or **file browser**; file detail shows an inline preview first (images and PDFs), with metadata and actions below.
 * **FR-NAV-01** (Priority: High) — Home detail MUST expose four sections labeled **Procedures**, **Contacts**, **Files**, and **People** with device-appropriate navigation (iPhone: hero + horizontal tabs; iPad: compact left-column hero + vertical icon tabs, with a **three-panel** layout — sidebar, section list, and section detail — for every section).
 * **FR-PROC-01** (Priority: High) — Add/edit procedure lists (e.g., winterizing, arrival prep) with persistent status (Not Started / In Progress / Complete / N/A).
 * **FR-PROC-02** (Priority: High) — Procedures contain ordered steps, each with its own status. Owner and Manager users can **create, rename, reorder, and delete** steps on procedures they can modify (per visibility). Guests have read-only access to step content and status.
@@ -214,6 +214,9 @@ Imagine Diane, a homeowner who spends most of her time in Florida, but owns a ch
 * **AC-HOME-09** — Given a user views home detail on iPad (regular horizontal size class), when any section is selected, then the trailing area shows section content only — no full-bleed home hero and no horizontal section tab bar at the home level (nested section list | detail splits are allowed inside the trailing area).
 * **AC-HOME-10** — Given a user opens a home on iPad, when home detail is shown, then the leading column displays a compact home hero (photo, name, address) and vertically stacked tappable section entries with icon and label for Procedures, Contacts, Files, and People; the trailing area shows the selected section using a three-panel layout (sidebar already visible + section list + section detail) for **all four** sections.
 * **AC-HOME-11** — Given a user views home detail on any device, when section navigation is shown, then section labels read Procedures, Contacts, Files, and People (Files implements the document library).
+* **AC-HOME-12** — Given a user with permission to add content views a home section list (Contacts, Files, People), when the section is shown, then a single add action appears as the toolbar primary action using a parallel construction across sections — a plus icon with an accessible label naming the action (e.g., Add contact, Add file, Invite member) that opens the section's create sheet; users without permission see no add action.
+* **AC-HOME-13** — Given a user opens a file's detail, when the detail renders, then an inline preview of the file appears first (images and PDFs render inline; other types show a file-type placeholder), with metadata (title, category, visibility, type), share/download actions, and management actions below the preview.
+* **AC-HOME-14** — Given an Owner or Manager adds a file, when they choose the file source, then camera capture, photo library, and file browser options are all offered, and content from any source uploads through the same metadata flow (title, category, visibility).
 
 ### US-ADMIN-02 / FR-USER-01 — Owner invites users
 
@@ -302,7 +305,7 @@ Imagine Diane, a homeowner who spends most of her time in Florida, but owns a ch
 | NFR-SEC-01 | NFR | Encrypted storage |
 | NFR-SCALE-01 | NFR | 100k concurrent users |
 | NFR-A11Y-01 | NFR | iOS accessibility compliance |
-| AC-HOME-01 … AC-HOME-11 | AC | Home, provider & navigation scenarios |
+| AC-HOME-01 … AC-HOME-14 | AC | Home, provider, navigation & files scenarios |
 | AC-USER-01 … AC-USER-07 | AC | User invite & role scenarios |
 | AC-PROC-01 … AC-PROC-08 | AC | Procedure step scenarios |
 | AC-GUEST-01 … AC-GUEST-05 | AC | Guest access scenarios |

@@ -1,7 +1,9 @@
 import SwiftUI
+import PhotosUI
+import PDFKit
 import UniformTypeIdentifiers
 
-// @covers FR-HOME-03, FR-NAV-01, AC-HOME-11, AC-GUEST-01
+// @covers FR-HOME-03, FR-NAV-01, AC-HOME-11, AC-HOME-12, AC-HOME-13, AC-HOME-14, AC-GUEST-01
 
 struct FilesView: View {
     let home: HomeSummary
@@ -143,13 +145,16 @@ struct FilesView: View {
             }
         }
         .toolbar {
+            // AC-HOME-12: parallel add construction across sections (plus icon,
+            // primary action, accessible label naming the action).
             if viewModel.canManage {
-                ToolbarItem(placement: .topBarTrailing) {
+                ToolbarItem(placement: .primaryAction) {
                     Button {
                         showUploadSheet = true
                     } label: {
-                        Label("Upload", systemImage: "square.and.arrow.up")
+                        Label("Add file", systemImage: "plus")
                     }
+                    .accessibilityLabel("Add file")
                 }
             }
         }
@@ -232,6 +237,15 @@ private struct DocumentDetailView: View {
 
     var body: some View {
         List {
+            // AC-HOME-13: inline preview renders first; metadata and actions below.
+            Section {
+                DocumentPreviewView(document: document, shareURL: shareURL)
+                    .frame(maxWidth: .infinity)
+                    .frame(minHeight: 220)
+                    .listRowInsets(EdgeInsets())
+                    .listRowBackground(Color.clear)
+            }
+
             Section {
                 LabeledContent("Title", value: document.title)
                 if let category = document.category {
@@ -281,6 +295,115 @@ private struct DocumentDetailView: View {
     }
 }
 
+// MARK: - Preview (AC-HOME-13)
+
+private struct DocumentPreviewView: View {
+    let document: DocumentSummary
+    let shareURL: URL?
+
+    @State private var previewData: Data?
+    @State private var loadFailed = false
+
+    private enum PreviewKind {
+        case image, pdf, unsupported
+    }
+
+    private var kind: PreviewKind {
+        switch document.fileExtension?.lowercased() {
+        case "jpg", "jpeg", "png", "gif", "heic", "heif", "webp", "bmp", "tiff":
+            return .image
+        case "pdf":
+            return .pdf
+        default:
+            return .unsupported
+        }
+    }
+
+    var body: some View {
+        Group {
+            switch kind {
+            case .unsupported:
+                placeholder(systemImage: "doc.fill", caption: document.fileExtension ?? "File")
+            case .image:
+                if let previewData, let image = UIImage(data: previewData) {
+                    Image(uiImage: image)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(maxHeight: 360)
+                        .clipShape(RoundedRectangle(cornerRadius: 10))
+                        .padding(.horizontal)
+                } else {
+                    loadingOrFailed
+                }
+            case .pdf:
+                if let previewData {
+                    PDFPreview(data: previewData)
+                        .frame(height: 360)
+                        .clipShape(RoundedRectangle(cornerRadius: 10))
+                        .padding(.horizontal)
+                } else {
+                    loadingOrFailed
+                }
+            }
+        }
+        .task(id: shareURL) { await loadIfNeeded() }
+        .accessibilityLabel("Preview of \(document.title)")
+    }
+
+    @ViewBuilder
+    private var loadingOrFailed: some View {
+        if loadFailed {
+            placeholder(systemImage: "eye.slash", caption: "Preview unavailable")
+        } else {
+            ProgressView("Loading preview…")
+                .frame(maxWidth: .infinity, minHeight: 220)
+        }
+    }
+
+    private func placeholder(systemImage: String, caption: String) -> some View {
+        VStack(spacing: 8) {
+            Image(systemName: systemImage)
+                .font(.system(size: 44))
+                .foregroundStyle(.secondary)
+            Text(caption)
+                .font(.caption)
+                .foregroundStyle(.secondary)
+        }
+        .frame(maxWidth: .infinity, minHeight: 220)
+    }
+
+    private func loadIfNeeded() async {
+        guard kind != .unsupported, previewData == nil, let shareURL else { return }
+        do {
+            let (data, _) = try await URLSession.shared.data(from: shareURL)
+            previewData = data
+            loadFailed = false
+        } catch {
+            loadFailed = true
+        }
+    }
+}
+
+private struct PDFPreview: UIViewRepresentable {
+    let data: Data
+
+    func makeUIView(context: Context) -> PDFView {
+        let view = PDFView()
+        view.autoScales = true
+        view.document = PDFDocument(data: data)
+        view.backgroundColor = .clear
+        return view
+    }
+
+    func updateUIView(_ uiView: PDFView, context: Context) {
+        if uiView.document == nil {
+            uiView.document = PDFDocument(data: data)
+        }
+    }
+}
+
+// MARK: - Upload sheet (AC-HOME-14)
+
 private struct DocumentUploadSheet: View {
     let onUpload: (DocumentDraft, Data, String) -> Void
 
@@ -289,6 +412,8 @@ private struct DocumentUploadSheet: View {
     @State private var pickedFileName: String?
     @State private var pickedFileData: Data?
     @State private var showImporter = false
+    @State private var showCamera = false
+    @State private var libraryItem: PhotosPickerItem?
 
     var body: some View {
         NavigationStack {
@@ -303,18 +428,36 @@ private struct DocumentUploadSheet: View {
                     }
                 }
 
-                Section("File") {
+                // AC-HOME-14: camera, photo library, and file browser all feed
+                // the same metadata flow.
+                Section {
+                    if UIImagePickerController.isSourceTypeAvailable(.camera) {
+                        Button {
+                            showCamera = true
+                        } label: {
+                            Label("Take Photo", systemImage: "camera")
+                        }
+                    }
+                    PhotosPicker(selection: $libraryItem, matching: .images) {
+                        Label("Choose from Photo Library", systemImage: "photo.on.rectangle")
+                    }
                     Button {
                         showImporter = true
                     } label: {
-                        Label(
-                            pickedFileName ?? "Choose file",
-                            systemImage: "doc.badge.plus"
-                        )
+                        Label("Choose File", systemImage: "folder")
+                    }
+                } header: {
+                    Text("File")
+                } footer: {
+                    if let pickedFileName {
+                        Label(pickedFileName, systemImage: "checkmark.circle.fill")
+                            .foregroundStyle(.green)
+                    } else {
+                        Text("Add a file from your camera, photo library, or the file browser.")
                     }
                 }
             }
-            .navigationTitle("Upload File")
+            .navigationTitle("Add File")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -339,17 +482,92 @@ private struct DocumentUploadSheet: View {
                     guard let url = urls.first else { return }
                     guard url.startAccessingSecurityScopedResource() else { return }
                     defer { url.stopAccessingSecurityScopedResource() }
-                    pickedFileName = url.lastPathComponent
-                    pickedFileData = try? Data(contentsOf: url)
-                    if draft.title.isEmpty {
-                        draft.title = url.deletingPathExtension().lastPathComponent
-                    }
+                    applyPicked(
+                        data: try? Data(contentsOf: url),
+                        name: url.lastPathComponent
+                    )
                 case .failure:
                     break
                 }
             }
+            .fullScreenCover(isPresented: $showCamera) {
+                CameraCaptureView { image in
+                    applyPicked(
+                        data: image.jpegData(compressionQuality: 0.85),
+                        name: cameraFileName()
+                    )
+                }
+                .ignoresSafeArea()
+            }
+            .onChange(of: libraryItem) { _, item in
+                Task { await loadLibraryItem(item) }
+            }
         }
         .presentationDetents([.medium, .large])
+    }
+
+    private func applyPicked(data: Data?, name: String) {
+        guard let data else { return }
+        pickedFileData = data
+        pickedFileName = name
+        if draft.title.isEmpty {
+            draft.title = (name as NSString).deletingPathExtension
+        }
+    }
+
+    private func loadLibraryItem(_ item: PhotosPickerItem?) async {
+        guard let item else { return }
+        guard let data = try? await item.loadTransferable(type: Data.self) else { return }
+        let baseName = item.itemIdentifier.map { String($0.prefix(8)) } ?? "Photo"
+        applyPicked(data: data, name: "\(baseName).jpg")
+    }
+
+    private func cameraFileName() -> String {
+        let stamp = Date.now.formatted(.iso8601.year().month().day())
+        return "Photo \(stamp).jpg"
+    }
+}
+
+private struct CameraCaptureView: UIViewControllerRepresentable {
+    let onCapture: (UIImage) -> Void
+
+    @Environment(\.dismiss) private var dismiss
+
+    func makeUIViewController(context: Context) -> UIImagePickerController {
+        let picker = UIImagePickerController()
+        picker.sourceType = .camera
+        picker.delegate = context.coordinator
+        return picker
+    }
+
+    func updateUIViewController(_ uiViewController: UIImagePickerController, context: Context) {}
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator(onCapture: onCapture, dismiss: { dismiss() })
+    }
+
+    final class Coordinator: NSObject, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+        let onCapture: (UIImage) -> Void
+        let dismiss: () -> Void
+
+        init(onCapture: @escaping (UIImage) -> Void, dismiss: @escaping () -> Void) {
+            self.onCapture = onCapture
+            self.dismiss = dismiss
+        }
+
+        func imagePickerController(
+            _ picker: UIImagePickerController,
+            didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]
+        ) {
+            if let image = info[.originalImage] as? UIImage {
+                onCapture(image)
+            }
+            dismiss()
+        }
+
+        func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+            dismiss()
+        }
     }
 }
 

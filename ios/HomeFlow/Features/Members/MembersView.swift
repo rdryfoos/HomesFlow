@@ -1,6 +1,6 @@
 import SwiftUI
 
-// @covers FR-USER-02, AC-USER-01, AC-USER-02, AC-USER-04…06, FR-NAV-01
+// @covers FR-USER-02, AC-USER-01, AC-USER-02, AC-USER-04…06, FR-NAV-01, AC-HOME-12
 
 struct MembersView: View {
     let home: HomeSummary
@@ -32,13 +32,15 @@ struct MembersView: View {
             await reload()
         }
         .toolbar {
+            // AC-HOME-12: parallel add construction across sections.
             if viewModel.snapshot.currentUserRole == .owner {
-                ToolbarItem(placement: .topBarTrailing) {
+                ToolbarItem(placement: .primaryAction) {
                     Button {
                         showInviteSheet = true
                     } label: {
-                        Label("Invite", systemImage: "person.badge.plus")
+                        Label("Invite member", systemImage: "plus")
                     }
+                    .accessibilityLabel("Invite member")
                 }
             }
         }
