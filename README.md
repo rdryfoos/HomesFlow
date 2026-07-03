@@ -2,13 +2,37 @@
 
 A home management app for owners of multiple properties who need to coordinate maintenance and usage with family or a caretaking team.
 
-Also an honest experiment: can one bring serious product discipline and rigor to AI-assisted development and actually enjoy the process? Built spec-first, iteratively, with traceable requirements and proper verification & validation, because I've spent years watching teams skip the rigor, and I wanted to find out if AI assistance finally makes it very reasonable to craft high-quality code.
+An enterprise-grade proof of concept demonstrating how to bring absolute product discipline, traceability, and architectural rigor to AI-assisted development. Built spec-first, iteratively, with traceable requirements and proper verification & validation, because I've spent years watching teams skip the rigor, and I wanted to prove that AI assistance finally makes it very reasonable to craft high-quality code.
+
+## The Golden Thread
+
+Every requirement in this repo is traceable end-to-end, from product intent to the named test that verifies it, and CI **fails the build** if that thread breaks anywhere.
+
+![Golden thread coverage](specs/001-mvp/coverage.svg)
+
+How one thread runs, using a real example:
+
+1. **Requirement**: the PRD defines `AC-HOME-13`: file preview must open in system Quick Look ([HomesFlow.prd.md](HomesFlow.prd.md), authoritative ID registry).
+2. **Plan**: `specs/001-mvp/tasks.md` task `T065e` declares `Traces: AC-HOME-13`; the implementation carries `@covers AC-HOME-13` in `DocumentQuickLookPreview.swift`.
+3. **Proof**: the test suite names the criterion: `test_AC_HOME_13_streams_download_to_preview_directory`. The gate script cross-references all four artifacts on every push.
+
+```mermaid
+graph LR
+    PRD["PRD<br/>immutable IDs"] --> SPEC["spec.md<br/>feature slice"]
+    SPEC --> TASKS["tasks.md<br/>Traces: fields"]
+    TASKS --> CODE["Swift code<br/>@covers annotations"]
+    CODE --> TESTS["tests named<br/>test_AC_*"]
+    TESTS --> GATE{"Gate 2 (CI)<br/>thread intact?"}
+    GATE -->|no| FAIL["build fails"]
+```
+
+No orphan code, no silent scope, no untracked debt: an acceptance criterion is either verified by a test that names it, or it appears in an unchecked task; anything else fails `scripts/check-traceability.sh`. The full per-criterion status lives in the generated [coverage matrix](specs/001-mvp/coverage.md); mechanics are documented in [traceability.md](traceability.md).
 
 ## Core documents
 
 | Document | Role |
 |----------|------|
-| **[Story map](https://homeflow.storiesonboard.com/m/homeflow1)** (StoriesOnBoard) | Product planning view — releases, story slices, and what's next; feeds the PRD |
+| **[Story map](https://homeflow.storiesonboard.com/m/homeflow1)** (StoriesOnBoard) | Product planning view: releases, story slices, and what's next; feeds the PRD |
 | **`HomesFlow.prd.md`** | Product requirements, user stories, acceptance criteria |
 | **`.specify/memory/constitution.md`** | Non-negotiable architectural and process laws |
 | **`traceability.md`** | How IDs flow from PRD → spec → tasks → code → tests |
@@ -48,13 +72,13 @@ export SPECIFY_FEATURE_DIRECTORY=specs/001-mvp
 | 2 | `/speckit.clarify` | Resolves open questions |
 | 3 | `/speckit.plan` | `plan.md`, `research.md`, `data-model.md` |
 | 4 | `/speckit.tasks` | `tasks.md` with `Traces:` fields |
-| 5 | `/speckit.analyze` | Gate — must pass before coding |
+| 5 | `/speckit.analyze` | Gate: must pass before coding |
 | 6 | `/speckit.implement` | `ios/`, `supabase/` |
 
 ## Quality checks
 
-- **Traceability (Gate 2, enforced)** — `bash scripts/check-traceability.sh --refresh` verifies the PRD → spec → tasks → `@covers` → tests golden thread; CI fails on every push if broken (`.github/workflows/traceability.yml`).
-- **Static analysis (informational)** — [SonarCloud dashboard](https://sonarcloud.io/project/overview?id=rdryfoos_HomeFlow) analyzes pushes for code smells and security hotspots. Its quality gate is not yet enforced anywhere; review findings manually until it's wired into CI or branch protection.
+- **Traceability (Gate 2, enforced)**: `bash scripts/check-traceability.sh --refresh` verifies the PRD → spec → tasks → `@covers` → tests golden thread; CI fails on every push if broken (`.github/workflows/traceability.yml`).
+- **Static analysis (Phase 1 integration)**: [SonarCloud dashboard](https://sonarcloud.io/project/overview?id=rdryfoos_HomeFlow) actively tracks code smells and security hotspots on every push. Roadmap: hard-blocking CI branch protection once baseline thresholds are finalized.
 
 ## Run locally (Phase 0)
 
@@ -71,5 +95,5 @@ UI reference (non-authoritative): https://haze-rabbit-58180688.figma.site
 
 ## What not to duplicate
 
-- Do **not** maintain a separate root `spec.md` / `plan.md` — Spec Kit uses `specs/<feature>/`.
-- Do **not** rewrite the PRD into the feature spec by hand — let `/speckit.specify` derive the feature slice.
+- Do **not** maintain a separate root `spec.md` / `plan.md`: Spec Kit uses `specs/<feature>/`.
+- Do **not** rewrite the PRD into the feature spec by hand; let `/speckit.specify` derive the feature slice.
