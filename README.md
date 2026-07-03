@@ -2,7 +2,7 @@
 
 A home management app for owners of multiple properties who need to coordinate maintenance and usage with family or a caretaking team.
 
-An enterprise-grade proof of concept demonstrating how to bring absolute product discipline, traceability, and architectural rigor to AI-assisted development. Built spec-first, iteratively, with traceable requirements and proper verification & validation, because I've spent years watching teams skip the rigor, and I wanted to prove that AI assistance finally makes it very reasonable to craft high-quality code.
+Also, an enterprise-grade proof of concept demonstrating how to bring absolute product discipline, traceability, and architectural rigor to AI-assisted development. Built spec-first, iteratively, with traceable requirements and proper verification & validation, because I've spent years watching teams skip the rigor, and I wanted to prove that AI assistance finally makes it very reasonable to craft high-quality code.
 
 ## The Golden Thread
 
