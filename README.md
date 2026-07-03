@@ -1,6 +1,8 @@
 # HomesFlow
 
-Native iOS app for managing a second home — built with Spec Kit.
+A home management app for owners of multiple properties who need to coordinate maintenance and usage with family or a caretaking team.
+
+Also an honest experiment: can one bring serious product discipline and rigor to AI-assisted development and actually enjoy the process? Built spec-first, iteratively, with traceable requirements and proper verification & validation, because I've spent years watching teams skip the rigor, and I wanted to find out if AI assistance finally makes it very reasonable to craft high-quality code.
 
 ## Core documents
 
