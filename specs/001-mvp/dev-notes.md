@@ -73,6 +73,7 @@ Safari visiting `https://<ref>.supabase.co` and seeing `{"error":"requested path
 
 - **MVP scope (FR-AUTH-01)**: Email/password only on device builds; Apple Sign-In deferred pending entitlement wiring — see spec Assumptions + research D12
 - `SupabaseClientProvider` applies session from sign-in response + listens to `authStateChanges` (do not rely on `try? await client.auth.session` alone after sign-in)
+- **supabase-swift session emit (2026-07-03)**: `emitLocalSessionAsInitialSession: true` on `SupabaseClientOptions` (opt-in to upcoming 3.x default); `applySession` treats `session.isExpired` as signed-out so stale Keychain tokens do not route to the dashboard
 - Local Supabase: `auth.external.apple.enabled = false` in `config.toml` for email-only dev
 - Cloud: enable **Email** provider; Apple deferred for MVP device demos
 

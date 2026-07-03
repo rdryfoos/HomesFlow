@@ -17,7 +17,10 @@ final class SupabaseClientProvider: ObservableObject {
     private init() {
         client = SupabaseClient(
             supabaseURL: SupabaseConfig.url,
-            supabaseKey: SupabaseConfig.anonKey
+            supabaseKey: SupabaseConfig.anonKey,
+            options: SupabaseClientOptions(
+                auth: .init(emitLocalSessionAsInitialSession: true)
+            )
         )
         authStateTask = Task { await listenForAuthChanges() }
     }
@@ -69,7 +72,10 @@ final class SupabaseClientProvider: ObservableObject {
     }
 
     private func applySession(_ session: Session?) {
-        self.session = session
-        isAuthenticated = session != nil
+        // supabase-swift 3.x will always emit the Keychain session first; expired
+        // sessions must not count as signed-in (emitLocalSessionAsInitialSession).
+        let valid = session.flatMap { $0.isExpired ? nil : $0 }
+        self.session = valid
+        isAuthenticated = valid != nil
     }
 }
