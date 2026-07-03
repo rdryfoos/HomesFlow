@@ -25,10 +25,7 @@ struct HomeHeroCard: View {
         }
 
         var photoVerticalAlignment: Alignment {
-            switch self {
-            case .list: .top
-            default: .center
-            }
+            .center
         }
 
         var cornerRadius: CGFloat {
@@ -138,23 +135,29 @@ struct HomePhotoFillView: View {
         GeometryReader { geometry in
             Group {
                 if let loadedImage {
-                    Image(uiImage: loadedImage)
-                        .resizable()
-                        .scaledToFill()
+                    filledImage(loadedImage, in: geometry.size)
                 } else if let photoData, let image = UIImage(data: photoData) {
-                    Image(uiImage: image)
-                        .resizable()
-                        .scaledToFill()
+                    filledImage(image, in: geometry.size)
                 } else {
                     placeholder
                 }
             }
-            .frame(width: geometry.size.width, height: geometry.size.height, alignment: verticalAlignment)
-            .clipped()
         }
         .task(id: loadKey) {
             await loadPhotoIfNeeded()
         }
+    }
+
+    @ViewBuilder
+    private func filledImage(_ image: UIImage, in size: CGSize) -> some View {
+        // scaledToFill() alone sizes to the proposed frame, so alignment is ignored.
+        // Expand to at least fill one axis, then clip with the desired vertical anchor.
+        Image(uiImage: image)
+            .resizable()
+            .scaledToFill()
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .frame(width: size.width, height: size.height, alignment: verticalAlignment)
+            .clipped()
     }
 
     private var loadKey: String {
