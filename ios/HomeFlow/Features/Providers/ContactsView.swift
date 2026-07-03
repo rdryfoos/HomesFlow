@@ -142,9 +142,9 @@ struct ContactsView: View {
                     Button {
                         formMode = .create
                     } label: {
-                        Label("Add contact", systemImage: "plus")
+                        Label(SectionAddAction.contacts.label, systemImage: SectionAddAction.contacts.systemImage)
                     }
-                    .accessibilityLabel("Add contact")
+                    .accessibilityLabel(SectionAddAction.contacts.accessibilityLabel)
                 }
             }
         }

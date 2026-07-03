@@ -160,20 +160,18 @@ final class HomeRepository: ObservableObject {
     }
 
     private func syncHomeToServer(homeId: UUID, requiredForPhoto: Bool) async throws {
-        guard NetworkMonitor.shared.isConnected else {
-            if requiredForPhoto {
-                throw HomeSyncError.offline
-            }
-            return
-        }
+        // AC-HOME-08: gating rules live in HomePhotoSyncGate (unit tested).
+        let decision = try HomePhotoSyncGate.preSync(
+            isConnected: NetworkMonitor.shared.isConnected,
+            requiredForPhoto: requiredForPhoto
+        )
+        guard decision == .runSync else { return }
 
         if let message = await syncEngine.run() {
             throw HomeSyncError.failed(message)
         }
 
-        guard syncEngine.isHomeSynced(homeId) else {
-            throw HomeSyncError.notSynced
-        }
+        try HomePhotoSyncGate.postSync(isHomeSynced: syncEngine.isHomeSynced(homeId))
     }
 
     private func attachPhoto(homeId: UUID, photoData: Data, actorId: UUID) async throws {

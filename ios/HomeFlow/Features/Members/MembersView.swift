@@ -38,9 +38,9 @@ struct MembersView: View {
                     Button {
                         showInviteSheet = true
                     } label: {
-                        Label("Invite member", systemImage: "plus")
+                        Label(SectionAddAction.people.label, systemImage: SectionAddAction.people.systemImage)
                     }
-                    .accessibilityLabel("Invite member")
+                    .accessibilityLabel(SectionAddAction.people.accessibilityLabel)
                 }
             }
         }

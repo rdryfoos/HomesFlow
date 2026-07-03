@@ -7,8 +7,14 @@ import SwiftUI
 enum DocumentPreviewLoader {
     private static let previewDirectoryName = "document-previews"
 
+    typealias DownloadHandler = (URL) async throws -> (URL, URLResponse)
+
     /// Streams the remote file to a temp path without holding the full payload in memory.
-    static func prepareLocalFile(document: DocumentSummary, remoteURL: URL) async throws -> URL {
+    static func prepareLocalFile(
+        document: DocumentSummary,
+        remoteURL: URL,
+        download: DownloadHandler = { try await URLSession.shared.download(from: $0) }
+    ) async throws -> URL {
         let directory = FileManager.default.temporaryDirectory
             .appendingPathComponent(previewDirectoryName, isDirectory: true)
         try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
@@ -18,7 +24,7 @@ enum DocumentPreviewLoader {
             try FileManager.default.removeItem(at: fileURL)
         }
 
-        let (tempURL, response) = try await URLSession.shared.download(from: remoteURL)
+        let (tempURL, response) = try await download(remoteURL)
         defer { try? FileManager.default.removeItem(at: tempURL) }
 
         if let http = response as? HTTPURLResponse,

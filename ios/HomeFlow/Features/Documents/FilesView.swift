@@ -151,9 +151,9 @@ struct FilesView: View {
                     Button {
                         showUploadSheet = true
                     } label: {
-                        Label("Add file", systemImage: "plus")
+                        Label(SectionAddAction.files.label, systemImage: SectionAddAction.files.systemImage)
                     }
-                    .accessibilityLabel("Add file")
+                    .accessibilityLabel(SectionAddAction.files.accessibilityLabel)
                 }
             }
         }
@@ -379,20 +379,7 @@ private struct DocumentPreviewHero: View {
     }
 
     private var previewIcon: String {
-        switch document.fileExtension?.lowercased() {
-        case "jpg", "jpeg", "png", "gif", "heic", "heif", "webp", "bmp", "tiff":
-            return "photo"
-        case "pdf":
-            return "doc.richtext"
-        case "mp4", "mov", "m4v":
-            return "film"
-        case "mp3", "m4a", "wav", "aac":
-            return "waveform"
-        case "txt", "md", "rtf":
-            return "doc.text"
-        default:
-            return "doc.fill"
-        }
+        DocumentPreviewIcon.symbol(for: document.fileExtension)
     }
 }
 
@@ -493,7 +480,7 @@ private struct DocumentUploadSheet: View {
                 CameraCaptureView { image in
                     applyPicked(
                         data: image.jpegData(compressionQuality: 0.85),
-                        name: cameraFileName()
+                        name: DocumentUploadFlow.cameraFileName()
                     )
                 }
                 .ignoresSafeArea()
@@ -506,12 +493,9 @@ private struct DocumentUploadSheet: View {
     }
 
     private func applyPicked(data: Data?, name: String) {
-        guard let data else { return }
-        pickedFileData = data
-        pickedFileName = name
-        if draft.title.isEmpty {
-            draft.title = (name as NSString).deletingPathExtension
-        }
+        guard let pick = DocumentUploadFlow.applyPick(to: &draft, data: data, fileName: name) else { return }
+        pickedFileData = pick.data
+        pickedFileName = pick.fileName
     }
 
     private func loadLibraryItem(_ item: PhotosPickerItem?) async {
@@ -519,11 +503,6 @@ private struct DocumentUploadSheet: View {
         guard let data = try? await item.loadTransferable(type: Data.self) else { return }
         let baseName = item.itemIdentifier.map { String($0.prefix(8)) } ?? "Photo"
         applyPicked(data: data, name: "\(baseName).jpg")
-    }
-
-    private func cameraFileName() -> String {
-        let stamp = Date.now.formatted(.iso8601.year().month().day())
-        return "Photo \(stamp).jpg"
     }
 }
 

@@ -9,8 +9,8 @@ CI fails if this file is stale. Source of truth: `HomesFlow.prd.md` registry × 
 |--------|-------|
 | Registry IDs | 65 |
 | Acceptance criteria | 38 |
-| ACs verified (test passing in suite) | 21 |
-| ACs implemented — test pending | 14 |
+| ACs verified (test passing in suite) | 27 |
+| ACs implemented — test pending | 8 |
 | ACs planned (tracked, not implemented) | 1 |
 
 ## Acceptance criteria
@@ -27,15 +27,15 @@ CI fails if this file is stale. Source of truth: `HomesFlow.prd.md` registry × 
 | AC-HOME-03 | Verified | T020 T024 | — | `test_AC_HOME_03_local_newer_keeps_pending_local`<br>`test_AC_HOME_03_server_newer_overwrites_pending_local`<br>`test_AC_HOME_03_synced_home_applies_server` |
 | AC-HOME-04 | Verified | T051 T052 T055 | — | `test_AC_HOME_04_local_newer_edit_is_kept`<br>`test_AC_HOME_04_provider_edit_propagates` |
 | AC-HOME-05 | Verified | T037 T053 T056 | — | `test_AC_HOME_05_delete_wins_over_edit`<br>`test_AC_HOME_05_local_only_insert_survives_pull`<br>`test_AC_HOME_05_synced_row_removed_silently` |
-| AC-HOME-06 | Implemented — test pending | T019a | T024a | — |
-| AC-HOME-07 | Implemented — test pending | T019a | T024b | — |
-| AC-HOME-08 | Implemented — test pending | T019 | T024c | — |
+| AC-HOME-06 | Verified | T019a T024a | — | `test_AC_HOME_06_invalid_image_data_rejected`<br>`test_AC_HOME_06_small_image_not_upscaled`<br>`test_AC_HOME_06_upload_resizes_before_storage` |
+| AC-HOME-07 | Verified | T019a T024b | — | `test_AC_HOME_07_hero_renders_from_local_cache`<br>`test_AC_HOME_07_removed_photo_no_longer_cached` |
+| AC-HOME-08 | Verified | T019 T024c | — | `test_AC_HOME_08_blocked_errors_carry_actionable_guidance`<br>`test_AC_HOME_08_connected_upload_runs_sync_then_passes_when_synced`<br>`test_AC_HOME_08_offline_edit_without_photo_defers_sync`<br>`test_AC_HOME_08_photo_blocked_until_home_synced` |
 | AC-HOME-09 | Implemented — test pending | T021a | T024d | — |
 | AC-HOME-10 | Implemented — test pending | T021a T021c | T024e | — |
 | AC-HOME-11 | Implemented — test pending | T021b T065 | T024f | — |
-| AC-HOME-12 | Implemented — test pending | T065a | T065d | — |
-| AC-HOME-13 | Implemented — test pending | T065b T065e | T065d | — |
-| AC-HOME-14 | Implemented — test pending | T065c | T065d | — |
+| AC-HOME-12 | Verified | T065a T065d | — | `test_AC_HOME_12_contacts_and_files_add_for_owner_and_manager`<br>`test_AC_HOME_12_guest_has_no_section_add_actions`<br>`test_AC_HOME_12_matches_repository_manage_flags`<br>`test_AC_HOME_12_people_add_owner_only`<br>`test_AC_HOME_12_section_add_actions_use_parallel_construction` |
+| AC-HOME-13 | Verified | T065b T065e T065d | — | `test_AC_HOME_13_local_file_name_falls_back_to_id_and_extension`<br>`test_AC_HOME_13_local_file_name_uses_storage_path`<br>`test_AC_HOME_13_non_success_download_throws`<br>`test_AC_HOME_13_preview_icon_maps_by_extension`<br>`test_AC_HOME_13_streams_download_to_preview_directory` |
+| AC-HOME-14 | Verified | T065c T065d | — | `test_AC_HOME_14_apply_pick_fills_title_from_file_name`<br>`test_AC_HOME_14_apply_pick_preserves_existing_title`<br>`test_AC_HOME_14_camera_file_name_is_dated_jpeg`<br>`test_AC_HOME_14_includes_camera_when_available`<br>`test_AC_HOME_14_offers_library_and_file_browser_sources`<br>`test_AC_HOME_14_upload_requires_valid_draft_and_file_data` |
 | AC-PROC-01 | Verified | T042 T046 T048 | — | `test_AC_PROC_01_complete_and_na_steps_mark_procedure_complete`<br>`test_AC_PROC_01_completed_step_counts_toward_progress`<br>`test_AC_PROC_01_final_step_completion_marks_procedure_complete` |
 | AC-PROC-02 | Verified | T010 T044 T049 | — | `test_AC_PROC_02_guest_cannot_update_guest_visible_step`<br>`test_AC_PROC_02_manager_cannot_update_owner_only_step` |
 | AC-PROC-03 | Verified | T037 T045 T050 | — | `test_AC_PROC_03_local_newer_keeps_pending_local`<br>`test_AC_PROC_03_server_newer_overwrites_pending_local` |
@@ -90,7 +90,7 @@ CI fails if this file is stale. Source of truth: `HomesFlow.prd.md` registry × 
 
 | ID | Status | Done tasks | Pending tasks |
 |----|--------|------------|---------------|
-| US-ADMIN-01 | In progress | T014 T015 T016 T018 T019 T019a T020 T021 T021a T021b T021c T023 T024 | T017 T022 T024a T024b T024c T024d T024e T024f |
+| US-ADMIN-01 | In progress | T014 T015 T016 T018 T019 T019a T020 T021 T021a T021b T021c T023 T024 T024a T024b T024c | T017 T022 T024d T024e T024f |
 | US-ADMIN-02 | In progress | T025 T026 | T027 T030 T031 T033a T033c |
 | US-ADMIN-03 | In progress | T028 T029 T033 | T032 T033b |
 | US-EDIT-01 | In progress | T041 T042 T043 T044 T045 T046 T047 T047a T047b T047c T047d T048 T049 T050 T050a T050b T050c | T050d |
