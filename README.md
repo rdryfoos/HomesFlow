@@ -8,6 +8,7 @@ Also an honest experiment: can one bring serious product discipline and rigor to
 
 | Document | Role |
 |----------|------|
+| **[Story map](https://homeflow.storiesonboard.com/storymap/homeflow1)** (StoriesOnBoard, access required) | Product planning view — releases, story slices, and what's next; feeds the PRD |
 | **`HomesFlow.prd.md`** | Product requirements, user stories, acceptance criteria |
 | **`.specify/memory/constitution.md`** | Non-negotiable architectural and process laws |
 | **`traceability.md`** | How IDs flow from PRD → spec → tasks → code → tests |

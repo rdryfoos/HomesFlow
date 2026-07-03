@@ -7,6 +7,9 @@ Thumbs.db
 .vscode/
 *.swp
 
+# Cursor workspace MCP config — machine-local, may hold server credentials
+.cursor/mcp.json
+
 # Claude Code — may contain credentials
 .claude/
 

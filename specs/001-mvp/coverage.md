@@ -7,11 +7,11 @@ CI fails if this file is stale. Source of truth: `HomesFlow.prd.md` registry × 
 
 | Metric | Count |
 |--------|-------|
-| Registry IDs | 69 |
-| Acceptance criteria | 41 |
+| Registry IDs | 79 |
+| Acceptance criteria | 50 |
 | ACs verified (test passing in suite) | 30 |
 | ACs implemented — test pending | 8 |
-| ACs planned (tracked, not implemented) | 1 |
+| ACs planned (tracked, not implemented) | 10 |
 
 ## Acceptance criteria
 
@@ -39,6 +39,12 @@ CI fails if this file is stale. Source of truth: `HomesFlow.prd.md` registry × 
 | AC-HOME-12 | Verified | T065a T065d | — | `test_AC_HOME_12_contacts_and_files_add_for_owner_and_manager`<br>`test_AC_HOME_12_guest_has_no_section_add_actions`<br>`test_AC_HOME_12_matches_repository_manage_flags`<br>`test_AC_HOME_12_people_add_owner_only`<br>`test_AC_HOME_12_section_add_actions_use_parallel_construction` |
 | AC-HOME-13 | Verified | T065b T065e T065d | — | `test_AC_HOME_13_local_file_name_falls_back_to_id_and_extension`<br>`test_AC_HOME_13_local_file_name_uses_storage_path`<br>`test_AC_HOME_13_non_success_download_throws`<br>`test_AC_HOME_13_preview_icon_maps_by_extension`<br>`test_AC_HOME_13_streams_download_to_preview_directory` |
 | AC-HOME-14 | Verified | T065c T065d | — | `test_AC_HOME_14_apply_pick_fills_title_from_file_name`<br>`test_AC_HOME_14_apply_pick_preserves_existing_title`<br>`test_AC_HOME_14_camera_file_name_is_dated_jpeg`<br>`test_AC_HOME_14_includes_camera_when_available`<br>`test_AC_HOME_14_offers_library_and_file_browser_sources`<br>`test_AC_HOME_14_upload_requires_valid_draft_and_file_data` |
+| AC-LOG-01 | Planned | — | T078 T084 | — |
+| AC-LOG-02 | Planned | — | T079 T084 | — |
+| AC-LOG-03 | Planned | — | T080 T085 | — |
+| AC-LOG-04 | Planned | — | T081 T085 | — |
+| AC-LOG-05 | Planned | — | T082 T086 | — |
+| AC-LOG-06 | Planned | — | T077 T083 T086 | — |
 | AC-PROC-01 | Verified | T042 T046 T048 | — | `test_AC_PROC_01_complete_and_na_steps_mark_procedure_complete`<br>`test_AC_PROC_01_completed_step_counts_toward_progress`<br>`test_AC_PROC_01_final_step_completion_marks_procedure_complete` |
 | AC-PROC-02 | Verified | T010 T044 T049 | — | `test_AC_PROC_02_guest_cannot_update_guest_visible_step`<br>`test_AC_PROC_02_manager_cannot_update_owner_only_step` |
 | AC-PROC-03 | Verified | T037 T045 T050 | — | `test_AC_PROC_03_local_newer_keeps_pending_local`<br>`test_AC_PROC_03_server_newer_overwrites_pending_local` |
@@ -51,6 +57,9 @@ CI fails if this file is stale. Source of truth: `HomesFlow.prd.md` registry × 
 | AC-SYNC-02 | Implemented — test pending | T011 T072 | T035 T039 | — |
 | AC-SYNC-03 | Verified | T011 T036 T040 T072 | — | `test_AC_SYNC_03_permission_denied_revert_matrix` |
 | AC-SYNC-04 | Implemented — test pending | T015 T037 | T040a | — |
+| AC-SYNC-05 | Planned | — | T074 T074a | — |
+| AC-SYNC-06 | Planned | — | T075 T075a | — |
+| AC-SYNC-07 | Planned | — | T076 T076a | — |
 | AC-USER-01 | Implemented — test pending | T025 T026 | T030 | — |
 | AC-USER-02 | Implemented — test pending | T025 | T031 | — |
 | AC-USER-03 | Planned | — | T027 T033a | — |
@@ -70,6 +79,7 @@ CI fails if this file is stale. Source of truth: `HomesFlow.prd.md` registry × 
 | FR-HOME-02 | Implemented | T051 T054 | — |
 | FR-HOME-03 | Implemented | T007 T065 | — |
 | FR-LOG-01 | Implemented | T012 T020 T029 T046 T061 | — |
+| FR-LOG-02 | Planned | — | T077 |
 | FR-NAV-01 | Implemented | T021a T021b T021c | — |
 | FR-NOTIF-01 | Implemented | T066 | — |
 | FR-PROC-01 | Implemented | T004 T041 | — |

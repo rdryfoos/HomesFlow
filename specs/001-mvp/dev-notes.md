@@ -88,7 +88,8 @@ Safari visiting `https://<ref>.supabase.co` and seeing `{"error":"requested path
 - **FR-USER-02 (T068)**: owner removes member via swipe or detail action → confirmation → `memberships` row deleted (RLS owner-only); revoked user loses access on next sync since `is_home_member` fails closed. Removal requires connectivity (`MemberError.offlineRemoval`); gating in `MemberRemovalPolicy`
 - **AC-SYNC-04**: pending-sync cloud icons on home heroes, sync issue banners, pull-to-refresh on dashboard
 - `HomeConflictResolver` + activity log on home edit conflicts (timestamp wins)
-- Full field-level merge (AC-SYNC-02) and invite offline conflicts **not yet implemented**
+- **Conflict model evolution (2026-07-03, decided on story map)**: timestamp-wins (AC-SYNC-01) stays shipped/verified for v1, but the model becomes **data-type-aware** — never silently regress Complete/N/A step statuses (AC-SYNC-05, T074), surface genuine status conflicts for human resolution (AC-SYNC-06, T075), connectivity-gate structural actions (AC-SYNC-07, T076). Field-level merge (AC-SYNC-02, T035/T039) **deferred post-MVP** with version vectors. Current code still silently applies server-newer — Phase 12 changes that.
+- Invite offline conflicts (AC-USER-03) **not yet implemented**
 
 ---
 
@@ -138,10 +139,12 @@ Section UI label **Files** implements document library (FR-HOME-03); code folder
 
 ## Known gaps (next spec-aligned work)
 
-*Updated 2026-07-03. Suite: 77 unit tests; coverage 30/41 ACs verified (Gate 2 green).*
+*Updated 2026-07-03. Suite: 77 unit tests; coverage 30/50 ACs verified (Gate 2 green; registry grew to 50 ACs with Log Book + conflict model evolution).*
 
 - **Apple Sign-In wiring** — paid Developer Program now active; restore entitlement, Services ID, enable Supabase Apple provider (App Store requirement — research D12)
-- **T035/T039** — AC-SYNC-02 field-level merge (start in a fresh session; fiddly)
+- **Phase 12 (T074–T076a)** — data-type-aware conflict model: protect terminal step statuses, human conflict resolution, connectivity-gated structural actions (AC-SYNC-05…07)
+- **Phase 13 (T077–T086)** — Log Book: user-authored household/procedure entries, unified view, grace-window editing, Guest exclusion (FR-LOG-02, AC-LOG-01…06)
+- **T035/T039** — AC-SYNC-02 field-level merge — **deferred post-MVP** (2026-07-03 decision; pairs with version vectors)
 - **T030–T033c** — member/invite unit tests; **T027/T033a** offline invite conflict
 - **T072a** — performance baselines (pair with device smoke session: launch, dashboard load, sync round-trip, Quick Look on large PDF)
 - **T069a** — manual VoiceOver + largest Dynamic Type pass on device

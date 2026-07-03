@@ -2,7 +2,7 @@
 
 **Input**: [spec.md](./spec.md) · [plan.md](./plan.md) · [data-model.md](./data-model.md) · [contracts/](./contracts/)
 
-**Feature**: `001-mvp` | **Updated**: 2026-07-01
+**Feature**: `001-mvp` | **Updated**: 2026-07-03
 
 **UI reference** (non-authoritative): https://haze-rabbit-58180688.figma.site — SwiftUI-native iPhone/iPad only.
 
@@ -13,10 +13,12 @@
 | 1–2 Setup + foundation | **Complete** | — |
 | 3–4 Auth, dashboard, homes | **Mostly complete** | XCUITest T017 |
 | 5 Invites & roles | **Partial** | Deep links T026; offline conflict T027; unit tests |
-| 6 Offline sync | **Partial** | Field merge T035; full sync tests |
+| 6 Offline sync | **Partial** | Sync tests T038/T040a; field merge T035 deferred post-MVP |
 | 7 Procedures | **Complete** | AC-PROC-08 UI test T050d pending |
 | 8–10 P2/P3 features | **Partial** | Phase 9 guest views done; Files, Settings next |
 | 11 Hardening | Not started | Re-run analyze after P1 checkpoint |
+| 12 Conflict model evolution | Not started | AC-SYNC-05…07 (added 2026-07-03 from story map) |
+| 13 Log Book | Not started | FR-LOG-02, AC-LOG-01…06 (added 2026-07-03 from story map) |
 
 Partial deliverables documented in [dev-notes.md](./dev-notes.md). **Do not** encode implementation details in [spec.md](./spec.md).
 
@@ -133,14 +135,14 @@ Partial deliverables documented in [dev-notes.md](./dev-notes.md). **Do not** en
 ### Implementation
 
 - [x] T034 [NFR-OFFL-01] Network reachability → trigger `SyncEngine.run()` on reconnect in `ios/HomeFlow/Core/Sync/` — **Traces**: AC-SYNC-01
-- [ ] T035 [NFR-OFFL-01] Field-level merge for non-conflicting offline edits — **Traces**: AC-SYNC-02
+- [ ] T035 [NFR-OFFL-01] Field-level merge for non-conflicting offline edits — **Traces**: AC-SYNC-02 — *deferred post-MVP (2026-07-03 conflict model decision); pairs with version vectors*
 - [x] T036 [NFR-OFFL-01] Stale-permission revert + user-facing error — **Traces**: AC-SYNC-03 — *revert + SyncNotification*
 - [x] T037 [P] [NFR-OFFL-01] In-app conflict/overwrite notification banners + pending-sync dashboard indicators — **Traces**: AC-SYNC-01, AC-SYNC-04, AC-PROC-03, AC-HOME-05 — *dashboard sync banners, cloud icons, pull-to-refresh*
 
 ### Tests
 
 - [ ] T038 [P] [NFR-OFFL-01] Unit test `test_AC_SYNC_01_offline_overwrite_notifies_loser` — **Traces**: AC-SYNC-01
-- [ ] T039 [P] [NFR-OFFL-01] Unit test `test_AC_SYNC_02_disjoint_fields_merge` — **Traces**: AC-SYNC-02
+- [ ] T039 [P] [NFR-OFFL-01] Unit test `test_AC_SYNC_02_disjoint_fields_merge` — **Traces**: AC-SYNC-02 — *deferred post-MVP with T035*
 - [x] T040 [NFR-OFFL-01] Unit test `test_AC_SYNC_03_stale_permission_reverts` — **Traces**: AC-SYNC-03 — *covered by SyncConflictMatrixTests.test_AC_SYNC_03_permission_denied_revert_matrix over PermissionRevertPolicy*
 - [ ] T040a [P] [NFR-OFFL-01] Unit test `test_AC_SYNC_04_pending_sync_visible_on_dashboard` — **Traces**: AC-SYNC-04
 
@@ -255,6 +257,41 @@ Partial deliverables documented in [dev-notes.md](./dev-notes.md). **Do not** en
 
 ---
 
+## Phase 12: Conflict model evolution (added 2026-07-03 from story map)
+
+**Goal**: Data-type-aware conflict handling replacing blanket timestamp-wins — **NFR-OFFL-01** (see spec User Story 6 evolution note)
+
+- [ ] T074 [NFR-OFFL-01] Protect terminal step statuses: sync never silently regresses Complete/N/A; surface conflicting update — **Traces**: AC-SYNC-05
+- [ ] T074a [P] [NFR-OFFL-01] Unit test `test_AC_SYNC_05_terminal_status_never_silently_regressed` — **Traces**: AC-SYNC-05
+- [ ] T075 [NFR-OFFL-01] Surface genuine status conflicts for human resolution (conflict queue + resolution UI) — **Traces**: AC-SYNC-06
+- [ ] T075a [P] [NFR-OFFL-01] Unit test `test_AC_SYNC_06_genuine_conflict_surfaced_for_resolution` — **Traces**: AC-SYNC-06
+- [ ] T076 [NFR-OFFL-01] Connectivity-gate structural actions (step/procedure/provider CRUD, membership) when offline — **Traces**: AC-SYNC-07
+- [ ] T076a [P] [NFR-OFFL-01] Unit test `test_AC_SYNC_07_structural_actions_blocked_offline` — **Traces**: AC-SYNC-07
+
+---
+
+## Phase 13: Log Book (added 2026-07-03 from story map)
+
+**Goal**: User-authored household/procedure log entries with unified view — **FR-LOG-02**
+
+### Implementation
+
+- [ ] T077 [FR-LOG-02] LogBookEntry model + migration + RLS (Owner/Manager read-write, Guest none) — **Traces**: FR-LOG-02, AC-LOG-06
+- [ ] T078 [FR-LOG-02] Write household-scope log entry — **Traces**: AC-LOG-01
+- [ ] T079 [FR-LOG-02] Write procedure-scope log entry from procedure detail — **Traces**: AC-LOG-02
+- [ ] T080 [FR-LOG-02] Offline append-only log entry sync — **Traces**: AC-LOG-03
+- [ ] T081 [FR-LOG-02] Grace-window editing (window starts at server receipt; immutable after) — **Traces**: AC-LOG-04
+- [ ] T082 [FR-LOG-02] Unified chronological log view with scope filter — **Traces**: AC-LOG-05
+- [ ] T083 [FR-LOG-02] Deny Guest access to Log Book including deep links — **Traces**: AC-LOG-06
+
+### Tests
+
+- [ ] T084 [P] [FR-LOG-02] Unit tests `test_AC_LOG_01_household_entry_appears_in_log`, `test_AC_LOG_02_procedure_entry_attached_and_in_log` — **Traces**: AC-LOG-01, AC-LOG-02
+- [ ] T085 [P] [FR-LOG-02] Unit tests `test_AC_LOG_03_offline_entry_syncs_append_only`, `test_AC_LOG_04_edit_only_within_grace_window` — **Traces**: AC-LOG-03, AC-LOG-04
+- [ ] T086 [P] [FR-LOG-02] Unit tests `test_AC_LOG_05_unified_log_chronological_and_filterable`, `test_AC_LOG_06_guest_denied_log_access` — **Traces**: AC-LOG-05, AC-LOG-06
+
+---
+
 ## Dependencies
 
 ```text
@@ -262,6 +299,8 @@ Phase 1 → Phase 2 (blocking) → Phases 3–6 (P1, can overlap after T013)
 Phase 6 checkpoint → Phases 7–8 (P2)
 Phases 7–8 → Phases 9–10 (P3)
 All → Phase 11
+Phase 6 → Phase 12 (conflict model evolution; supersedes blanket timestamp-wins for step statuses)
+Phase 7 → Phase 13 (Log Book; procedure-scope entries need procedure detail)
 ```
 
 ## MVP scope reminders
