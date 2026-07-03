@@ -1,7 +1,7 @@
 import XCTest
 @testable import HomeFlow
 
-// @covers AC-SYNC-05
+// @covers AC-SYNC-05, AC-SYNC-06
 
 final class StepStatusConflictPolicyTests: XCTestCase {
 
@@ -83,5 +83,29 @@ final class StepStatusConflictPolicyTests: XCTestCase {
         let message = StepStatusConflictPolicy.surfaceMessage(stepTitle: "Shut off water", keptStatus: .complete)
         XCTAssertTrue(message.contains("Shut off water"))
         XCTAssertTrue(message.contains("Complete"))
+    }
+
+    // T075a — AC-SYNC-06: losing user gets re-apply guidance + activity-log reference.
+
+    func test_AC_SYNC_06_losing_user_notified_with_reapply_guidance() {
+        let notification = StepStatusConflictPolicy.autoResolveLoserMessage(
+            stepTitle: "Shut off water",
+            winningStatus: .complete,
+            losingStatus: .inProgress
+        )
+        XCTAssertTrue(notification.contains("Shut off water"))
+        XCTAssertTrue(notification.contains("In progress"))
+        XCTAssertTrue(notification.contains("Complete"))
+        XCTAssertTrue(notification.localizedCaseInsensitiveContains("activity log"))
+        XCTAssertTrue(notification.localizedCaseInsensitiveContains("re-apply"))
+
+        let audit = StepStatusConflictPolicy.autoResolveActivitySummary(
+            stepTitle: "Shut off water",
+            procedureTitle: "Winterize",
+            winningStatus: .complete,
+            losingStatus: .inProgress
+        )
+        XCTAssertTrue(audit.contains("Winterize"))
+        XCTAssertTrue(audit.contains("kept Complete over In progress"))
     }
 }

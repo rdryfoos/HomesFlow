@@ -9,9 +9,9 @@ CI fails if this file is stale. Source of truth: `HomesFlow.prd.md` registry × 
 |--------|-------|
 | Registry IDs | 79 |
 | Acceptance criteria | 50 |
-| ACs verified (test passing in suite) | 37 |
+| ACs verified (test passing in suite) | 38 |
 | ACs implemented — test pending | 4 |
-| ACs planned (tracked, not implemented) | 9 |
+| ACs planned (tracked, not implemented) | 8 |
 
 ## Acceptance criteria
 
@@ -58,7 +58,7 @@ CI fails if this file is stale. Source of truth: `HomesFlow.prd.md` registry × 
 | AC-SYNC-03 | Verified | T011 T036 T040 T072 | — | `test_AC_SYNC_03_permission_denied_revert_matrix` |
 | AC-SYNC-04 | Verified | T015 T037 T040a | — | `test_AC_SYNC_04_pending_state_announced_to_voiceover`<br>`test_AC_SYNC_04_pending_sync_visible_on_dashboard` |
 | AC-SYNC-05 | Verified | T074 T074a | — | `test_AC_SYNC_05_terminal_status_never_silently_regressed` |
-| AC-SYNC-06 | Planned | — | T075 T075a | — |
+| AC-SYNC-06 | Verified | T075 T075a | — | `test_AC_SYNC_06_losing_user_notified_with_reapply_guidance` |
 | AC-SYNC-07 | Planned | — | T076 T076a | — |
 | AC-USER-01 | Verified | T025 T026 T030 | — | `test_AC_USER_01_invite_accepted_grants_role`<br>`test_AC_USER_01_invite_email_validation_and_token_shape` |
 | AC-USER-02 | Verified | T025 T031 | — | `test_AC_USER_02_revoked_token_invalid` |

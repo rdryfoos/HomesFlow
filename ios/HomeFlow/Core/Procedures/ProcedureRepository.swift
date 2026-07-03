@@ -3,7 +3,7 @@ import SwiftData
 import Supabase
 import UIKit
 
-// @covers AC-PROC-01, FR-PROC-01, FR-PROC-02, FR-PROC-03, AC-PROC-02, AC-PROC-03, AC-PROC-04, AC-PROC-05, AC-PROC-06, AC-PROC-07, AC-GUEST-03, AC-GUEST-05, FR-GUEST-01, AC-SYNC-01, AC-SYNC-05
+// @covers AC-PROC-01, FR-PROC-01, FR-PROC-02, FR-PROC-03, AC-PROC-02, AC-PROC-03, AC-PROC-04, AC-PROC-05, AC-PROC-06, AC-PROC-07, AC-GUEST-03, AC-GUEST-05, FR-GUEST-01, AC-SYNC-01, AC-SYNC-05, AC-SYNC-06
 
 @MainActor
 final class ProcedureRepository: ObservableObject {
@@ -739,10 +739,32 @@ final class ProcedureRepository: ObservableObject {
                     guard let serverAt = row.updatedAt,
                           let priorServerAt = cached.serverUpdatedAt,
                           serverAt > priorServerAt else { continue }
+                    let losingStatus = cached.procedureStatus
+                    let statusConflict = losingStatus != row.status
                     removeOutboxEntries(for: cached.id)
-                    syncEngine.postNotification(
-                        "Your offline edit to \(row.title) was overwritten by a newer update."
-                    )
+                    if statusConflict {
+                        syncEngine.postNotification(
+                            StepStatusConflictPolicy.autoResolveProcedureLoserMessage(
+                                procedureTitle: row.title,
+                                winningStatus: row.status,
+                                losingStatus: losingStatus
+                            )
+                        )
+                        if let userId = auth.session?.user.id {
+                            activityLog.append(
+                                homeId: homeId,
+                                actorId: userId,
+                                entityType: "procedure",
+                                entityId: row.id,
+                                action: "conflict_resolved",
+                                summary: "Status conflict on \"\(row.title)\" — kept \(StepStatusConflictPolicy.procedureStatusLabel(row.status)) over \(StepStatusConflictPolicy.procedureStatusLabel(losingStatus))"
+                            )
+                        }
+                    } else {
+                        syncEngine.postNotification(
+                            "Your offline edit to \(row.title) was overwritten by a newer update."
+                        )
+                    }
                 }
                 cached.title = row.title
                 cached.category = row.category
@@ -901,6 +923,12 @@ final class ProcedureRepository: ObservableObject {
         server: ProcedureStepDTO,
         local: CachedProcedureStep
     ) {
+        let losingStatus = local.stepStatus
+        let statusConflict = StepStatusConflictPolicy.isStatusConflict(
+            localStatus: losingStatus,
+            serverStatus: server.status
+        )
+
         applyServerStep(server, to: local)
         removeOutboxEntry(for: local.id)
 
@@ -911,12 +939,25 @@ final class ProcedureRepository: ObservableObject {
                 entityType: "procedure_step",
                 entityId: server.id,
                 action: "conflict_resolved",
-                summary: "Step conflict — server version kept for \"\(server.title)\" in \(procedureTitle)"
+                summary: statusConflict
+                    ? StepStatusConflictPolicy.autoResolveActivitySummary(
+                        stepTitle: server.title,
+                        procedureTitle: procedureTitle,
+                        winningStatus: server.status,
+                        losingStatus: losingStatus
+                    )
+                    : "Step conflict — server version kept for \"\(server.title)\" in \(procedureTitle)"
             )
         }
 
         syncEngine.postNotification(
-            OverwriteNotificationPolicy.message(for: .procedureStep(title: server.title))
+            statusConflict
+                ? StepStatusConflictPolicy.autoResolveLoserMessage(
+                    stepTitle: server.title,
+                    winningStatus: server.status,
+                    losingStatus: losingStatus
+                )
+                : OverwriteNotificationPolicy.message(for: .procedureStep(title: server.title))
         )
     }
 
