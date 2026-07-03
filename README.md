@@ -48,6 +48,11 @@ export SPECIFY_FEATURE_DIRECTORY=specs/001-mvp
 | 5 | `/speckit.analyze` | Gate — must pass before coding |
 | 6 | `/speckit.implement` | `ios/`, `supabase/` |
 
+## Quality checks
+
+- **Traceability (Gate 2, enforced)** — `bash scripts/check-traceability.sh --refresh` verifies the PRD → spec → tasks → `@covers` → tests golden thread; CI fails on every push if broken (`.github/workflows/traceability.yml`).
+- **Static analysis (informational)** — [SonarCloud dashboard](https://sonarcloud.io/project/overview?id=rdryfoos_HomeFlow) analyzes pushes for code smells and security hotspots. Its quality gate is not yet enforced anywhere; review findings manually until it's wired into CI or branch protection.
+
 ## Run locally (Phase 0)
 
 ```bash
