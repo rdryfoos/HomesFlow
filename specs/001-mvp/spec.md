@@ -236,7 +236,7 @@ All primary screens respect iOS accessibility settings, especially Dynamic Type 
 
 - MVP targets iOS 17+ on iPhone and iPad; no Android/web/desktop.
 - **Backend**: Supabase (PostgreSQL, Auth, Storage, Realtime).
-- **Auth (MVP)**: Email/password via Supabase Auth only on current device builds. Sign in with Apple UI is placeholder; entitlement deferred until paid Apple Developer Program (required before App Store — see [research.md](./research.md) D12). Full **FR-AUTH-01** satisfied at App Store submission.
+- **Auth (MVP)**: Email/password via Supabase Auth only on current device builds. Sign in with Apple UI is placeholder; paid Apple Developer Program active — entitlement and Services ID wiring pending (see [research.md](./research.md) D12). Full **FR-AUTH-01** satisfied at App Store submission.
 - **Invites (MVP)**: Owner shares `homeflow://invite?token=…` via system share sheet; invitee uses **Join with Invite** and pastes token while signed in with invited email (**AC-USER-07**). Automated email/SMS delivery, Universal Links, and deep-link auto-accept are **Out of Scope** for MVP.
 - **Push notifications (FR-NOTIF-01)**: Deferred in MVP — Settings UI placeholder only; no APNs wiring.
 - Document upload uses standard iOS file/photo pickers; files stored in Supabase Storage.
@@ -262,4 +262,4 @@ All primary screens respect iOS accessibility settings, especially Dynamic Type 
 - Separate key-contacts entity (use service providers)
 - Automated invite email/SMS delivery (MVP uses manual share + token paste per AC-USER-07)
 - Universal Links / deep-link auto-accept for invites (`homeflow://` scheme only; paste fallback)
-- Sign in with Apple on device builds until paid developer program + entitlement (see research D12)
+- Sign in with Apple on device builds until entitlement + Services ID wiring lands (paid program active — see research D12)

@@ -130,6 +130,8 @@
 
 **Revisit before**: App Store submission (FR-AUTH-01 requires Apple when email is offered).
 
+**Update (2026-07-03)**: Paid Apple Developer Program active (Admin role). The Personal Team constraint no longer applies; remaining work is restoring the entitlement in `HomeFlow.entitlements`, Services ID setup, and enabling the Apple provider in Supabase.
+
 ---
 
 ### D13 — Bundle identifier (2026-06-28)

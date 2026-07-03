@@ -257,7 +257,7 @@ See [contracts/sync-protocol.md](./contracts/sync-protocol.md).
 | Scope creep | FR-NOTIF-01, SMS invites, deep links explicitly deferred; MVP invites = share link + token paste (AC-USER-07) |
 | SwiftData + Supabase drift | Single source schema in `data-model.md`; codegen DTOs from migrations |
 | Debug vs Release config drift | Separate `Secrets.xcconfig` / `Secrets.Release.xcconfig`; verify Build Settings before device deploy |
-| Personal Team signing | Bundle ID `com.rdryfoos.homeflow`; Apple Sign-In entitlement deferred until paid program |
+| Apple Sign-In entitlement wiring | Paid Developer Program active (2026-07-03); entitlement + Services ID setup pending — required before App Store (research D12) |
 
 ## Complexity Tracking
 

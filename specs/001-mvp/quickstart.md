@@ -9,8 +9,7 @@ See also: [dev-notes.md](./dev-notes.md) for implementation gotchas discovered d
 - macOS with Xcode 15+ (iOS 17 SDK; tested on Xcode 26.x)
 - [Supabase CLI](https://supabase.com/docs/guides/cli) (`brew install supabase/tap/supabase`)
 - Docker Desktop (for **local** Supabase only)
-- Apple ID in Xcode (Personal Team) for **physical device** install
-- Apple Developer Program ($99/yr) for TestFlight / App Store (optional for solo device demo)
+- Apple ID in Xcode for **physical device** install (project team is on the paid Apple Developer Program; a free Personal Team also works for local device installs)
 
 ---
 
