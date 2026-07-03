@@ -1,6 +1,5 @@
 import SwiftUI
 import PhotosUI
-import PDFKit
 import UniformTypeIdentifiers
 
 // @covers FR-HOME-03, FR-NAV-01, AC-HOME-11, AC-HOME-12, AC-HOME-13, AC-HOME-14, AC-GUEST-01
@@ -234,16 +233,21 @@ private struct DocumentDetailView: View {
     let onDelete: () -> Void
 
     @State private var isLoadingLink = false
+    @State private var isPreparingPreview = false
+    @State private var quickLookPresentation: QuickLookPresentation?
+    @State private var previewError: String?
 
     var body: some View {
         List {
-            // AC-HOME-13: inline preview renders first; metadata and actions below.
+            // AC-HOME-13: file summary + Preview opens system Quick Look (zoom, PDF, media).
             Section {
-                DocumentPreviewView(document: document, shareURL: shareURL)
-                    .frame(maxWidth: .infinity)
-                    .frame(minHeight: 220)
-                    .listRowInsets(EdgeInsets())
-                    .listRowBackground(Color.clear)
+                DocumentPreviewHero(
+                    document: document,
+                    isPreparing: isPreparingPreview,
+                    onPreview: { Task { await openQuickLook() } }
+                )
+                .listRowInsets(EdgeInsets())
+                .listRowBackground(Color.clear)
             }
 
             Section {
@@ -292,114 +296,109 @@ private struct DocumentDetailView: View {
                 await onOpen()
             }
         }
+        .fullScreenCover(item: $quickLookPresentation) { presentation in
+            QuickLookPreview(url: presentation.url)
+                .ignoresSafeArea()
+        }
+        .alert("Preview unavailable", isPresented: Binding(
+            get: { previewError != nil },
+            set: { if !$0 { previewError = nil } }
+        )) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(previewError ?? "")
+        }
+    }
+
+    private func openQuickLook() async {
+        if shareURL == nil {
+            isLoadingLink = true
+            await onOpen()
+            isLoadingLink = false
+        }
+        guard let shareURL else {
+            previewError = "Could not prepare a download link for this file."
+            return
+        }
+
+        isPreparingPreview = true
+        defer { isPreparingPreview = false }
+        do {
+            quickLookPresentation = QuickLookPresentation(
+                url: try await DocumentPreviewLoader.prepareLocalFile(
+                    document: document,
+                    remoteURL: shareURL
+                )
+            )
+            previewError = nil
+        } catch {
+            previewError = error.localizedDescription
+        }
     }
 }
 
-// MARK: - Preview (AC-HOME-13)
-
-private struct DocumentPreviewView: View {
+private struct DocumentPreviewHero: View {
     let document: DocumentSummary
-    let shareURL: URL?
-
-    @State private var previewData: Data?
-    @State private var loadFailed = false
-
-    private enum PreviewKind {
-        case image, pdf, unsupported
-    }
-
-    private var kind: PreviewKind {
-        switch document.fileExtension?.lowercased() {
-        case "jpg", "jpeg", "png", "gif", "heic", "heif", "webp", "bmp", "tiff":
-            return .image
-        case "pdf":
-            return .pdf
-        default:
-            return .unsupported
-        }
-    }
+    let isPreparing: Bool
+    let onPreview: () -> Void
 
     var body: some View {
-        Group {
-            switch kind {
-            case .unsupported:
-                placeholder(systemImage: "doc.fill", caption: document.fileExtension ?? "File")
-            case .image:
-                if let previewData, let image = UIImage(data: previewData) {
-                    Image(uiImage: image)
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(maxHeight: 360)
-                        .clipShape(RoundedRectangle(cornerRadius: 10))
-                        .padding(.horizontal)
-                } else {
-                    loadingOrFailed
-                }
-            case .pdf:
-                if let previewData {
-                    PDFPreview(data: previewData)
-                        .frame(height: 360)
-                        .clipShape(RoundedRectangle(cornerRadius: 10))
-                        .padding(.horizontal)
-                } else {
-                    loadingOrFailed
+        VStack(spacing: 16) {
+            Image(systemName: previewIcon)
+                .font(.system(size: 52))
+                .foregroundStyle(.secondary)
+                .accessibilityHidden(true)
+
+            VStack(spacing: 4) {
+                Text(document.title)
+                    .font(.headline)
+                    .multilineTextAlignment(.center)
+                if let ext = document.fileExtension {
+                    Text(ext)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
                 }
             }
+
+            Button(action: onPreview) {
+                if isPreparing {
+                    ProgressView()
+                        .frame(maxWidth: .infinity)
+                } else {
+                    Label("Preview", systemImage: "eye")
+                        .frame(maxWidth: .infinity)
+                }
+            }
+            .buttonStyle(.borderedProminent)
+            .disabled(isPreparing)
+            .accessibilityLabel("Preview \(document.title)")
         }
-        .task(id: shareURL) { await loadIfNeeded() }
-        .accessibilityLabel("Preview of \(document.title)")
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 24)
+        .padding(.horizontal)
     }
 
-    @ViewBuilder
-    private var loadingOrFailed: some View {
-        if loadFailed {
-            placeholder(systemImage: "eye.slash", caption: "Preview unavailable")
-        } else {
-            ProgressView("Loading preview…")
-                .frame(maxWidth: .infinity, minHeight: 220)
-        }
-    }
-
-    private func placeholder(systemImage: String, caption: String) -> some View {
-        VStack(spacing: 8) {
-            Image(systemName: systemImage)
-                .font(.system(size: 44))
-                .foregroundStyle(.secondary)
-            Text(caption)
-                .font(.caption)
-                .foregroundStyle(.secondary)
-        }
-        .frame(maxWidth: .infinity, minHeight: 220)
-    }
-
-    private func loadIfNeeded() async {
-        guard kind != .unsupported, previewData == nil, let shareURL else { return }
-        do {
-            let (data, _) = try await URLSession.shared.data(from: shareURL)
-            previewData = data
-            loadFailed = false
-        } catch {
-            loadFailed = true
+    private var previewIcon: String {
+        switch document.fileExtension?.lowercased() {
+        case "jpg", "jpeg", "png", "gif", "heic", "heif", "webp", "bmp", "tiff":
+            return "photo"
+        case "pdf":
+            return "doc.richtext"
+        case "mp4", "mov", "m4v":
+            return "film"
+        case "mp3", "m4a", "wav", "aac":
+            return "waveform"
+        case "txt", "md", "rtf":
+            return "doc.text"
+        default:
+            return "doc.fill"
         }
     }
 }
 
-private struct PDFPreview: UIViewRepresentable {
-    let data: Data
-
-    func makeUIView(context: Context) -> PDFView {
-        let view = PDFView()
-        view.autoScales = true
-        view.document = PDFDocument(data: data)
-        view.backgroundColor = .clear
-        return view
-    }
-
-    func updateUIView(_ uiView: PDFView, context: Context) {
-        if uiView.document == nil {
-            uiView.document = PDFDocument(data: data)
-        }
-    }
+private struct QuickLookPresentation: Identifiable {
+    let id = UUID()
+    let url: URL
 }
 
 // MARK: - Upload sheet (AC-HOME-14)

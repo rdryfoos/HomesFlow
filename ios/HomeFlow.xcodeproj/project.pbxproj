@@ -57,6 +57,7 @@
 		C825A3509D94B360ED7184C0 /* ActivityLogService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8233B3D385B58C52FAC3D9E /* ActivityLogService.swift */; };
 		CC9D432BCACD6BEBE748B66B /* ProcedureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A6207638303AF182C7C316A /* ProcedureTests.swift */; };
 		CCA37724D9C0870EE62062C5 /* AppRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 065E11DA60C5236E9094516D /* AppRouter.swift */; };
+		D345CAC7750D1BCACFA3AC03 /* DocumentQuickLookPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47B1A69FC16DE2D5542E6420 /* DocumentQuickLookPreview.swift */; };
 		DF97B3DA56D40B5043E53A74 /* HomeHeroCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24584D4D48852644D6901B29 /* HomeHeroCard.swift */; };
 		E5D3DB13ECBF4283A7204C73 /* ContactsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90748E3E2030839155D51E1 /* ContactsView.swift */; };
 		EFDD81EA5F10127E3496161A /* SupabaseClientProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A55055DFB89B27A44EE4537 /* SupabaseClientProvider.swift */; };
@@ -104,6 +105,7 @@
 		432D7CF7139BF5BDF9FC17AF /* InviteMemberView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InviteMemberView.swift; sourceTree = "<group>"; };
 		43E0FB27793A0BD1FBB1A6E8 /* ProviderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProviderTests.swift; sourceTree = "<group>"; };
 		47557403984CE7BC85F709EF /* HomePhotoCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomePhotoCache.swift; sourceTree = "<group>"; };
+		47B1A69FC16DE2D5542E6420 /* DocumentQuickLookPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentQuickLookPreview.swift; sourceTree = "<group>"; };
 		4A55055DFB89B27A44EE4537 /* SupabaseClientProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseClientProvider.swift; sourceTree = "<group>"; };
 		4FD7A866773F9C47EAFBED1B /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
 		504099625C1A94B14A9E029F /* HomeValidatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeValidatorTests.swift; sourceTree = "<group>"; };
@@ -172,6 +174,7 @@
 		1502EC18C3DF34D9CFB5822C /* Documents */ = {
 			isa = PBXGroup;
 			children = (
+				47B1A69FC16DE2D5542E6420 /* DocumentQuickLookPreview.swift */,
 				2DE98E4CAE9465C0C555B81B /* FilesView.swift */,
 			);
 			path = Documents;
@@ -608,6 +611,7 @@
 				E5D3DB13ECBF4283A7204C73 /* ContactsView.swift in Sources */,
 				567510031EA05B1113D6FC6B /* DashboardView.swift in Sources */,
 				612EB76DE93B2592CBF0913F /* DocumentDTO.swift in Sources */,
+				D345CAC7750D1BCACFA3AC03 /* DocumentQuickLookPreview.swift in Sources */,
 				F63AC23E86C66A5014157AF6 /* DocumentRepository.swift in Sources */,
 				1591BFB5C7FBC18054E4F599 /* DocumentStorageService.swift in Sources */,
 				C66085F8C146521809D6E671 /* DomainEnums.swift in Sources */,
