@@ -4,7 +4,7 @@
 
 A home management app for owners of multiple properties who need to coordinate maintenance and usage with family or a caretaking team.
 
-Also, a working case study in how to bring real product discipline, traceability, and architectural rigor to AI-assisted development. Built spec-first, iteratively, with traceable requirements and proper verification & validation, because I've spent years watching teams skip the rigor, and I wanted to prove that AI assistance finally makes it very reasonable to craft high-quality code.
+Also, a working case study in how to bring real product discipline, traceability, and architectural rigor to AI-assisted development. Built spec-first, iteratively, with traceable requirements and proper verification & validation, because I've spent years watching teams skip the rigor, and I wanted to prove that AI assistance makes software craftsmanship so affordable it's practically a fiscal imperative.
 
 **If you have five minutes:** look at the [coverage matrix](specs/001-mvp/coverage.md) for the state of the build, then [traceability.md](traceability.md) for how the thread works, then [HomesFlow.prd.md](HomesFlow.prd.md) for the product itself.
 
