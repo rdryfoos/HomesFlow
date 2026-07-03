@@ -138,12 +138,15 @@ Section UI label **Files** implements document library (FR-HOME-03); code folder
 
 ## Known gaps (next spec-aligned work)
 
-- Procedure step photo attach T043 (notes done)
-- Apple Sign-In (App Store requirement before public release)
-- XCUITests T017, T069
-- Offline invite conflict T027; full sync matrix Phase 6
-- Member/invite unit tests T030–T033b
-- Files upload (Phase 10), Settings, guest read-only views (Phase 9)
+*Updated 2026-07-03. Suite: 77 unit tests; coverage 30/41 ACs verified (Gate 2 green).*
+
+- **Apple Sign-In wiring** — paid Developer Program now active; restore entitlement, Services ID, enable Supabase Apple provider (App Store requirement — research D12)
+- **T035/T039** — AC-SYNC-02 field-level merge (start in a fresh session; fiddly)
+- **T030–T033c** — member/invite unit tests; **T027/T033a** offline invite conflict
+- **T072a** — performance baselines (pair with device smoke session: launch, dashboard load, sync round-trip, Quick Look on large PDF)
+- **T069a** — manual VoiceOver + largest Dynamic Type pass on device
+- **T024d–f** — iPad layout tests (deferred pending snapshot/XCUITest infra; manual iPad pass until then)
+- **XCUITests** T017, T069; **T040a** AC-SYNC-04 test; **T050d** AC-PROC-08 test
 
 ---
 
