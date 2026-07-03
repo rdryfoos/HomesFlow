@@ -1,8 +1,14 @@
 # HomesFlow
 
+> I'm a product and engineering leader with 25 years in software delivery. I built this to find out whether AI-assisted development can hold up to the same rigor I've always demanded from teams. Short answer: it can, and the sprint that proved it took a few days, not months.
+
 A home management app for owners of multiple properties who need to coordinate maintenance and usage with family or a caretaking team.
 
-Also, an enterprise-grade proof of concept demonstrating how to bring absolute product discipline, traceability, and architectural rigor to AI-assisted development. Built spec-first, iteratively, with traceable requirements and proper verification & validation, because I've spent years watching teams skip the rigor, and I wanted to prove that AI assistance finally makes it very reasonable to craft high-quality code.
+Also, a working case study in how to bring real product discipline, traceability, and architectural rigor to AI-assisted development. Built spec-first, iteratively, with traceable requirements and proper verification & validation, because I've spent years watching teams skip the rigor, and I wanted to prove that AI assistance finally makes it very reasonable to craft high-quality code.
+
+**If you have five minutes:** look at the [coverage matrix](specs/001-mvp/coverage.md) for the state of the build, then [traceability.md](traceability.md) for how the thread works, then [HomesFlow.prd.md](HomesFlow.prd.md) for the product itself.
+
+---
 
 ## The Golden Thread
 
@@ -33,13 +39,14 @@ No orphan code, no silent scope, no untracked debt: an acceptance criterion is e
 ## Repository layout
 
 ```text
-HomeFlow/
+HomesFlow/
 ├── HomesFlow.prd.md              ← product truth (you write / maintain)
 ├── traceability.md              ← traceability mechanics
 ├── glossary.md                  ← domain terms
-├── process.deprecated.rtf       ← archived process narrative (superseded by markdown above)
+├── archive/
+│   └── process.deprecated.rtf  ← archived process narrative (superseded by markdown above)
 ├── .specify/                    ← Spec Kit (templates, scripts, constitution)
-│   └── memory/constitution.md   ← non-negotiable laws
+│   └── memory/constitution.md  ← non-negotiable laws
 ├── ios/                         ← SwiftUI app (XcodeGen)
 ├── supabase/                    ← migrations + local config
 └── specs/
@@ -89,3 +96,7 @@ UI reference (non-authoritative): https://haze-rabbit-58180688.figma.site
 
 - Do **not** maintain a separate root `spec.md` / `plan.md`: Spec Kit uses `specs/<feature>/`.
 - Do **not** rewrite the PRD into the feature spec by hand; let `/speckit.specify` derive the feature slice.
+
+---
+
+*Personal portfolio project. All rights reserved.*
