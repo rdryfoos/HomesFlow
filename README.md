@@ -16,15 +16,7 @@ How one thread runs, using a real example:
 2. **Plan**: `specs/001-mvp/tasks.md` task `T065e` declares `Traces: AC-HOME-13`; the implementation carries `@covers AC-HOME-13` in `DocumentQuickLookPreview.swift`.
 3. **Proof**: the test suite names the criterion: `test_AC_HOME_13_streams_download_to_preview_directory`. The gate script cross-references all four artifacts on every push.
 
-```mermaid
-graph LR
-    PRD["PRD<br/>immutable IDs"] --> SPEC["spec.md<br/>feature slice"]
-    SPEC --> TASKS["tasks.md<br/>Traces: fields"]
-    TASKS --> CODE["Swift code<br/>@covers annotations"]
-    CODE --> TESTS["tests named<br/>test_AC_*"]
-    TESTS --> GATE{"Gate 2 (CI)<br/>thread intact?"}
-    GATE -->|no| FAIL["build fails"]
-```
+![Golden thread pipeline: PRD to spec to tasks to code to tests to the CI gate that fails the build if the thread breaks](docs/golden-thread.svg)
 
 No orphan code, no silent scope, no untracked debt: an acceptance criterion is either verified by a test that names it, or it appears in an unchecked task; anything else fails `scripts/check-traceability.sh`. The full per-criterion status lives in the generated [coverage matrix](specs/001-mvp/coverage.md); mechanics are documented in [traceability.md](traceability.md).
 
