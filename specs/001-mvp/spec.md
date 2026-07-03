@@ -207,7 +207,7 @@ All primary screens respect iOS accessibility settings, especially Dynamic Type 
 
 - **NFR-OFFL-01**: Local caching and offline sync MUST be supported from day one.
 - **NFR-SYNC-01**: Time-to-sync for updates SHOULD be below 1 second under normal conditions.
-- **NFR-PERF-01**: Average screen load SHOULD be under 2 seconds on supported devices.
+- **NFR-PERF-01**: Average screen load SHOULD be under 2 seconds on supported devices. File Quick Look preview MUST stream downloads to a temp file (not load entire payload into memory). Dashboard home-photo prefetch MUST be concurrency-limited.
 - **NFR-REL-01**: Target 99.9% crash-free sessions.
 - **NFR-SEC-01**: All personal/home/procedure data MUST be encrypted at rest and in transit.
 - **NFR-SCALE-01**: Architecture SHOULD support 100,000 concurrent users (no hard load test required for MVP).
@@ -240,7 +240,7 @@ All primary screens respect iOS accessibility settings, especially Dynamic Type 
 - **Invites (MVP)**: Owner shares `homeflow://invite?token=…` via system share sheet; invitee uses **Join with Invite** and pastes token while signed in with invited email (**AC-USER-07**). Automated email/SMS delivery, Universal Links, and deep-link auto-accept are **Out of Scope** for MVP.
 - **Push notifications (FR-NOTIF-01)**: Deferred in MVP — Settings UI placeholder only; no APNs wiring.
 - Document upload uses standard iOS file/photo pickers; files stored in Supabase Storage.
-- Home photos: client resizes before upload (AC-HOME-06); dashboard and iPhone home-detail hero cards use disk/memory cache (AC-HOME-07); photo upload requires home synced first (AC-HOME-08). Signed URLs may be cached for the session; full-resolution originals are not required for hero display in MVP.
+- Home photos: client resizes before upload (AC-HOME-06); dashboard and iPhone home-detail hero cards use disk/memory cache (AC-HOME-07); photo upload requires home synced first (AC-HOME-08). Signed URLs may be cached for the session; full-resolution originals are not required for hero display in MVP. Prefetch runs at most two concurrent downloads (NFR-PERF-01). File preview uses streaming download to temp before Quick Look (NFR-PERF-01, AC-HOME-13).
 - **Dashboard UX**: Home list uses full-bleed photo hero cards with name/address overlay (FR-HOME-01). iPhone cards ~152pt tall; **iPad dashboard cards ~528pt** with vertically centered photos and `locationLabel` (full address or city/state). iPhone home detail repeats full-bleed hero above horizontal section tabs. iPad home detail uses compact hero in leading column only; trailing area is three-panel (section list | detail) per section (**AC-HOME-09…10**, **FR-NAV-01**).
 - **Home sections (UI labels)**: **Procedures** | **Contacts** | **Files** | **People**. *Files* is the user-facing name for the document library (FR-HOME-03); data model entity remains *Document*.
 - **App branding**: Branded app icon and static launch screen (black background, green house + white wordmark; @1x/@2x/@3x `LaunchLogo` assets ~1.5× prior size, tighter icon-to-text spacing).

@@ -2,7 +2,7 @@ import Foundation
 import Supabase
 import UIKit
 
-// @covers AC-HOME-01, AC-HOME-06, AC-HOME-07, FR-HOME-01
+// @covers AC-HOME-01, AC-HOME-06, AC-HOME-07, FR-HOME-01, NFR-PERF-01
 
 @MainActor
 final class HomePhotoService {
@@ -14,6 +14,7 @@ final class HomePhotoService {
     private static let uploadMaxPixelSize: CGFloat = 1280
     private static let signedURLTTL: TimeInterval = 3600
     private static let signedURLRefreshLead: TimeInterval = 300
+    private static let prefetchConcurrency = 2
 
     init(client: SupabaseClient) {
         self.client = client
@@ -40,9 +41,31 @@ final class HomePhotoService {
     }
 
     func prefetch(storagePaths: [String]) {
-        for path in Set(storagePaths) {
-            guard cache.image(for: path) == nil else { continue }
-            Task { _ = try? await loadImage(storagePath: path) }
+        let paths = Array(Set(storagePaths)).filter { cache.image(for: $0) == nil }
+        guard !paths.isEmpty else { return }
+        Task { await prefetchThrottled(paths: paths) }
+    }
+
+    private func prefetchThrottled(paths: [String]) async {
+        let limit = Self.prefetchConcurrency
+        await withTaskGroup(of: Void.self) { group in
+            var index = 0
+            let total = paths.count
+
+            for _ in 0..<min(limit, total) {
+                let path = paths[index]
+                index += 1
+                group.addTask { _ = try? await self.loadImage(storagePath: path) }
+            }
+
+            while index < total {
+                await group.next()
+                let path = paths[index]
+                index += 1
+                group.addTask { _ = try? await self.loadImage(storagePath: path) }
+            }
+
+            while await group.next() != nil {}
         }
     }
 

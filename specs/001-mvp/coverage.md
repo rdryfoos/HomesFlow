@@ -34,7 +34,7 @@ CI fails if this file is stale. Source of truth: `HomesFlow.prd.md` registry × 
 | AC-HOME-10 | Implemented — test pending | T021a T021c | T024e | — |
 | AC-HOME-11 | Implemented — test pending | T021b T065 | T024f | — |
 | AC-HOME-12 | Implemented — test pending | T065a | T065d | — |
-| AC-HOME-13 | Implemented — test pending | T065b | T065d | — |
+| AC-HOME-13 | Implemented — test pending | T065b T065e | T065d | — |
 | AC-HOME-14 | Implemented — test pending | T065c | T065d | — |
 | AC-PROC-01 | Verified | T042 T046 T048 | — | `test_AC_PROC_01_complete_and_na_steps_mark_procedure_complete`<br>`test_AC_PROC_01_completed_step_counts_toward_progress`<br>`test_AC_PROC_01_final_step_completion_marks_procedure_complete` |
 | AC-PROC-02 | Verified | T010 T044 T049 | — | `test_AC_PROC_02_guest_cannot_update_guest_visible_step`<br>`test_AC_PROC_02_manager_cannot_update_owner_only_step` |
@@ -80,7 +80,7 @@ CI fails if this file is stale. Source of truth: `HomesFlow.prd.md` registry × 
 | ID | Status | Done tasks | Pending tasks |
 |----|--------|------------|---------------|
 | NFR-OFFL-01 | Implemented | T009 T011 | — |
-| NFR-PERF-01 | In progress | T016 T019a T047 | T072a |
+| NFR-PERF-01 | In progress | T016 T019a T047 T065e | T072a |
 | NFR-REL-01 | Planned | — | T072c |
 | NFR-SCALE-01 | Planned | — | T072b |
 | NFR-SEC-01 | Implemented | T003 T008 | — |

@@ -81,7 +81,7 @@ Partial deliverables documented in [dev-notes.md](./dev-notes.md). **Do not** en
 
 - [x] T018 [US-ADMIN-01] Home create/edit form + validation in `ios/HomeFlow/Features/HomeSetup/` — **Traces**: AC-HOME-01, AC-HOME-02, FR-HOME-01
 - [x] T019 [US-ADMIN-01] Home photo pick + upload to Supabase Storage — **Traces**: AC-HOME-01, AC-HOME-08, FR-HOME-01 — *sync-before-upload*
-- [x] T019a [P] [US-ADMIN-01] Home photo display optimization: resize on upload, disk/memory cache, signed-URL reuse, dashboard prefetch in `ios/HomeFlow/Core/Storage/` — **Traces**: AC-HOME-06, AC-HOME-07, FR-HOME-01, NFR-PERF-01
+- [x] T019a [P] [US-ADMIN-01] Home photo display optimization: resize on upload, disk/memory cache, signed-URL reuse, throttled dashboard prefetch (max 2 concurrent) in `ios/HomeFlow/Core/Storage/` — **Traces**: AC-HOME-06, AC-HOME-07, FR-HOME-01, NFR-PERF-01
 - [x] T020 [US-ADMIN-01] Home edit offline + sync conflict (timestamp wins + activity log) — **Traces**: AC-HOME-03, AC-SYNC-01, FR-LOG-01 — *HomeConflictResolver + merge; full offline E2E pending*
 - [x] T021 [P] [US-ADMIN-01] Home detail full-bleed photo hero header + tab bar shell (Procedures | Contacts | Documents | People) — **Traces**: FR-HOME-01 — *superseded by T021a–b*
 - [x] T021a [P] [US-ADMIN-01] iPad home detail: compact left-column hero + vertical icon tabs; trailing area three-panel (list | detail) for **all** sections — **Traces**: FR-NAV-01, AC-HOME-09, AC-HOME-10 — *ContactsView, FilesView, MembersView split shells*
@@ -229,6 +229,7 @@ Partial deliverables documented in [dev-notes.md](./dev-notes.md). **Do not** en
 - [x] T065a [FR-HOME-03] Standardize section add actions on the Contacts pattern (plus icon, primary action, accessible label) across Contacts, Files, People — **Traces**: AC-HOME-12
 - [x] T065b [FR-HOME-03] File detail: Preview via system Quick Look (zoom, PDF, media); summary + metadata and actions below — **Traces**: AC-HOME-13
 - [x] T065c [FR-HOME-03] File sources: camera capture, photo library, and file browser feeding one metadata flow — **Traces**: AC-HOME-14
+- [x] T065e [FR-HOME-03] Stream file download to temp for Quick Look preview (no full in-memory buffer) — **Traces**: AC-HOME-13, NFR-PERF-01
 - [ ] T065d [P] [FR-HOME-03] Tests for section add parity, file preview, and file sources — **Traces**: AC-HOME-12, AC-HOME-13, AC-HOME-14
 - [x] T066 [P] [FR-NOTIF-01] Settings screen: account, notification toggle disabled (“Coming soon”) in `ios/HomeFlow/Features/Settings/` — **Traces**: FR-NOTIF-01 — *gear icon on dashboard; email, sign out with confirmation, version*
 - [ ] T066a [P] Accessibility baseline: Dynamic Type layouts, VoiceOver labels on section tabs, Reduce Motion, 44pt targets across dashboard/home/procedures — **Traces**: NFR-A11Y-01, AC-A11Y-01, AC-A11Y-02, AC-A11Y-03

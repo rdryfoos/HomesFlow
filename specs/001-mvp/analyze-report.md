@@ -44,7 +44,7 @@ All FR-* IDs traced in at least one task (includes **FR-NAV-01**).
 |-----|--------|---------|
 | NFR-OFFL-01 | ✅ | T009, T011, T034–T040 |
 | NFR-SEC-01 | ✅ | T003, T008 |
-| NFR-PERF-01 | ✅ | T016, T047, T072a |
+| NFR-PERF-01 | ✅ | T016, T019a, T047, T065e, T072a |
 | NFR-SYNC-01 | ✅ | T072, T072a |
 | NFR-REL-01 | ✅ | T072c (monitoring path) |
 | NFR-SCALE-01 | ✅ | T072b (documented; no load test) |

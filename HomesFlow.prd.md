@@ -135,7 +135,7 @@ Imagine Diane, a homeowner who spends most of her time in Florida, but owns a ch
 
 * **NFR-REL-01** — 99.9% crash-free sessions
 * **NFR-SYNC-01** — Time-to-sync for updates below 1 second
-* **NFR-PERF-01** — Sub-2s average screen load times (across devices)
+* **NFR-PERF-01** — Sub-2s average screen load times (across devices); client streams large file previews to disk (avoids holding entire files in memory) and limits concurrent home-photo prefetch.
 * **NFR-A11Y-01** — UI MUST respect iOS accessibility settings (Dynamic Type, VoiceOver, Reduce Motion, contrast) and remain usable at all supported content size categories
 
 ### Tracking Plan
@@ -300,7 +300,7 @@ Imagine Diane, a homeowner who spends most of her time in Florida, but owns a ch
 | FR-LOG-01 | FR | Activity history log |
 | NFR-OFFL-01 | NFR | Offline sync core requirement |
 | NFR-SYNC-01 | NFR | Sync under 1 second |
-| NFR-PERF-01 | NFR | Screen load under 2 seconds |
+| NFR-PERF-01 | NFR | Screen load under 2s; streaming file preview; throttled prefetch |
 | NFR-REL-01 | NFR | 99.9% crash-free sessions |
 | NFR-SEC-01 | NFR | Encrypted storage |
 | NFR-SCALE-01 | NFR | 100k concurrent users |
