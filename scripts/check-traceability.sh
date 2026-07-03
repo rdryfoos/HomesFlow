@@ -21,7 +21,8 @@ cd "$(dirname "$0")/.."
 # Deterministic sort/grep across macOS and Linux (CI regenerates and diffs the matrix).
 export LC_ALL=C
 
-ID_RE='(FR|NFR|AC|US)-[A-Z]{2,6}-[0-9]{2,}[a-z]?'
+# Domain segment allows digits (e.g. A11Y) but must start with a letter.
+ID_RE='(FR|NFR|AC|US)-[A-Z][A-Z0-9]{1,5}-[0-9]{2,}[a-z]?'
 PRD=HomesFlow.prd.md
 SPEC=specs/001-mvp/spec.md
 TASKS=specs/001-mvp/tasks.md
@@ -51,7 +52,7 @@ grep -rEoh "@covers.*" "${SRC_DIRS[@]}" "${TEST_DIRS[@]}" --include='*.swift' 2>
 grep -rEoh 'func test_[A-Za-z0-9_]+' "${TEST_DIRS[@]}" --include='*.swift' 2>/dev/null \
   | sed 's/^func //' | sort -u > "$tmp/test_names.txt" || true
 
-grep -Eo 'AC_[A-Z]{2,6}_[0-9]{2,}[a-z]?' "$tmp/test_names.txt" \
+grep -Eo 'AC_[A-Z][A-Z0-9]{1,5}_[0-9]{2,}[a-z]?' "$tmp/test_names.txt" \
   | tr '_' '-' | sort -u > "$tmp/test_acs.txt" || true
 
 grep -E '^- \[ \]' "$TASKS" | grep -Eo "$ID_RE" | sort -u > "$tmp/pending.txt" || true

@@ -192,7 +192,11 @@ struct ProcedureDetailView: View {
                             } label: {
                                 Label("Add step", systemImage: "plus")
                                     .labelStyle(.iconOnly)
-                                    .frame(width: 28, height: 28)
+                                    .frame(
+                                        width: AccessibilityBaseline.minimumTapTarget,
+                                        height: AccessibilityBaseline.minimumTapTarget
+                                    )
+                                    .contentShape(Rectangle())
                             }
                             .accessibilityLabel("Add step")
                         }
@@ -290,11 +294,16 @@ private struct ProcedureStepRow: View {
             Spacer(minLength: 8)
 
             if canEdit {
+                // NFR-A11Y-01: 44pt minimum tap targets on row actions.
                 Button(action: onEditDetails) {
                     Image(systemName: "pencil")
                         .font(.body)
                         .foregroundStyle(.secondary)
-                        .frame(width: 28, height: 28)
+                        .frame(
+                            width: AccessibilityBaseline.minimumTapTarget,
+                            height: AccessibilityBaseline.minimumTapTarget
+                        )
+                        .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel("Edit details for \(step.title)")
@@ -315,7 +324,11 @@ private struct ProcedureStepRow: View {
                     Image(systemName: "ellipsis.circle")
                         .font(.body)
                         .foregroundStyle(.secondary)
-                        .frame(width: 28, height: 28)
+                        .frame(
+                            width: AccessibilityBaseline.minimumTapTarget,
+                            height: AccessibilityBaseline.minimumTapTarget
+                        )
+                        .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel("More status options for \(step.title)")
@@ -333,6 +346,8 @@ private struct ProcedureStepRow: View {
         }
         .accessibilityElement(children: .combine)
         .accessibilityAddTraits(canEdit ? .isButton : [])
+        // AC-A11Y-02-adjacent: VoiceOver announces the step's current status.
+        .accessibilityValue(AccessibilityBaseline.stepStatusValue(step.status))
         .accessibilityHint(canEdit ? "Double tap to mark complete or not started. N/A steps clear to not started." : "")
     }
 

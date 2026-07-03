@@ -124,6 +124,7 @@ struct DashboardView: View {
             } label: {
                 Label("Home actions", systemImage: "plus")
             }
+            .accessibilityLabel("Add home or join with invite")
         }
         ToolbarItem(placement: .topBarTrailing) {
             Button {

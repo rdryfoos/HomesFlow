@@ -232,7 +232,7 @@ Partial deliverables documented in [dev-notes.md](./dev-notes.md). **Do not** en
 - [x] T065e [FR-HOME-03] Stream file download to temp for Quick Look preview (no full in-memory buffer) — **Traces**: AC-HOME-13, NFR-PERF-01
 - [x] T065d [P] [FR-HOME-03] Tests for section add parity, file preview, and file sources — **Traces**: AC-HOME-12, AC-HOME-13, AC-HOME-14
 - [x] T066 [P] [FR-NOTIF-01] Settings screen: account, notification toggle disabled (“Coming soon”) in `ios/HomeFlow/Features/Settings/` — **Traces**: FR-NOTIF-01 — *gear icon on dashboard; email, sign out with confirmation, version*
-- [ ] T066a [P] Accessibility baseline: Dynamic Type layouts, VoiceOver labels on section tabs, Reduce Motion, 44pt targets across dashboard/home/procedures — **Traces**: NFR-A11Y-01, AC-A11Y-01, AC-A11Y-02, AC-A11Y-03
+- [x] T066a [P] Accessibility baseline: Dynamic Type layouts, VoiceOver labels on section tabs, Reduce Motion, 44pt targets across dashboard/home/procedures — **Traces**: NFR-A11Y-01, AC-A11Y-01, AC-A11Y-02, AC-A11Y-03 — *AccessibilityBaseline helper: scaled hero heights, 44pt step actions, step status VoiceOver value; manual VoiceOver pass remains T069a*
 - [x] T067 [P] Sign out clears session — **Traces**: FR-AUTH-01 — *moved to Settings screen (T066) with confirmation dialog*
 - [x] T068 Owner revoke member access → lose access on next sync — **Traces**: FR-USER-02 — *MemberRemovalPolicy + removeMember; swipe + detail actions with confirmation; MemberRemovalTests*
 

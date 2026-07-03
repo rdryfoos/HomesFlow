@@ -7,9 +7,9 @@ CI fails if this file is stale. Source of truth: `HomesFlow.prd.md` registry × 
 
 | Metric | Count |
 |--------|-------|
-| Registry IDs | 65 |
-| Acceptance criteria | 38 |
-| ACs verified (test passing in suite) | 27 |
+| Registry IDs | 69 |
+| Acceptance criteria | 41 |
+| ACs verified (test passing in suite) | 30 |
 | ACs implemented — test pending | 8 |
 | ACs planned (tracked, not implemented) | 1 |
 
@@ -17,6 +17,9 @@ CI fails if this file is stale. Source of truth: `HomesFlow.prd.md` registry × 
 
 | ID | Status | Done tasks | Pending tasks | Tests |
 |----|--------|------------|---------------|-------|
+| AC-A11Y-01 | Verified | T066a | T069a | `test_AC_A11Y_01_hero_height_grows_with_text_size`<br>`test_AC_A11Y_01_scale_factor_is_monotonic_across_sizes` |
+| AC-A11Y-02 | Verified | T021b T066a | T069a | `test_AC_A11Y_02_every_section_tab_has_meaningful_voiceover_text`<br>`test_AC_A11Y_02_step_status_values_cover_all_statuses` |
+| AC-A11Y-03 | Verified | T066a | T069a | `test_AC_A11Y_03_reduce_motion_disables_animation` |
 | AC-GUEST-01 | Verified | T057 T062 T065 | T064 | `test_AC_GUEST_01_guest_fields_only` |
 | AC-GUEST-02 | Verified | T005 T010 T058 T063a | — | `test_AC_GUEST_02_restricted_deep_link_denied` |
 | AC-GUEST-03 | Verified | T059 T063b | — | `test_AC_GUEST_03_offline_visibility_sync` |
@@ -79,6 +82,7 @@ CI fails if this file is stale. Source of truth: `HomesFlow.prd.md` registry × 
 
 | ID | Status | Done tasks | Pending tasks |
 |----|--------|------------|---------------|
+| NFR-A11Y-01 | Implemented | T066a | — |
 | NFR-OFFL-01 | Implemented | T009 T011 | — |
 | NFR-PERF-01 | In progress | T016 T019a T047 T065e | T072a |
 | NFR-REL-01 | Planned | — | T072c |

@@ -121,9 +121,9 @@ Section UI label **Files** implements document library (FR-HOME-03); code folder
 ## Accessibility
 
 - **NFR-A11Y-01**: Respect Dynamic Type, VoiceOver, Reduce Motion, contrast.
-- Test primary flows at largest Accessibility text sizes before release (**AC-A11Y-01**).
-- Section tabs need clear `accessibilityLabel` + selected state (**AC-A11Y-02**).
-- Minimum 44×44 pt tap targets on tabs and primary actions.
+- Shared rules live in `AccessibilityBaseline` (unit tested, T066a): hero card heights scale with Dynamic Type (**AC-A11Y-01**), section tab hints (**AC-A11Y-02**), `animation(reduceMotion:)` returns nil under Reduce Motion (**AC-A11Y-03**), 44pt `minimumTapTarget` applied to section tabs and procedure step actions.
+- Step rows announce status via `accessibilityValue` ("N/A" spoken as "Not applicable").
+- Manual pass at largest Accessibility text sizes + VoiceOver remains **T069a** (device).
 
 ---
 

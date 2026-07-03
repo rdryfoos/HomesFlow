@@ -1,6 +1,6 @@
 import SwiftUI
 
-// @covers FR-HOME-01, FR-NAV-01, FR-USER-02, AC-HOME-09, AC-HOME-10, AC-HOME-11, AC-A11Y-02, AC-GUEST-01, AC-USER-05
+// @covers FR-HOME-01, FR-NAV-01, FR-USER-02, AC-HOME-09, AC-HOME-10, AC-HOME-11, AC-A11Y-02, AC-A11Y-03, NFR-A11Y-01, AC-GUEST-01, AC-USER-05
 
 enum HomeTab: String, CaseIterable, Identifiable {
     case procedures = "Procedures"
@@ -221,12 +221,9 @@ private struct HomeSectionTabBar: View {
         let isSelected = selectedTab == tab
 
         return Button {
-            if reduceMotion {
+            // AC-A11Y-03: no selection animation when Reduce Motion is on.
+            withAnimation(AccessibilityBaseline.animation(reduceMotion: reduceMotion)) {
                 selectedTab = tab
-            } else {
-                withAnimation(.easeInOut(duration: 0.2)) {
-                    selectedTab = tab
-                }
             }
         } label: {
             HStack(spacing: 10) {
@@ -255,7 +252,7 @@ private struct HomeSectionTabBar: View {
             .padding(.horizontal, axis == .horizontal ? 12 : 14)
             .padding(.vertical, 10)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .frame(minHeight: 44)
+            .frame(minHeight: AccessibilityBaseline.minimumTapTarget)
             .background {
                 if isSelected {
                     RoundedRectangle(cornerRadius: 10, style: .continuous)
@@ -267,6 +264,6 @@ private struct HomeSectionTabBar: View {
         .buttonStyle(.plain)
         .accessibilityLabel(tab.rawValue)
         .accessibilityAddTraits(isSelected ? [.isButton, .isSelected] : .isButton)
-        .accessibilityHint("Shows \(tab.rawValue) for this home")
+        .accessibilityHint(AccessibilityBaseline.sectionTabHint(tab.rawValue))
     }
 }

@@ -1,12 +1,13 @@
 import SwiftUI
 import UIKit
 
-// @covers FR-HOME-01, AC-HOME-07
+// @covers FR-HOME-01, AC-HOME-07, AC-A11Y-01, NFR-A11Y-01
 
 struct HomeHeroCard: View {
     let home: HomeSummary
     var style: Style = .list
     var showsDisclosureIndicator: Bool = false
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     enum Style {
         case list
@@ -90,7 +91,9 @@ struct HomeHeroCard: View {
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .trailing)
             }
         }
-        .frame(height: style.height)
+        // AC-A11Y-01: hero height scales with Dynamic Type so the name and
+        // address overlay reflow without clipping at accessibility sizes.
+        .frame(height: AccessibilityBaseline.scaledHeroHeight(base: style.height, for: dynamicTypeSize))
         .frame(maxWidth: .infinity)
         .clipShape(RoundedRectangle(cornerRadius: style.cornerRadius))
         .accessibilityElement(children: .combine)
