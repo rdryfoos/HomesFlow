@@ -143,6 +143,18 @@ final class SyncConflictMatrixTests: XCTestCase {
         XCTAssertTrue(providerMessage.contains("Acme HVAC"))
     }
 
+    func test_AC_HOME_03_older_pending_edit_does_not_push_over_newer_server() {
+        let older = Date(timeIntervalSince1970: 100)
+        let newer = Date(timeIntervalSince1970: 200)
+        XCTAssertFalse(
+            OutboxSyncPolicy.shouldPushPendingUpdate(localUpdatedAt: older, serverUpdatedAt: newer),
+            "Queued edit must not push when the server copy is newer"
+        )
+        XCTAssertTrue(
+            OutboxSyncPolicy.shouldPushPendingUpdate(localUpdatedAt: newer, serverUpdatedAt: older)
+        )
+    }
+
     // MARK: - AC-SYNC-03 — permission revert matrix
 
     func test_AC_SYNC_03_permission_denied_revert_matrix() {

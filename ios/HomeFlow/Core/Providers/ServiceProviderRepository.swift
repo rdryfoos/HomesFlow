@@ -250,7 +250,7 @@ final class ServiceProviderRepository: ObservableObject {
                             OverwriteNotificationPolicy.message(for: .serviceProvider(name: row.companyName))
                         )
                     }
-                    applyServer(row, to: cached)
+                    ServiceProviderFieldMerge.apply(row, to: cached)
                 }
             } else {
                 modelContext.insert(CachedServiceProvider(
@@ -272,16 +272,7 @@ final class ServiceProviderRepository: ObservableObject {
     }
 
     private func applyServer(_ row: ServiceProviderDTO, to cached: CachedServiceProvider) {
-        cached.companyName = row.companyName
-        cached.serviceType = row.serviceType
-        cached.accountNumber = row.accountNumber
-        cached.phone = row.phone
-        cached.website = row.website
-        cached.hours = row.hours
-        cached.notes = row.notes
-        cached.providerVisibility = row.visibility
-        cached.serverUpdatedAt = row.updatedAt
-        cached.sync = .synced
+        ServiceProviderFieldMerge.apply(row, to: cached)
     }
 
     private func notifyEditRemoved(provider: CachedServiceProvider, homeId: UUID) {

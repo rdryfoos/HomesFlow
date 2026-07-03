@@ -9,9 +9,9 @@ CI fails if this file is stale. Source of truth: `HomesFlow.prd.md` registry × 
 |--------|-------|
 | Registry IDs | 79 |
 | Acceptance criteria | 50 |
-| ACs verified (test passing in suite) | 36 |
+| ACs verified (test passing in suite) | 37 |
 | ACs implemented — test pending | 4 |
-| ACs planned (tracked, not implemented) | 10 |
+| ACs planned (tracked, not implemented) | 9 |
 
 ## Acceptance criteria
 
@@ -27,7 +27,7 @@ CI fails if this file is stale. Source of truth: `HomesFlow.prd.md` registry × 
 | AC-GUEST-05 | Verified | T061 T063 | — | `test_AC_GUEST_05_guest_cannot_update_step` |
 | AC-HOME-01 | Verified | T018 T019 | T022 | `test_AC_HOME_01_valid_home_passes_validation` |
 | AC-HOME-02 | Verified | T018 T023 | — | `test_AC_HOME_02_empty_address_rejected`<br>`test_AC_HOME_02_empty_name_rejected` |
-| AC-HOME-03 | Verified | T020 T024 | — | `test_AC_HOME_03_local_newer_keeps_pending_local`<br>`test_AC_HOME_03_server_newer_overwrites_pending_local`<br>`test_AC_HOME_03_synced_home_applies_server` |
+| AC-HOME-03 | Verified | T020 T024 | — | `test_AC_HOME_03_local_newer_keeps_pending_local`<br>`test_AC_HOME_03_older_pending_edit_does_not_push_over_newer_server`<br>`test_AC_HOME_03_server_newer_overwrites_pending_local`<br>`test_AC_HOME_03_synced_home_applies_server` |
 | AC-HOME-04 | Verified | T051 T052 T055 | — | `test_AC_HOME_04_local_newer_edit_is_kept`<br>`test_AC_HOME_04_provider_edit_propagates` |
 | AC-HOME-05 | Verified | T037 T053 T056 | — | `test_AC_HOME_05_delete_wins_over_edit`<br>`test_AC_HOME_05_local_only_insert_survives_pull`<br>`test_AC_HOME_05_synced_row_removed_silently` |
 | AC-HOME-06 | Verified | T019a T024a | — | `test_AC_HOME_06_invalid_image_data_rejected`<br>`test_AC_HOME_06_small_image_not_upscaled`<br>`test_AC_HOME_06_upload_resizes_before_storage` |
@@ -57,7 +57,7 @@ CI fails if this file is stale. Source of truth: `HomesFlow.prd.md` registry × 
 | AC-SYNC-02 | Implemented — test pending | T011 T072 | T035 T039 | — |
 | AC-SYNC-03 | Verified | T011 T036 T040 T072 | — | `test_AC_SYNC_03_permission_denied_revert_matrix` |
 | AC-SYNC-04 | Verified | T015 T037 T040a | — | `test_AC_SYNC_04_pending_state_announced_to_voiceover`<br>`test_AC_SYNC_04_pending_sync_visible_on_dashboard` |
-| AC-SYNC-05 | Planned | — | T074 T074a | — |
+| AC-SYNC-05 | Verified | T074 T074a | — | `test_AC_SYNC_05_terminal_status_never_silently_regressed` |
 | AC-SYNC-06 | Planned | — | T075 T075a | — |
 | AC-SYNC-07 | Planned | — | T076 T076a | — |
 | AC-USER-01 | Verified | T025 T026 T030 | — | `test_AC_USER_01_invite_accepted_grants_role`<br>`test_AC_USER_01_invite_email_validation_and_token_shape` |

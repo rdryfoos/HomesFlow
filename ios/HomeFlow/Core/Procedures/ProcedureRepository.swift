@@ -3,7 +3,7 @@ import SwiftData
 import Supabase
 import UIKit
 
-// @covers AC-PROC-01, FR-PROC-01, FR-PROC-02, FR-PROC-03, AC-PROC-02, AC-PROC-03, AC-PROC-04, AC-PROC-05, AC-PROC-06, AC-PROC-07, AC-GUEST-03, AC-GUEST-05, FR-GUEST-01, AC-SYNC-01
+// @covers AC-PROC-01, FR-PROC-01, FR-PROC-02, FR-PROC-03, AC-PROC-02, AC-PROC-03, AC-PROC-04, AC-PROC-05, AC-PROC-06, AC-PROC-07, AC-GUEST-03, AC-GUEST-05, FR-GUEST-01, AC-SYNC-01, AC-SYNC-05
 
 @MainActor
 final class ProcedureRepository: ObservableObject {
@@ -793,9 +793,26 @@ final class ProcedureRepository: ObservableObject {
                 if pendingDeletes.contains(row.id) { continue }
                 if let cached = existing.first(where: { $0.id == row.id }) {
                     if cached.sync == .pending {
-                        if HomeConflictResolver.shouldApplyServer(
+                        if StepStatusConflictPolicy.wouldRegressTerminal(
+                            localStatus: cached.stepStatus,
+                            serverStatus: row.status
+                        ) {
+                            surfaceTerminalStepConflict(
+                                homeId: homeId,
+                                stepId: cached.id,
+                                procedureTitle: procedure?.title ?? "Procedure",
+                                stepTitle: cached.title,
+                                keptStatus: cached.stepStatus,
+                                rejectedStatus: row.status
+                            )
+                            applyServerStepFieldsExceptStatus(row, to: cached)
+                            continue
+                        }
+                        if StepStatusConflictPolicy.shouldApplyServerStep(
+                            localStatus: cached.stepStatus,
                             localPending: true,
                             localUpdatedAt: cached.localUpdatedAt,
+                            serverStatus: row.status,
                             serverUpdatedAt: row.updatedAt
                         ) {
                             resolveStepConflict(
@@ -805,6 +822,21 @@ final class ProcedureRepository: ObservableObject {
                                 local: cached
                             )
                         }
+                        continue
+                    }
+                    if StepStatusConflictPolicy.wouldRegressTerminal(
+                        localStatus: cached.stepStatus,
+                        serverStatus: row.status
+                    ) {
+                        surfaceTerminalStepConflict(
+                            homeId: homeId,
+                            stepId: cached.id,
+                            procedureTitle: procedure?.title ?? "Procedure",
+                            stepTitle: cached.title,
+                            keptStatus: cached.stepStatus,
+                            rejectedStatus: row.status
+                        )
+                        applyServerStepFieldsExceptStatus(row, to: cached)
                         continue
                     }
                     applyServerStep(row, to: cached)
@@ -835,6 +867,34 @@ final class ProcedureRepository: ObservableObject {
         }
     }
 
+    private func surfaceTerminalStepConflict(
+        homeId: UUID,
+        stepId: UUID,
+        procedureTitle: String,
+        stepTitle: String,
+        keptStatus: StepStatus,
+        rejectedStatus: StepStatus
+    ) {
+        if let userId = auth.session?.user.id {
+            activityLog.append(
+                homeId: homeId,
+                actorId: userId,
+                entityType: "procedure_step",
+                entityId: stepId,
+                action: "conflict_surfaced",
+                summary: StepStatusConflictPolicy.activitySummary(
+                    stepTitle: stepTitle,
+                    keptStatus: keptStatus,
+                    rejectedStatus: rejectedStatus
+                ) + " in \(procedureTitle)"
+            )
+        }
+
+        syncEngine.postNotification(
+            StepStatusConflictPolicy.surfaceMessage(stepTitle: stepTitle, keptStatus: keptStatus)
+        )
+    }
+
     private func resolveStepConflict(
         homeId: UUID,
         procedureTitle: String,
@@ -858,6 +918,14 @@ final class ProcedureRepository: ObservableObject {
         syncEngine.postNotification(
             OverwriteNotificationPolicy.message(for: .procedureStep(title: server.title))
         )
+    }
+
+    private func applyServerStepFieldsExceptStatus(_ row: ProcedureStepDTO, to cached: CachedProcedureStep) {
+        cached.sortOrder = row.sortOrder
+        cached.title = row.title
+        cached.notes = row.notes
+        cached.photoURL = row.photoURL
+        cached.serverUpdatedAt = row.updatedAt
     }
 
     private func applyServerStep(_ row: ProcedureStepDTO, to cached: CachedProcedureStep) {

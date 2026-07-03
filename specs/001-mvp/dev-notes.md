@@ -156,6 +156,10 @@ Test-debt sweep (2026-07-03): T030–T033c, T040a, T050d closed via extracted se
 
 T038 (2026-07-03): `OverwriteNotificationPolicy` centralizes AC-SYNC-01 loser-notification rules; `SyncEngine.mergeHome` now posts the banner when a pending home edit loses to a newer server timestamp (steps and providers already did). Test: `test_AC_SYNC_01_offline_overwrite_notifies_loser` in SyncConflictMatrixTests.
 
+T074 (2026-07-03): `StepStatusConflictPolicy` implements AC-SYNC-05 — Complete/N/A never silently regress on step merge; conflicting server status is surfaced via activity log + notification while non-status fields still merge. Test: `StepStatusConflictPolicyTests.test_AC_SYNC_05_terminal_status_never_silently_regressed`.
+
+**Sync pull-before-push (2026-07-03)**: `SyncEngine.run()` now pulls homes before pushing the outbox so timestamp-wins merge runs first (AC-SYNC-01 / AC-HOME-03). Fixes the two-device home-rename scenario where an older offline iPhone edit overwrote a newer iPad edit. Provider updates get a pre-push server fetch via `OutboxSyncPolicy` + `reconcileProviderBeforePush`. Re-test: iPhone offline rename → iPad online rename → iPhone reconnect should keep the iPad name and notify the iPhone.
+
 ---
 
 ## Traceability Gate 2

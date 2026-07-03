@@ -39,11 +39,12 @@ final class SyncEngine: ObservableObject {
         try? modelContext.save()
     }
 
-    /// Runs push then pull. Returns a user-facing message when sync failed.
+    /// Runs pull then push so timestamp-wins merge happens before queued writes
+    /// (AC-SYNC-01 / AC-HOME-03). Returns a user-facing message when sync failed.
     @discardableResult
     func run() async -> String? {
-        await pushOutbox()
         await pullChanges()
+        await pushOutbox()
         return lastNotification?.message
     }
 
@@ -93,6 +94,7 @@ final class SyncEngine: ObservableObject {
                 case .serviceProvider:
                     switch entry.op {
                     case .insert, .update:
+                        if try await reconcileProviderBeforePush(entry) { continue }
                         try await pushServiceProvider(entry)
                     case .delete:
                         try await client
@@ -133,7 +135,19 @@ final class SyncEngine: ObservableObject {
             let home = try? modelContext.fetch(FetchDescriptor<CachedHome>(
                 predicate: #Predicate<CachedHome> { $0.id == targetId }
             )).first
-        else { return }
+        else {
+            modelContext.delete(entry)
+            return
+        }
+
+        if home.sync != .pending {
+            modelContext.delete(entry)
+            return
+        }
+
+        if try await reconcileHomeBeforePush(entry, home: home) {
+            return
+        }
 
         struct HomeRow: Encodable {
             let id: UUID
@@ -427,6 +441,7 @@ final class SyncEngine: ObservableObject {
                         OverwriteNotificationPolicy.message(for: .home(name: dto.name))
                     )
                     applyServerHome(dto, to: existing)
+                    removeOutboxEntries(for: dto.id)
                 }
                 return
             }
@@ -504,5 +519,76 @@ final class SyncEngine: ObservableObject {
         lastNotification = SyncNotification(
             message: message ?? "You no longer have permission for that change. It was reverted."
         )
+    }
+
+    /// Returns true when the server row was applied and the outbox entry cleared.
+    private func reconcileHomeBeforePush(_ entry: MutationOutboxEntry, home: CachedHome) async throws -> Bool {
+        guard entry.op == .update else { return false }
+
+        let dto: HomeDTO = try await client
+            .from("homes")
+            .select()
+            .eq("id", value: entry.entityId.uuidString)
+            .single()
+            .execute()
+            .value
+
+        guard OutboxSyncPolicy.shouldPushPendingUpdate(
+            localUpdatedAt: home.localUpdatedAt,
+            serverUpdatedAt: dto.updatedAt
+        ) == false else {
+            return false
+        }
+
+        mergeHome(dto)
+        removeOutboxEntries(for: entry.entityId)
+        try? modelContext.save()
+        return true
+    }
+
+    /// Returns true when the server row was applied and the outbox entry cleared.
+    private func reconcileProviderBeforePush(_ entry: MutationOutboxEntry) async throws -> Bool {
+        guard entry.op == .update else { return false }
+
+        let targetId = entry.entityId
+        guard
+            let provider = try? modelContext.fetch(FetchDescriptor<CachedServiceProvider>(
+                predicate: #Predicate<CachedServiceProvider> { $0.id == targetId }
+            )).first,
+            provider.sync == .pending
+        else { return false }
+
+        let row: ServiceProviderDTO = try await client
+            .from("service_providers")
+            .select()
+            .eq("id", value: entry.entityId.uuidString)
+            .single()
+            .execute()
+            .value
+
+        guard OutboxSyncPolicy.shouldPushPendingUpdate(
+            localUpdatedAt: provider.localUpdatedAt,
+            serverUpdatedAt: row.updatedAt
+        ) == false else {
+            return false
+        }
+
+        ServiceProviderFieldMerge.apply(row, to: provider)
+        removeOutboxEntries(for: provider.id)
+        postNotification(
+            OverwriteNotificationPolicy.message(for: .serviceProvider(name: row.companyName))
+        )
+        try? modelContext.save()
+        return true
+    }
+
+    private func removeOutboxEntries(for entityId: UUID) {
+        let targetId = entityId
+        let entries = (try? modelContext.fetch(FetchDescriptor<MutationOutboxEntry>(
+            predicate: #Predicate<MutationOutboxEntry> { $0.entityId == targetId }
+        ))) ?? []
+        for entry in entries {
+            modelContext.delete(entry)
+        }
     }
 }

@@ -17,7 +17,7 @@
 | 7 Procedures | **Complete** | — |
 | 8–10 P2/P3 features | **Partial** | Phase 9 guest views done; Files, Settings next |
 | 11 Hardening | Not started | Re-run analyze after P1 checkpoint |
-| 12 Conflict model evolution | Not started | AC-SYNC-05…07 (added 2026-07-03 from story map) |
+| 12 Conflict model evolution | **Partial** | T075–T076a (AC-SYNC-06…07) |
 | 13 Log Book | Not started | FR-LOG-02, AC-LOG-01…06 (added 2026-07-03 from story map) |
 
 Partial deliverables documented in [dev-notes.md](./dev-notes.md). **Do not** encode implementation details in [spec.md](./spec.md).
@@ -261,8 +261,8 @@ Partial deliverables documented in [dev-notes.md](./dev-notes.md). **Do not** en
 
 **Goal**: Data-type-aware conflict handling replacing blanket timestamp-wins — **NFR-OFFL-01** (see spec User Story 6 evolution note)
 
-- [ ] T074 [NFR-OFFL-01] Protect terminal step statuses: sync never silently regresses Complete/N/A; surface conflicting update — **Traces**: AC-SYNC-05
-- [ ] T074a [P] [NFR-OFFL-01] Unit test `test_AC_SYNC_05_terminal_status_never_silently_regressed` — **Traces**: AC-SYNC-05
+- [x] T074 [NFR-OFFL-01] Protect terminal step statuses: sync never silently regresses Complete/N/A; surface conflicting update — **Traces**: AC-SYNC-05 — *StepStatusConflictPolicy + ProcedureRepository merge; activity log + in-app notification*
+- [x] T074a [P] [NFR-OFFL-01] Unit test `test_AC_SYNC_05_terminal_status_never_silently_regressed` — **Traces**: AC-SYNC-05 — *StepStatusConflictPolicyTests*
 - [ ] T075 [NFR-OFFL-01] Auto-resolve status conflicts (timestamp, subject to AC-SYNC-05) + notify losing user with activity-log reference and re-apply guidance — no resolution UI (2026-07-03 decision) — **Traces**: AC-SYNC-06
 - [ ] T075a [P] [NFR-OFFL-01] Unit test `test_AC_SYNC_06_losing_user_notified_with_reapply_guidance` — **Traces**: AC-SYNC-06
 - [ ] T076 [NFR-OFFL-01] Connectivity-gate structural actions (step/procedure/provider CRUD, membership) when offline — **Traces**: AC-SYNC-07
