@@ -171,10 +171,20 @@ Pre-release sign-off: [`release-checklist.md`](./release-checklist.md) per `trac
 
 ## Regenerating Xcode project
 
-After editing `ios/project.yml`:
+`ios/HomeFlow.xcodeproj/` is **generated and untracked** (since `54dca64`): Xcode kept
+rewriting the personal signing team into the XcodeGen output, causing permanent diff
+noise. `ios/project.yml` is the source of truth.
+
+- **Fresh clone / new machine**: run `xcodegen generate` before opening the project.
+- After editing `ios/project.yml`:
 
 ```bash
 cd ~/Developer/HomeFlow/ios && xcodegen generate
 ```
 
-Re-select **Team** in Signing if xcodegen resets `DEVELOPMENT_TEAM`.
+- Re-select **Team** in Signing if xcodegen resets `DEVELOPMENT_TEAM` (safe now — stays local).
+- **Dependency pinning trade-off**: `Package.resolved` lives inside the untracked
+  `.xcodeproj`, so exact SPM versions are no longer pinned in git. Builds resolve
+  Supabase from the `from: 2.5.1` constraint in `project.yml` and may pick up newer
+  minors. Pin an exact version in `project.yml` if reproducible builds start to matter
+  (e.g. before TestFlight/App Store submissions).
