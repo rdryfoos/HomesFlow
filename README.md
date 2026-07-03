@@ -97,6 +97,3 @@ UI reference (non-authoritative): https://haze-rabbit-58180688.figma.site
 - Do **not** maintain a separate root `spec.md` / `plan.md`: Spec Kit uses `specs/<feature>/`.
 - Do **not** rewrite the PRD into the feature spec by hand; let `/speckit.specify` derive the feature slice.
 
----
-
-*Personal portfolio project. All rights reserved.*
