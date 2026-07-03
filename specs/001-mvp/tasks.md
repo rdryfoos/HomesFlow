@@ -17,7 +17,7 @@
 | 7 Procedures | **Complete** | — |
 | 8–10 P2/P3 features | **Partial** | Phase 9 guest views done; Files, Settings next |
 | 11 Hardening | Not started | Re-run analyze after P1 checkpoint |
-| 12 Conflict model evolution | **Partial** | T076–T076a (AC-SYNC-07) |
+| 12 Conflict model evolution | **Complete** | — |
 | 13 Log Book | Not started | FR-LOG-02, AC-LOG-01…06 (added 2026-07-03 from story map) |
 
 Partial deliverables documented in [dev-notes.md](./dev-notes.md). **Do not** encode implementation details in [spec.md](./spec.md).
@@ -265,8 +265,8 @@ Partial deliverables documented in [dev-notes.md](./dev-notes.md). **Do not** en
 - [x] T074a [P] [NFR-OFFL-01] Unit test `test_AC_SYNC_05_terminal_status_never_silently_regressed` — **Traces**: AC-SYNC-05 — *StepStatusConflictPolicyTests*
 - [x] T075 [NFR-OFFL-01] Auto-resolve status conflicts (timestamp, subject to AC-SYNC-05) + notify losing user with activity-log reference and re-apply guidance — no resolution UI (2026-07-03 decision) — **Traces**: AC-SYNC-06 — *StepStatusConflictPolicy auto-resolve messages; resolveStepConflict + procedure merge*
 - [x] T075a [P] [NFR-OFFL-01] Unit test `test_AC_SYNC_06_losing_user_notified_with_reapply_guidance` — **Traces**: AC-SYNC-06 — *StepStatusConflictPolicyTests*
-- [ ] T076 [NFR-OFFL-01] Connectivity-gate structural actions (step/procedure/provider CRUD, membership) when offline — **Traces**: AC-SYNC-07
-- [ ] T076a [P] [NFR-OFFL-01] Unit test `test_AC_SYNC_07_structural_actions_blocked_offline` — **Traces**: AC-SYNC-07
+- [x] T076 [NFR-OFFL-01] Connectivity-gate structural actions (step/procedure/provider CRUD, membership) when offline — **Traces**: AC-SYNC-07
+- [x] T076a [P] [NFR-OFFL-01] Unit test `test_AC_SYNC_07_structural_actions_blocked_offline` — **Traces**: AC-SYNC-07
 
 ---
 

@@ -1,12 +1,13 @@
 import SwiftUI
 import PhotosUI
 
-// @covers FR-PROC-02, FR-PROC-03, FR-LOG-01, AC-PROC-01, AC-PROC-02, AC-PROC-04, AC-PROC-05, AC-PROC-07, AC-PROC-08, AC-GUEST-04
+// @covers FR-PROC-02, FR-PROC-03, FR-LOG-01, AC-PROC-01, AC-PROC-02, AC-PROC-04, AC-PROC-05, AC-PROC-07, AC-PROC-08, AC-GUEST-04, AC-SYNC-07
 
 struct ProcedureDetailView: View {
     let home: HomeSummary
     let procedureId: UUID
     @Environment(\.appEnvironment) private var appEnvironment
+    @EnvironmentObject private var network: NetworkMonitor
     @StateObject private var viewModel = ProcedureDetailViewModel()
     @State private var editingStep: ProcedureStepSummary?
     @State private var isAddingStep = false
@@ -16,6 +17,11 @@ struct ProcedureDetailView: View {
 
     private var userRole: HomeRole {
         home.currentUserRole ?? .guest
+    }
+
+    private var canManageStructureOnline: Bool {
+        viewModel.canManageStructure
+            && StructuralActionPolicy.canPerformStructuralActions(isConnected: network.isConnected)
     }
 
     var body: some View {
@@ -47,7 +53,7 @@ struct ProcedureDetailView: View {
                 homeId: home.id,
                 procedureId: procedureId,
                 step: step,
-                canEditTitle: viewModel.canManageStructure,
+                canEditTitle: canManageStructureOnline,
                 onSave: { title, notes, photoChange in
                     Task {
                         await viewModel.updateStepDetails(
@@ -154,7 +160,7 @@ struct ProcedureDetailView: View {
                             }
                         )
                         .contextMenu {
-                            if viewModel.canManageStructure {
+                            if canManageStructureOnline {
                                 Button {
                                     editingStep = step
                                 } label: {
@@ -198,11 +204,14 @@ struct ProcedureDetailView: View {
                                     )
                                     .contentShape(Rectangle())
                             }
+                            .disabled(!network.isConnected)
                             .accessibilityLabel("Add step")
                         }
                     }
                 } footer: {
-                    if viewModel.canManageStructure {
+                    if viewModel.canManageStructure && !network.isConnected {
+                        Text(StructuralActionPolicy.offlineMessage(for: .steps))
+                    } else if viewModel.canManageStructure {
                         Text("Touch and hold a step to edit, reorder, or delete it.")
                     } else if !viewModel.canEdit {
                         Text("Step statuses are read-only for guest accounts.")
@@ -439,6 +448,7 @@ private struct StepEditorSheet: View {
 
     @Environment(\.dismiss) private var dismiss
     @Environment(\.appEnvironment) private var appEnvironment
+    @EnvironmentObject private var network: NetworkMonitor
     @State private var title: String
     @State private var notes: String
     @State private var selectedPhoto: PhotosPickerItem?
@@ -465,8 +475,15 @@ private struct StepEditorSheet: View {
         NavigationStack {
             Form {
                 if canEditTitle {
-                    Section("Title") {
+                    Section {
                         TextField("Step title", text: $title)
+                            .disabled(!network.isConnected)
+                    } header: {
+                        Text("Title")
+                    } footer: {
+                        if !network.isConnected {
+                            Text(StructuralActionPolicy.offlineMessage(for: .steps))
+                        }
                     }
                 }
 
@@ -487,6 +504,7 @@ private struct StepEditorSheet: View {
                     PhotosPicker(selection: $selectedPhoto, matching: .images) {
                         Text(hasPhoto ? "Change photo" : "Add photo")
                     }
+                    .disabled(!network.isConnected)
                     .onChange(of: selectedPhoto) { _, item in
                         Task { await loadPhoto(from: item) }
                     }
@@ -497,11 +515,16 @@ private struct StepEditorSheet: View {
                             selectedPhotoData = nil
                             removeExistingPhoto = true
                         }
+                        .disabled(!network.isConnected)
                     }
                 } header: {
                     Text("Photo")
                 } footer: {
-                    Text("Notes and photos are visible to everyone who can view this procedure.")
+                    if !network.isConnected {
+                        Text(ProcedureError.photoRequiresOnline.localizedDescription)
+                    } else {
+                        Text("Notes and photos are visible to everyone who can view this procedure.")
+                    }
                 }
             }
             .navigationTitle("Edit Step")

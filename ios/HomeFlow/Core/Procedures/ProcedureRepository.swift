@@ -3,7 +3,7 @@ import SwiftData
 import Supabase
 import UIKit
 
-// @covers AC-PROC-01, FR-PROC-01, FR-PROC-02, FR-PROC-03, AC-PROC-02, AC-PROC-03, AC-PROC-04, AC-PROC-05, AC-PROC-06, AC-PROC-07, AC-GUEST-03, AC-GUEST-05, FR-GUEST-01, AC-SYNC-01, AC-SYNC-05, AC-SYNC-06
+// @covers AC-PROC-01, FR-PROC-01, FR-PROC-02, FR-PROC-03, AC-PROC-02, AC-PROC-03, AC-PROC-04, AC-PROC-05, AC-PROC-06, AC-PROC-07, AC-GUEST-03, AC-GUEST-05, FR-GUEST-01, AC-SYNC-01, AC-SYNC-05, AC-SYNC-06, AC-SYNC-07
 
 @MainActor
 final class ProcedureRepository: ObservableObject {
@@ -294,6 +294,10 @@ final class ProcedureRepository: ObservableObject {
         procedureId: UUID,
         userRole: HomeRole
     ) throws -> (userId: UUID, detail: ProcedureDetail) {
+        try StructuralActionPolicy.assertConnectivity(
+            isConnected: NetworkMonitor.shared.isConnected,
+            context: .steps
+        )
         guard let userId = auth.session?.user.id else { throw AuthError.notSignedIn }
         guard let detail = cachedDetail(procedureId: procedureId, userRole: userRole) else {
             throw ProcedureError.notFound
@@ -408,6 +412,10 @@ final class ProcedureRepository: ObservableObject {
         guard titleChanging || notesChanging || photoChanging else { return }
 
         if titleChanging {
+            try StructuralActionPolicy.assertConnectivity(
+                isConnected: NetworkMonitor.shared.isConnected,
+                context: .steps
+            )
             guard permissions.can(
                 .update,
                 entity: .procedureStep(procedureVisibility: detail.visibility),

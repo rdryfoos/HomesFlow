@@ -2,7 +2,7 @@ import Foundation
 import SwiftData
 import Supabase
 
-// @covers FR-HOME-02, AC-HOME-04, AC-GUEST-01, FR-GUEST-01, AC-HOME-05, AC-SYNC-01
+// @covers FR-HOME-02, AC-HOME-04, AC-GUEST-01, FR-GUEST-01, AC-HOME-05, AC-SYNC-01, AC-SYNC-07
 
 @MainActor
 final class ServiceProviderRepository: ObservableObject {
@@ -57,6 +57,10 @@ final class ServiceProviderRepository: ObservableObject {
         userRole: HomeRole
     ) async throws {
         guard let userId = auth.session?.user.id else { throw AuthError.notSignedIn }
+        try StructuralActionPolicy.assertConnectivity(
+            isConnected: NetworkMonitor.shared.isConnected,
+            context: .contacts
+        )
         guard draft.isValid else { return }
         guard permissions.can(
             .create,
@@ -109,6 +113,10 @@ final class ServiceProviderRepository: ObservableObject {
         userRole: HomeRole
     ) async throws {
         guard let userId = auth.session?.user.id else { throw AuthError.notSignedIn }
+        try StructuralActionPolicy.assertConnectivity(
+            isConnected: NetworkMonitor.shared.isConnected,
+            context: .contacts
+        )
         guard draft.isValid else { return }
         guard let cached = cachedProvider(providerId) else { throw ProviderError.notFound }
         guard permissions.can(
@@ -158,6 +166,10 @@ final class ServiceProviderRepository: ObservableObject {
         userRole: HomeRole
     ) async throws {
         guard let userId = auth.session?.user.id else { throw AuthError.notSignedIn }
+        try StructuralActionPolicy.assertConnectivity(
+            isConnected: NetworkMonitor.shared.isConnected,
+            context: .contacts
+        )
         guard let cached = cachedProvider(providerId) else { throw ProviderError.notFound }
         guard permissions.can(
             .delete,

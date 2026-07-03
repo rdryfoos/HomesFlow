@@ -41,6 +41,7 @@ struct RootView: View {
                     DashboardView()
                         .environment(\.appEnvironment, appEnvironment)
                         .environmentObject(appEnvironment.syncEngine)
+                        .environmentObject(network)
                 } else {
                     ProgressView()
                 }

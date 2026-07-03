@@ -1,16 +1,22 @@
 import SwiftUI
 
-// @covers FR-USER-02, AC-USER-01, AC-USER-02, AC-USER-04…06, FR-NAV-01, AC-HOME-12
+// @covers FR-USER-02, AC-USER-01, AC-USER-02, AC-USER-04…06, FR-NAV-01, AC-HOME-12, AC-SYNC-07
 
 struct MembersView: View {
     let home: HomeSummary
     @Environment(\.appEnvironment) private var appEnvironment
     @Environment(\.horizontalSizeClass) private var sizeClass
+    @EnvironmentObject private var network: NetworkMonitor
 
     @StateObject private var viewModel = MembersViewModel()
     @State private var showInviteSheet = false
     @State private var selectedMemberId: UUID?
     @State private var memberPendingRemoval: MemberSummary?
+
+    private var canManageMembersOnline: Bool {
+        viewModel.snapshot.currentUserRole == .owner
+            && StructuralActionPolicy.canPerformStructuralActions(isConnected: network.isConnected)
+    }
 
     var body: some View {
         Group {
@@ -41,8 +47,20 @@ struct MembersView: View {
                     } label: {
                         Label(SectionAddAction.people.label, systemImage: SectionAddAction.people.systemImage)
                     }
+                    .disabled(!network.isConnected)
                     .accessibilityLabel(SectionAddAction.people.accessibilityLabel)
                 }
+            }
+        }
+        .safeAreaInset(edge: .bottom) {
+            if viewModel.snapshot.currentUserRole == .owner && !network.isConnected {
+                Text(StructuralActionPolicy.offlineMessage(for: .members))
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+                    .frame(maxWidth: .infinity)
+                    .padding(.horizontal)
+                    .padding(.vertical, 8)
+                    .background(.bar)
             }
         }
         .sheet(isPresented: $showInviteSheet) {
@@ -95,8 +113,8 @@ struct MembersView: View {
         if let member = selectedMember {
             MemberDetailPanel(
                 member: member,
-                canManage: viewModel.snapshot.currentUserRole == .owner,
-                canRemove: MemberRemovalPolicy.canRemove(
+                canManage: canManageMembersOnline,
+                canRemove: canManageMembersOnline && MemberRemovalPolicy.canRemove(
                     currentUserRole: viewModel.snapshot.currentUserRole,
                     memberRole: member.role
                 ),
@@ -139,7 +157,7 @@ struct MembersView: View {
             }
         } else {
             List {
-                membersSections(showRolePicker: viewModel.snapshot.currentUserRole == .owner)
+                membersSections(showRolePicker: canManageMembersOnline)
             }
         }
     }
@@ -173,7 +191,7 @@ struct MembersView: View {
                     )
                     .tag(member.id)
                     .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-                        if MemberRemovalPolicy.canRemove(
+                        if canManageMembersOnline && MemberRemovalPolicy.canRemove(
                             currentUserRole: viewModel.snapshot.currentUserRole,
                             memberRole: member.role
                         ) {
@@ -192,7 +210,7 @@ struct MembersView: View {
                 ForEach(viewModel.snapshot.pendingInvites) { invite in
                     InviteRow(
                         invite: invite,
-                        canRevoke: viewModel.snapshot.currentUserRole == .owner,
+                        canRevoke: canManageMembersOnline,
                         onRevoke: {
                             Task {
                                 await viewModel.revoke(

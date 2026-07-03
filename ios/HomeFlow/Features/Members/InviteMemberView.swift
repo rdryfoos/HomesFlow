@@ -1,6 +1,6 @@
 import SwiftUI
 
-// @covers AC-USER-01, AC-USER-07, FR-GUEST-02
+// @covers AC-USER-01, AC-USER-07, FR-GUEST-02, AC-SYNC-07
 
 struct InviteMemberView: View {
     let home: HomeSummary
@@ -8,6 +8,7 @@ struct InviteMemberView: View {
 
     @Environment(\.dismiss) private var dismiss
     @Environment(\.appEnvironment) private var appEnvironment
+    @EnvironmentObject private var network: NetworkMonitor
 
     @State private var email = ""
     @State private var role: HomeRole = .manager
@@ -45,6 +46,14 @@ struct InviteMemberView: View {
                         Text(errorMessage).foregroundStyle(.red).font(.caption)
                     }
                 }
+
+                if !network.isConnected {
+                    Section {
+                        Text(StructuralActionPolicy.offlineMessage(for: .members))
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                }
             }
             .navigationTitle("Invite Member")
             .navigationBarTitleDisplayMode(.inline)
@@ -56,7 +65,7 @@ struct InviteMemberView: View {
                     Button("Send") {
                         Task { await sendInvite() }
                     }
-                    .disabled(isSaving || email.isEmpty || createdInvite != nil)
+                    .disabled(isSaving || email.isEmpty || createdInvite != nil || !network.isConnected)
                 }
             }
         }

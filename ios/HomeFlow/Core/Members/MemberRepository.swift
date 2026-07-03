@@ -2,7 +2,7 @@ import Foundation
 import SwiftData
 import Supabase
 
-// @covers FR-USER-02, AC-USER-01, AC-USER-02, AC-USER-04…06
+// @covers FR-USER-02, AC-USER-01, AC-USER-02, AC-USER-04…06, AC-SYNC-07
 
 @MainActor
 final class MemberRepository: ObservableObject {
@@ -29,6 +29,10 @@ final class MemberRepository: ObservableObject {
 
     func createInvite(homeId: UUID, email: String, role: HomeRole) async throws -> InviteSummary {
         guard let userId = auth.session?.user.id else { throw AuthError.notSignedIn }
+        try StructuralActionPolicy.assertConnectivity(
+            isConnected: NetworkMonitor.shared.isConnected,
+            context: .members
+        )
 
         let snapshot = try await fetchHomeMembers(homeId: homeId)
         try InvitePolicy.validate(email: email, role: role, currentUserRole: snapshot.currentUserRole)
@@ -81,6 +85,10 @@ final class MemberRepository: ObservableObject {
 
     func revokeInvite(homeId: UUID, inviteId: UUID) async throws {
         guard let userId = auth.session?.user.id else { throw AuthError.notSignedIn }
+        try StructuralActionPolicy.assertConnectivity(
+            isConnected: NetworkMonitor.shared.isConnected,
+            context: .members
+        )
         let snapshot = try await fetchHomeMembers(homeId: homeId)
         guard snapshot.currentUserRole == .owner else { throw MemberError.notAuthorized }
 
@@ -108,6 +116,10 @@ final class MemberRepository: ObservableObject {
 
     func updateMemberRole(homeId: UUID, membershipId: UUID, role: HomeRole) async throws {
         guard let userId = auth.session?.user.id else { throw AuthError.notSignedIn }
+        try StructuralActionPolicy.assertConnectivity(
+            isConnected: NetworkMonitor.shared.isConnected,
+            context: .members
+        )
         guard role != .owner else { throw MemberError.cannotAssignOwner }
 
         let snapshot = try await fetchHomeMembers(homeId: homeId)
@@ -143,7 +155,10 @@ final class MemberRepository: ObservableObject {
     /// (`is_home_member` fails closed once the membership row is gone).
     func removeMember(homeId: UUID, membershipId: UUID) async throws {
         guard let userId = auth.session?.user.id else { throw AuthError.notSignedIn }
-        guard NetworkMonitor.shared.isConnected else { throw MemberError.offlineRemoval }
+        try StructuralActionPolicy.assertConnectivity(
+            isConnected: NetworkMonitor.shared.isConnected,
+            context: .members
+        )
 
         let snapshot = try await fetchHomeMembers(homeId: homeId)
         guard let member = snapshot.members.first(where: { $0.id == membershipId }) else {
@@ -318,7 +333,6 @@ enum MemberError: LocalizedError {
     case invalidInviteRole
     case cannotAssignOwner
     case cannotRemoveOwner
-    case offlineRemoval
     case notFound
 
     var errorDescription: String? {
@@ -328,7 +342,6 @@ enum MemberError: LocalizedError {
         case .invalidInviteRole: "Invites can only assign Manager or Guest roles."
         case .cannotAssignOwner: "Owner role is assigned to the home creator only."
         case .cannotRemoveOwner: "The home owner can't be removed."
-        case .offlineRemoval: "Connect to the internet to remove a member."
         case .notFound: "Member not found."
         }
     }

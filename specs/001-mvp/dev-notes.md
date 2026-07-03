@@ -86,7 +86,7 @@ Safari visiting `https://<ref>.supabase.co` and seeing `{"error":"requested path
 - **AC-HOME-07**: hero cards load from disk/memory cache keyed by storage path; signed URLs cached ~55 min; dashboard prefetches after home list load (max **2 concurrent** downloads per NFR-PERF-01)
 - **AC-HOME-13 / NFR-PERF-01**: file Quick Look preview streams download to temp via `URLSession.download` — avoids holding entire files in RAM
 - **AC-HOME-08**: sync-before-photo gating extracted to `HomePhotoSyncGate` (unit tested); iPad layout ACs (AC-HOME-09…11, T024d–f) rely on **manual iPad pass** until snapshot/XCUITest infra lands
-- **FR-USER-02 (T068)**: owner removes member via swipe or detail action → confirmation → `memberships` row deleted (RLS owner-only); revoked user loses access on next sync since `is_home_member` fails closed. Removal requires connectivity (`MemberError.offlineRemoval`); gating in `MemberRemovalPolicy`
+- **FR-USER-02 (T068)**: owner removes member via swipe or detail action → confirmation → `memberships` row deleted (RLS owner-only); revoked user loses access on next sync since `is_home_member` fails closed. Removal requires connectivity (`StructuralActionPolicy`, context `.members`); gating in `MemberRemovalPolicy` + UI disables invite/role/remove controls when offline (T076)
 - **AC-SYNC-04**: pending-sync cloud icons on home heroes, sync issue banners, pull-to-refresh on dashboard
 - `HomeConflictResolver` + activity log on home edit conflicts (timestamp wins)
 - **Conflict model evolution (2026-07-03, decided on story map; refined same day)**: timestamp-wins (AC-SYNC-01) stays shipped/verified for v1, but the model becomes **data-type-aware** — never silently regress Complete/N/A step statuses (AC-SYNC-05, T074), auto-resolve other status conflicts and notify the loser with re-apply guidance — **no human resolution UI** (AC-SYNC-06, T075), connectivity-gate structural actions (AC-SYNC-07, T076). Field-level merge (AC-SYNC-02, T035/T039) **deferred post-MVP** with version vectors. Constitution Principle III amended to 1.2.0 to match. Current code still silently applies server-newer — Phase 12 changes that. Full per-type rules: data-model.md "Conflict semantics" table.
@@ -143,7 +143,7 @@ Section UI label **Files** implements document library (FR-HOME-03); code folder
 *Updated 2026-07-03. Suite: 77 unit tests; coverage 30/50 ACs verified (Gate 2 green; registry grew to 50 ACs with Log Book + conflict model evolution).*
 
 - **Apple Sign-In wiring** — paid Developer Program now active; restore entitlement, Services ID, enable Supabase Apple provider (App Store requirement — research D12)
-- **Phase 12 (T074–T076a)** — data-type-aware conflict model: protect terminal step statuses, human conflict resolution, connectivity-gated structural actions (AC-SYNC-05…07)
+- **Phase 12 (T074–T076a)** — data-type-aware conflict model: protect terminal step statuses (T074), auto-resolve status conflicts with loser notification (T075), connectivity-gated structural actions with upfront UI disable + repository guard (T076, AC-SYNC-07)
 - **Phase 13 (T077–T086)** — Log Book: user-authored household/procedure entries, unified view, grace-window editing, Guest exclusion (FR-LOG-02, AC-LOG-01…06)
 - **T035/T039** — AC-SYNC-02 field-level merge — **deferred post-MVP** (2026-07-03 decision; pairs with version vectors)
 - **T027/T033a** — offline invite conflict (implementation + test)

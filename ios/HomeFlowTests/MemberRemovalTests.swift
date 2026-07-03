@@ -61,7 +61,9 @@ final class MemberRemovalTests: XCTestCase {
 
     func test_removal_errors_carry_actionable_guidance() {
         XCTAssertNotNil(MemberError.cannotRemoveOwner.errorDescription)
-        XCTAssertNotNil(MemberError.offlineRemoval.errorDescription)
+        XCTAssertNotNil(
+            StructuralActionError.requiresConnectivity(context: .members).errorDescription
+        )
         XCTAssertNotNil(MemberError.notAuthorized.errorDescription)
     }
 }

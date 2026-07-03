@@ -1,11 +1,12 @@
 import SwiftUI
 
-// @covers FR-HOME-02, FR-NAV-01, AC-HOME-04, AC-HOME-12
+// @covers FR-HOME-02, FR-NAV-01, AC-HOME-04, AC-HOME-12, AC-SYNC-07
 
 struct ContactsView: View {
     let home: HomeSummary
     @Environment(\.horizontalSizeClass) private var sizeClass
     @Environment(\.appEnvironment) private var appEnvironment
+    @EnvironmentObject private var network: NetworkMonitor
     @StateObject private var viewModel = ContactsViewModel()
     @State private var selectedProviderId: UUID?
     @State private var searchText = ""
@@ -13,6 +14,11 @@ struct ContactsView: View {
 
     private var userRole: HomeRole {
         home.currentUserRole ?? .guest
+    }
+
+    private var canManageContactsOnline: Bool {
+        viewModel.canManage
+            && StructuralActionPolicy.canPerformStructuralActions(isConnected: network.isConnected)
     }
 
     private var filteredProviders: [ServiceProviderSummary] {
@@ -73,7 +79,7 @@ struct ContactsView: View {
                 if let provider = filteredProviders.first(where: { $0.id == providerId }) {
                     ProviderDetailView(
                         provider: provider,
-                        canEdit: viewModel.canManage,
+                        canEdit: canManageContactsOnline,
                         onEdit: { formMode = .edit(provider) },
                         onDelete: { deleteProvider(provider) }
                     )
@@ -125,7 +131,7 @@ struct ContactsView: View {
                     NavigationLink {
                         ProviderDetailView(
                             provider: provider,
-                            canEdit: viewModel.canManage,
+                            canEdit: canManageContactsOnline,
                             onEdit: { formMode = .edit(provider) },
                             onDelete: { deleteProvider(provider) }
                         )
@@ -144,8 +150,20 @@ struct ContactsView: View {
                     } label: {
                         Label(SectionAddAction.contacts.label, systemImage: SectionAddAction.contacts.systemImage)
                     }
+                    .disabled(!network.isConnected)
                     .accessibilityLabel(SectionAddAction.contacts.accessibilityLabel)
                 }
+            }
+        }
+        .safeAreaInset(edge: .bottom) {
+            if viewModel.canManage && !network.isConnected {
+                Text(StructuralActionPolicy.offlineMessage(for: .contacts))
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+                    .frame(maxWidth: .infinity)
+                    .padding(.horizontal)
+                    .padding(.vertical, 8)
+                    .background(.bar)
             }
         }
         .overlay {
