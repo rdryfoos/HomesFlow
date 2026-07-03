@@ -14,6 +14,11 @@ struct ProcedureDetailView: View {
     @State private var newStepTitle = ""
     @State private var deleteTarget: ProcedureStepSummary?
     @State private var photoPreviewStep: ProcedureStepSummary?
+    @State private var showAddLogEntry = false
+
+    private var canAccessCommunicationsLog: Bool {
+        LogBookAccessPolicy.canRead(userRole: userRole)
+    }
 
     private var userRole: HomeRole {
         home.currentUserRole ?? .guest
@@ -120,6 +125,20 @@ struct ProcedureDetailView: View {
             Button("OK", role: .cancel) {}
         } message: {
             Text(viewModel.errorMessage ?? "")
+        }
+        .sheet(isPresented: $showAddLogEntry) {
+            LogEntryEditorSheet(mode: .create) { body in
+                Task {
+                    guard let repo = appEnvironment?.logBookRepository else { return }
+                    _ = try? await repo.createEntry(
+                        homeId: home.id,
+                        procedureId: procedureId,
+                        procedureTitle: viewModel.detail?.title,
+                        body: body,
+                        userRole: userRole
+                    )
+                }
+            }
         }
     }
 
@@ -228,6 +247,27 @@ struct ProcedureDetailView: View {
                             ForEach(viewModel.activity) { entry in
                                 ActivityLogRow(entry: entry)
                             }
+                        }
+                    }
+                }
+
+                if canAccessCommunicationsLog {
+                    Section("Communications Log") {
+                        NavigationLink {
+                            CommunicationsLogView(
+                                home: home,
+                                initialScope: .procedure,
+                                procedureId: procedureId,
+                                procedureTitle: detail.title
+                            )
+                            .environment(\.appEnvironment, appEnvironment)
+                        } label: {
+                            Label("View entries", systemImage: "text.book.closed")
+                        }
+                        Button {
+                            showAddLogEntry = true
+                        } label: {
+                            Label("Add entry", systemImage: "square.and.pencil")
                         }
                     }
                 }

@@ -13,9 +13,12 @@ Domain language for specs, plans, and code. When wording is ambiguous, this file
 | **Service provider** | Vendor or caretaker (propane, electric, lawn care, etc.) with contact details. **UI tab label**: **Contacts**; data model and specs use *service provider* (FR-HOME-02). |
 | **Document** | Categorized file or metadata with visibility level (FR-HOME-03). **UI tab label**: **Files** — not “Documents”. |
 | **Members** | Household users with access to a home (Owner assigns roles). **UI tab label**: **People**. |
-| **Activity log** | Audit record of changes (status updates, role changes, conflicts). System-generated (FR-LOG-01); distinct from the Log Book. |
-| **Log Book** | User-authored free-form entries at household or procedure scope, in a unified chronological view (FR-LOG-02). Owner/Manager only; no Guest access. |
-| **Grace window** | The 10 minutes after server receipt during which a Log Book entry's author may still edit it; immutable afterwards (AC-LOG-04). |
+| **Activity log** | Audit record of changes (status updates, role changes, conflicts). System-generated (FR-LOG-01); distinct from the Communications Log. |
+| **Communications Log** | **UI / product name** for user-authored free-form entries (spec: **Log Book**, FR-LOG-02). Household- or procedure-scope notes in a unified chronological view. Owner/Manager only; no Guest access. Not the Activity log. |
+| **Log Book** | Spec/PRD term for the Communications Log (FR-LOG-02). Same feature — use *Communications Log* in UI copy to avoid confusion with system logging. |
+| **Grace window** | The 10 minutes after server receipt during which a Communications Log entry's author may still edit it; immutable afterwards (AC-LOG-04). |
+| **Occurrence time** | Wall-clock time when the user performed an action on device (e.g. marked a step Complete, wrote a log entry). Governs **chronological ordering** in unified timelines — not server receipt order, outbox queue order, or entity `updated_at` used for conflict resolution. |
+| **Offline-capable mutations** | Changes allowed without connectivity: step **status** updates, step **notes**, home field edits, Communications Log **append**. Structural actions require connectivity (AC-SYNC-07). |
 | **Terminal status** | Complete or N/A on a step. Sync never silently regresses a terminal status (AC-SYNC-05). |
 | **Data-type-aware conflict model** | Conflict resolution varies by data type: timestamp-wins for most edits, terminal-status protection for steps, connectivity-gating for structural actions, append-only for Log Book (AC-SYNC-01, 05…07). Resolution is automatic; the losing user is notified with re-apply guidance (AC-SYNC-06). |
 | **Structural action** | Creating, renaming, reordering, or deleting steps/procedures/providers, or membership changes. Requires connectivity (AC-SYNC-07). |

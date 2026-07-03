@@ -87,6 +87,7 @@ enum EntityType: String, Codable, Sendable {
     case document
     case procedure
     case procedureStep = "procedure_steps"
+    case logBookEntry = "log_book_entries"
 }
 
 enum PermissionAction: Sendable {
@@ -106,4 +107,5 @@ enum PermissionEntity: Sendable {
     case procedure(visibility: Visibility)
     case procedureStep(procedureVisibility: Visibility)
     case activityLog
+    case logBook
 }

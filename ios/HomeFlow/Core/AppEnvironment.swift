@@ -13,6 +13,7 @@ final class AppEnvironment: ObservableObject {
     let providerRepository: ServiceProviderRepository
     let documentRepository: DocumentRepository
     let procedureAttachmentService: ProcedureAttachmentService
+    let logBookRepository: LogBookRepository
 
     init(modelContext: ModelContext) {
         auth = SupabaseClientProvider.shared
@@ -56,6 +57,11 @@ final class AppEnvironment: ObservableObject {
             activityLog: activityLog,
             syncEngine: syncEngine,
             storage: documentStorage
+        )
+        logBookRepository = LogBookRepository(
+            modelContext: modelContext,
+            auth: auth,
+            syncEngine: syncEngine
         )
     }
 }

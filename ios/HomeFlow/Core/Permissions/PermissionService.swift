@@ -85,6 +85,19 @@ struct PermissionService: Sendable {
         case (_, .activityLog, _):
             return true
 
+        case (.read, .logBook, .guest),
+             (.create, .logBook, .guest),
+             (.update, .logBook, .guest),
+             (.delete, .logBook, .guest):
+            return false
+        case (.read, .logBook, .owner),
+             (.read, .logBook, .manager),
+             (.create, .logBook, .owner),
+             (.create, .logBook, .manager),
+             (.update, .logBook, .owner),
+             (.update, .logBook, .manager):
+            return true
+
         default:
             return false
         }

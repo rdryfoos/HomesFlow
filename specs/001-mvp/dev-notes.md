@@ -144,7 +144,7 @@ Section UI label **Files** implements document library (FR-HOME-03); code folder
 
 - **Apple Sign-In wiring** — paid Developer Program now active; restore entitlement, Services ID, enable Supabase Apple provider (App Store requirement — research D12)
 - **Phase 12 (T074–T076a)** — data-type-aware conflict model: protect terminal step statuses (T074), auto-resolve status conflicts with loser notification (T075), connectivity-gated structural actions with upfront UI disable + repository guard (T076, AC-SYNC-07)
-- **Phase 13 (T077–T086)** — Log Book: user-authored household/procedure entries, unified view, grace-window editing, Guest exclusion (FR-LOG-02, AC-LOG-01…06)
+- **Phase 13 (T077–T086)** — Communications Log shipped: `log_book_entries` migration + RLS, offline append sync, grace-window edit policy, unified view with scope filter, guest denial; UI label "Communications Log"
 - **T035/T039** — AC-SYNC-02 field-level merge — **deferred post-MVP** (2026-07-03 decision; pairs with version vectors)
 - **T027/T033a** — offline invite conflict (implementation + test)
 - **T072a** — performance baselines (pair with device smoke session: launch, dashboard load, sync round-trip, Quick Look on large PDF)
@@ -159,6 +159,21 @@ T038 (2026-07-03): `OverwriteNotificationPolicy` centralizes AC-SYNC-01 loser-no
 T074 (2026-07-03): `StepStatusConflictPolicy` implements AC-SYNC-05 — Complete/N/A never silently regress on step merge; conflicting server status is surfaced via activity log + notification while non-status fields still merge. Test: `StepStatusConflictPolicyTests.test_AC_SYNC_05_terminal_status_never_silently_regressed`.
 
 **Sync pull-before-push (2026-07-03)**: `SyncEngine.run()` now pulls homes before pushing the outbox so timestamp-wins merge runs first (AC-SYNC-01 / AC-HOME-03). Fixes the two-device home-rename scenario where an older offline iPhone edit overwrote a newer iPad edit. Provider updates get a pre-push server fetch via `OutboxSyncPolicy` + `reconcileProviderBeforePush`. Re-test: iPhone offline rename → iPad online rename → iPhone reconnect should keep the iPad name and notify the iPhone.
+
+T075 (2026-07-03): AC-SYNC-06 auto-resolve status conflicts with loser notification + re-apply guidance (no human resolution UI).
+
+T076 (2026-07-03): `StructuralActionPolicy` implements AC-SYNC-07 — structural actions blocked offline; UI disables controls up front. Step status, notes, and home edits remain offline-capable.
+
+**Phase 13 Communications Log (2026-07-03)**: migration `006_log_book_entries.sql`; `LogBookRepository` + outbox push in `SyncEngine`; `CommunicationsLogView` (household + unified); procedure detail add/view; `LogBookGraceWindowPolicy` (10 min from server receipt); occurrence-time sort via `LogBookEntryOrganizer`. 100 unit tests green. Apply migration before device test: `supabase db push`.
+
+### Offline ordering — decided breadcrumb (2026-07-03)
+
+**Applies to Phase 13 (Communications Log) and step status history in unified timelines.**
+
+- **Communications Log** (UI name; spec **Log Book**, FR-LOG-02) and **step status updates** (Complete, N/A, etc.) MUST remain **offline-capable** — same class as notes/home fields, not structural actions.
+- When synced, entries/events MUST appear in **occurrence-time order** — the real wall-clock moment the user acted on device — **not** server receipt order, outbox queue order, or entity `updated_at` from timestamp-wins conflict resolution.
+- **Activity log** (FR-LOG-01, system audit) stays distinct; do not conflate with Communications Log in UI copy.
+- **Implementation hint (Phase 13+)**: store client `created_at` / `occurred_at` at write time; sort unified chronological views on that field; append-only for log entries; status changes already emit activity-log rows — ensure those rows carry occurrence time for timeline merge with Communications Log entries.
 
 ---
 

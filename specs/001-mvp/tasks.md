@@ -18,7 +18,7 @@
 | 8–10 P2/P3 features | **Partial** | Phase 9 guest views done; Files, Settings next |
 | 11 Hardening | Not started | Re-run analyze after P1 checkpoint |
 | 12 Conflict model evolution | **Complete** | — |
-| 13 Log Book | Not started | FR-LOG-02, AC-LOG-01…06 (added 2026-07-03 from story map) |
+| 13 Log Book | **Complete** | — |
 
 Partial deliverables documented in [dev-notes.md](./dev-notes.md). **Do not** encode implementation details in [spec.md](./spec.md).
 
@@ -270,25 +270,29 @@ Partial deliverables documented in [dev-notes.md](./dev-notes.md). **Do not** en
 
 ---
 
-## Phase 13: Log Book (added 2026-07-03 from story map)
+## Phase 13: Communications Log (added 2026-07-03 from story map)
+
+**UI name**: Communications Log (spec/PRD: **Log Book**, FR-LOG-02). Distinct from Activity log (system audit, FR-LOG-01).
+
+**Ordering rule** (decided 2026-07-03): offline append + step status events sort by **occurrence time** at sync — see dev-notes.md § Offline ordering breadcrumb.
 
 **Goal**: User-authored household/procedure log entries with unified view — **FR-LOG-02**
 
 ### Implementation
 
-- [ ] T077 [FR-LOG-02] LogBookEntry model + migration + RLS (Owner/Manager read-write, Guest none) — **Traces**: FR-LOG-02, AC-LOG-06
-- [ ] T078 [FR-LOG-02] Write household-scope log entry — **Traces**: AC-LOG-01
-- [ ] T079 [FR-LOG-02] Write procedure-scope log entry from procedure detail — **Traces**: AC-LOG-02
-- [ ] T080 [FR-LOG-02] Offline append-only log entry sync — **Traces**: AC-LOG-03
-- [ ] T081 [FR-LOG-02] Grace-window editing (10 minutes from server receipt; immutable after) — **Traces**: AC-LOG-04
-- [ ] T082 [FR-LOG-02] Unified chronological log view with scope filter — **Traces**: AC-LOG-05
-- [ ] T083 [FR-LOG-02] Deny Guest access to Log Book including deep links — **Traces**: AC-LOG-06
+- [x] T077 [FR-LOG-02] LogBookEntry model + migration + RLS (Owner/Manager read-write, Guest none) — **Traces**: FR-LOG-02, AC-LOG-06
+- [x] T078 [FR-LOG-02] Write household-scope log entry — **Traces**: AC-LOG-01
+- [x] T079 [FR-LOG-02] Write procedure-scope log entry from procedure detail — **Traces**: AC-LOG-02
+- [x] T080 [FR-LOG-02] Offline append-only log entry sync — **Traces**: AC-LOG-03
+- [x] T081 [FR-LOG-02] Grace-window editing (10 minutes from server receipt; immutable after) — **Traces**: AC-LOG-04
+- [x] T082 [FR-LOG-02] Unified chronological log view with scope filter — **Traces**: AC-LOG-05
+- [x] T083 [FR-LOG-02] Deny Guest access to Log Book including deep links — **Traces**: AC-LOG-06
 
 ### Tests
 
-- [ ] T084 [P] [FR-LOG-02] Unit tests `test_AC_LOG_01_household_entry_appears_in_log`, `test_AC_LOG_02_procedure_entry_attached_and_in_log` — **Traces**: AC-LOG-01, AC-LOG-02
-- [ ] T085 [P] [FR-LOG-02] Unit tests `test_AC_LOG_03_offline_entry_syncs_append_only`, `test_AC_LOG_04_edit_only_within_grace_window` — **Traces**: AC-LOG-03, AC-LOG-04
-- [ ] T086 [P] [FR-LOG-02] Unit tests `test_AC_LOG_05_unified_log_chronological_and_filterable`, `test_AC_LOG_06_guest_denied_log_access` — **Traces**: AC-LOG-05, AC-LOG-06
+- [x] T084 [P] [FR-LOG-02] Unit tests `test_AC_LOG_01_household_entry_appears_in_log`, `test_AC_LOG_02_procedure_entry_attached_and_in_log` — **Traces**: AC-LOG-01, AC-LOG-02
+- [x] T085 [P] [FR-LOG-02] Unit tests `test_AC_LOG_03_offline_entry_syncs_append_only`, `test_AC_LOG_04_edit_only_within_grace_window` — **Traces**: AC-LOG-03, AC-LOG-04
+- [x] T086 [P] [FR-LOG-02] Unit tests `test_AC_LOG_05_unified_log_chronological_and_filterable`, `test_AC_LOG_06_guest_denied_log_access` — **Traces**: AC-LOG-05, AC-LOG-06
 
 ---
 

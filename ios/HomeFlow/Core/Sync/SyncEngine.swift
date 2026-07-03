@@ -116,6 +116,16 @@ final class SyncEngine: ObservableObject {
                         modelContext.delete(entry)
                         continue
                     }
+                case .logBookEntry:
+                    switch entry.op {
+                    case .insert:
+                        try await insertLogBookEntry(entry)
+                    case .update:
+                        try await updateLogBookEntry(entry)
+                    case .delete, nil:
+                        modelContext.delete(entry)
+                        continue
+                    }
                 default:
                     continue
                 }
@@ -398,6 +408,72 @@ final class SyncEngine: ObservableObject {
             .delete()
             .eq("id", value: entry.entityId.uuidString)
             .execute()
+    }
+
+    private func insertLogBookEntry(_ entry: MutationOutboxEntry) async throws {
+        let targetId = entry.entityId
+        guard
+            let cached = try? modelContext.fetch(FetchDescriptor<CachedLogBookEntry>(
+                predicate: #Predicate<CachedLogBookEntry> { $0.id == targetId }
+            )).first
+        else { return }
+
+        struct InsertRow: Encodable {
+            let id: UUID
+            let home_id: UUID
+            let procedure_id: UUID?
+            let author_id: UUID
+            let body: String
+            let created_at: Date
+        }
+
+        let row = InsertRow(
+            id: cached.id,
+            home_id: cached.homeId,
+            procedure_id: cached.procedureId,
+            author_id: cached.authorId,
+            body: cached.body,
+            created_at: cached.createdAt
+        )
+
+        try await client.from("log_book_entries").insert(row).execute()
+
+        let synced: LogBookEntryDTO = try await client
+            .from("log_book_entries")
+            .select("*, profiles(display_name, email)")
+            .eq("id", value: cached.id.uuidString)
+            .single()
+            .execute()
+            .value
+
+        cached.receivedAt = synced.receivedAt
+        cached.editedAt = synced.editedAt
+        cached.sync = .synced
+        try? modelContext.save()
+    }
+
+    private func updateLogBookEntry(_ entry: MutationOutboxEntry) async throws {
+        let targetId = entry.entityId
+        guard
+            let cached = try? modelContext.fetch(FetchDescriptor<CachedLogBookEntry>(
+                predicate: #Predicate<CachedLogBookEntry> { $0.id == targetId }
+            )).first
+        else { return }
+
+        struct UpdateRow: Encodable {
+            let body: String
+            let edited_at: Date
+        }
+
+        let editedAt = cached.editedAt ?? .now
+        try await client
+            .from("log_book_entries")
+            .update(UpdateRow(body: cached.body, edited_at: editedAt))
+            .eq("id", value: cached.id.uuidString)
+            .execute()
+
+        cached.sync = .synced
+        try? modelContext.save()
     }
 
     private func pullChanges() async {

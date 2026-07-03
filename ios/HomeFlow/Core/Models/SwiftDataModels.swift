@@ -381,6 +381,52 @@ final class CachedActivityLogEntry {
     }
 }
 
+@Model
+final class CachedLogBookEntry {
+    @Attribute(.unique) var id: UUID
+    var homeId: UUID
+    var procedureId: UUID?
+    var authorId: UUID
+    var authorLabel: String
+    var body: String
+    var createdAt: Date
+    var receivedAt: Date?
+    var editedAt: Date?
+    var procedureTitle: String?
+    var syncStatus: String
+
+    init(
+        id: UUID = UUID(),
+        homeId: UUID,
+        procedureId: UUID? = nil,
+        authorId: UUID,
+        authorLabel: String,
+        body: String,
+        createdAt: Date = .now,
+        receivedAt: Date? = nil,
+        editedAt: Date? = nil,
+        procedureTitle: String? = nil,
+        syncStatus: SyncStatus = .pending
+    ) {
+        self.id = id
+        self.homeId = homeId
+        self.procedureId = procedureId
+        self.authorId = authorId
+        self.authorLabel = authorLabel
+        self.body = body
+        self.createdAt = createdAt
+        self.receivedAt = receivedAt
+        self.editedAt = editedAt
+        self.procedureTitle = procedureTitle
+        self.syncStatus = syncStatus.rawValue
+    }
+
+    var sync: SyncStatus {
+        get { SyncStatus(rawValue: syncStatus) ?? .pending }
+        set { syncStatus = newValue.rawValue }
+    }
+}
+
 enum SwiftDataContainer {
     static func makeContainer() throws -> ModelContainer {
         let schema = Schema([
@@ -392,7 +438,8 @@ enum SwiftDataContainer {
             CachedServiceProvider.self,
             CachedDocument.self,
             MutationOutboxEntry.self,
-            CachedActivityLogEntry.self
+            CachedActivityLogEntry.self,
+            CachedLogBookEntry.self
         ])
         return try ModelContainer(for: schema)
     }

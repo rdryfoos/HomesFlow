@@ -52,6 +52,12 @@ struct HomeDetailView: View {
         userRole == .owner
     }
 
+    private var canAccessCommunicationsLog: Bool {
+        LogBookAccessPolicy.canRead(userRole: userRole)
+    }
+
+    @State private var showCommunicationsLog = false
+
     init(home: HomeSummary) {
         self.home = home
         _displayedHome = State(initialValue: home)
@@ -70,6 +76,12 @@ struct HomeDetailView: View {
                 displayedHome = updated
             }
             .environment(\.appEnvironment, appEnvironment)
+        }
+        .sheet(isPresented: $showCommunicationsLog) {
+            NavigationStack {
+                CommunicationsLogView(home: displayedHome)
+                    .environment(\.appEnvironment, appEnvironment)
+            }
         }
         .onChange(of: visibleTabs) { _, tabs in
             if !tabs.contains(selectedTab) {
@@ -99,8 +111,16 @@ struct HomeDetailView: View {
         .navigationTitle("")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
-            if canEditHome {
-                ToolbarItem(placement: .topBarTrailing) {
+            ToolbarItemGroup(placement: .topBarTrailing) {
+                if canAccessCommunicationsLog {
+                    Button {
+                        showCommunicationsLog = true
+                    } label: {
+                        Label("Communications Log", systemImage: "text.book.closed")
+                    }
+                    .accessibilityLabel("Communications Log")
+                }
+                if canEditHome {
                     editHomeButton
                 }
             }
@@ -117,8 +137,16 @@ struct HomeDetailView: View {
             tabContent
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .toolbar {
-                    if canEditHome {
-                        ToolbarItem(placement: .topBarTrailing) {
+                    ToolbarItemGroup(placement: .topBarTrailing) {
+                        if canAccessCommunicationsLog {
+                            Button {
+                                showCommunicationsLog = true
+                            } label: {
+                                Label("Communications Log", systemImage: "text.book.closed")
+                            }
+                            .accessibilityLabel("Communications Log")
+                        }
+                        if canEditHome {
                             editHomeButton
                         }
                     }

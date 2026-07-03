@@ -185,7 +185,7 @@ User-authored Log Book (FR-LOG-02, added 2026-07-03; Phase 13 — not yet migrat
 | procedure_id | uuid FK → procedures.id, nullable | Null = household scope (AC-LOG-01); set = procedure scope (AC-LOG-02) |
 | author_id | uuid FK → profiles.id | |
 | body | text | Free-form entry |
-| created_at | timestamptz | Client write time |
+| created_at | timestamptz | **Occurrence time** — client write time; governs chronological order in unified views (not server receipt) |
 | received_at | timestamptz | Server receipt; starts the 10-minute edit grace window (AC-LOG-04) |
 | edited_at | timestamptz, nullable | Must be within `received_at + 10 min`, enforced server-side |
 
@@ -237,7 +237,8 @@ Cache tables mirror server schema plus:
 | Step/procedure status | Timestamp-wins, **except** terminal statuses (Complete / N/A) never silently regress (AC-SYNC-05); loser notified with re-apply guidance (AC-SYNC-06) |
 | Entity field edits | Timestamp-wins whole-record (AC-SYNC-01); field-level merge (AC-SYNC-02) deferred post-MVP |
 | Structural actions (step/procedure/provider CRUD, memberships) | Connectivity-gated — blocked offline (AC-SYNC-07) |
-| Log Book entries | Append-only; no conflicts by construction (AC-LOG-03) |
+| Log Book entries | Append-only; no conflicts by construction (AC-LOG-03). Order by **occurrence time** (`created_at` at client write), not server receipt |
+| Step status changes (offline) | Offline-capable (FR-PROC-02). Current state uses data-type-aware rules (AC-SYNC-05…06); **timeline / audit ordering** uses occurrence time when surfaced in unified views — not entity `updated_at` from conflict resolution |
 
 ## Storage buckets
 
