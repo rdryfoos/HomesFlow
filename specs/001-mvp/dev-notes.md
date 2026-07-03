@@ -63,8 +63,7 @@ Safari visiting `https://<ref>.supabase.co` and seeing `{"error":"requested path
 ## iOS signing & bundle ID
 
 - **Bundle ID**: `com.rdryfoos.homeflow` (global `com.homeflow.app` was unavailable)
-- **Personal Team**: works for device install; re-sign ~every 7 days on free account
-- **Sign in with Apple** entitlement removed temporarily for Personal Team signing — email/password only until paid Apple Developer Program + entitlement restored
+- **Developer Team**: paid Apple Developer Program, Admin role
 - Set **Team** in Xcode → HomeFlow target → **Signing & Capabilities**
 - **Release** scheme + physical device for cloud Supabase
 
@@ -72,7 +71,7 @@ Safari visiting `https://<ref>.supabase.co` and seeing `{"error":"requested path
 
 ## Auth implementation
 
-- **MVP scope (FR-AUTH-01)**: Email/password only on device builds; Apple Sign-In deferred — see spec Assumptions + research D12
+- **MVP scope (FR-AUTH-01)**: Email/password only on device builds; Apple Sign-In deferred pending entitlement wiring — see spec Assumptions + research D12
 - `SupabaseClientProvider` applies session from sign-in response + listens to `authStateChanges` (do not rely on `try? await client.auth.session` alone after sign-in)
 - Local Supabase: `auth.external.apple.enabled = false` in `config.toml` for email-only dev
 - Cloud: enable **Email** provider; Apple deferred for MVP device demos
