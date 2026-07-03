@@ -258,7 +258,7 @@ private struct ProcedureStepRow: View {
     let onViewPhoto: () -> Void
 
     private var isStruckThrough: Bool {
-        step.status == .complete || step.status == .na
+        StepRowPresentation.isStruckThrough(step.status)
     }
 
     var body: some View {
@@ -271,14 +271,14 @@ private struct ProcedureStepRow: View {
                     .font(.body)
                     .strikethrough(isStruckThrough, color: .secondary)
                     .foregroundStyle(isStruckThrough ? .secondary : .primary)
-                if let notes = step.notes, !notes.isEmpty {
+                if let notes = step.notes, StepRowPresentation.showsNotes(notes) {
                     StepAttachmentRow(
                         systemImage: "text.alignleft",
                         text: notes,
                         struckThrough: isStruckThrough
                     )
                 }
-                if step.photoURL != nil {
+                if StepRowPresentation.showsPhotoIndicator(photoURL: step.photoURL) {
                     Button(action: onViewPhoto) {
                         StepAttachmentRow(
                             systemImage: "photo",
@@ -293,7 +293,7 @@ private struct ProcedureStepRow: View {
 
             Spacer(minLength: 8)
 
-            if canEdit {
+            if StepRowPresentation.showsEditControls(canEdit: canEdit) {
                 // NFR-A11Y-01: 44pt minimum tap targets on row actions.
                 Button(action: onEditDetails) {
                     Image(systemName: "pencil")
@@ -352,12 +352,7 @@ private struct ProcedureStepRow: View {
     }
 
     private var toggledStatus: StepStatus {
-        switch step.status {
-        case .complete, .na:
-            return .notStarted
-        case .notStarted, .inProgress:
-            return .complete
-        }
+        StepRowPresentation.toggledStatus(from: step.status)
     }
 
     private func statusLabel(_ status: StepStatus) -> String {

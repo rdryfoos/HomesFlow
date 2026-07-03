@@ -12,9 +12,9 @@
 |-------|----------|----------------|
 | 1–2 Setup + foundation | **Complete** | — |
 | 3–4 Auth, dashboard, homes | **Mostly complete** | XCUITest T017 |
-| 5 Invites & roles | **Partial** | Deep links T026; offline conflict T027; unit tests |
-| 6 Offline sync | **Partial** | Sync tests T038/T040a; field merge T035 deferred post-MVP |
-| 7 Procedures | **Complete** | AC-PROC-08 UI test T050d pending |
+| 5 Invites & roles | **Mostly complete** | Deep links T026; offline conflict T027/T033a |
+| 6 Offline sync | **Partial** | Sync test T038; field merge T035 deferred post-MVP |
+| 7 Procedures | **Complete** | — |
 | 8–10 P2/P3 features | **Partial** | Phase 9 guest views done; Files, Settings next |
 | 11 Hardening | Not started | Re-run analyze after P1 checkpoint |
 | 12 Conflict model evolution | Not started | AC-SYNC-05…07 (added 2026-07-03 from story map) |
@@ -118,13 +118,13 @@ Partial deliverables documented in [dev-notes.md](./dev-notes.md). **Do not** en
 
 ### Tests
 
-- [ ] T030 [P] [US-ADMIN-02] Unit test `test_AC_USER_01_invite_accepted_grants_role` — **Traces**: AC-USER-01
-- [ ] T031 [P] [US-ADMIN-02] Unit test `test_AC_USER_02_revoked_token_invalid` — **Traces**: AC-USER-02
-- [ ] T032 [US-ADMIN-03] Unit test `test_AC_USER_04_edit_role_can_modify_procedures` — **Traces**: AC-USER-04
+- [x] T030 [P] [US-ADMIN-02] Unit test `test_AC_USER_01_invite_accepted_grants_role` — **Traces**: AC-USER-01 — *MemberInviteTests over InvitePolicy*
+- [x] T031 [P] [US-ADMIN-02] Unit test `test_AC_USER_02_revoked_token_invalid` — **Traces**: AC-USER-02 — *MemberInviteTests; server enforcement in accept_invite RPC*
+- [x] T032 [US-ADMIN-03] Unit test `test_AC_USER_04_edit_role_can_modify_procedures` — **Traces**: AC-USER-04 — *MemberInviteTests; exposed PermissionService visibility gap on create/update/delete, fixed*
 - [x] T033 [US-ADMIN-03] Unit test `test_AC_USER_05_guest_role_read_only` — **Traces**: AC-USER-05 — *GuestTests*
 - [ ] T033a [P] [US-ADMIN-02] Unit test `test_AC_USER_03_offline_invite_conflict` — **Traces**: AC-USER-03
-- [ ] T033b [US-ADMIN-03] Unit test `test_AC_USER_06_concurrent_role_change_audit` — **Traces**: AC-USER-06
-- [ ] T033c [P] [US-ADMIN-02] Unit test `test_AC_USER_07_paste_token_accepts_invite` — **Traces**: AC-USER-07
+- [x] T033b [US-ADMIN-03] Unit test `test_AC_USER_06_concurrent_role_change_audit` — **Traces**: AC-USER-06 — *MemberInviteTests over RoleChangeAudit + MembershipMerge*
+- [x] T033c [P] [US-ADMIN-02] Unit test `test_AC_USER_07_paste_token_accepts_invite` — **Traces**: AC-USER-07 — *MemberInviteTests; AcceptInviteView now accepts full invite links via InvitePolicy.extractToken*
 
 ---
 
@@ -144,7 +144,7 @@ Partial deliverables documented in [dev-notes.md](./dev-notes.md). **Do not** en
 - [ ] T038 [P] [NFR-OFFL-01] Unit test `test_AC_SYNC_01_offline_overwrite_notifies_loser` — **Traces**: AC-SYNC-01
 - [ ] T039 [P] [NFR-OFFL-01] Unit test `test_AC_SYNC_02_disjoint_fields_merge` — **Traces**: AC-SYNC-02 — *deferred post-MVP with T035*
 - [x] T040 [NFR-OFFL-01] Unit test `test_AC_SYNC_03_stale_permission_reverts` — **Traces**: AC-SYNC-03 — *covered by SyncConflictMatrixTests.test_AC_SYNC_03_permission_denied_revert_matrix over PermissionRevertPolicy*
-- [ ] T040a [P] [NFR-OFFL-01] Unit test `test_AC_SYNC_04_pending_sync_visible_on_dashboard` — **Traces**: AC-SYNC-04
+- [x] T040a [P] [NFR-OFFL-01] Unit test `test_AC_SYNC_04_pending_sync_visible_on_dashboard` — **Traces**: AC-SYNC-04 — *SyncIndicatorTests over SyncIndicatorPolicy*
 
 **Checkpoint**: P1 stories independently testable. ⏳ *Pending T027, sync tests, Procedures for full demo*
 
@@ -176,7 +176,7 @@ Partial deliverables documented in [dev-notes.md](./dev-notes.md). **Do not** en
 - [x] T050a [P] [US-EDIT-01] Unit test `test_AC_PROC_04_manager_can_manage_step_structure` — **Traces**: AC-PROC-04, AC-PROC-05 — *StepStructureTests*
 - [x] T050b [P] [US-EDIT-01] Unit test `test_AC_PROC_06_step_structure_change_logged` — **Traces**: AC-PROC-06 — *StepStructureTests*
 - [x] T050c [P] [US-EDIT-01] Unit test `test_AC_PROC_07_guest_no_step_structure_controls` — **Traces**: AC-PROC-07 — *StepStructureTests*
-- [ ] T050d [P] [US-EDIT-01] XCUITest `test_AC_PROC_08_step_photo_preview_and_row_layout` — **Traces**: AC-PROC-08 — *UI: Photo attached tap → preview sheet*
+- [x] T050d [P] [US-EDIT-01] Unit test `test_AC_PROC_08_photo_indicator_and_edit_controls` — **Traces**: AC-PROC-08 — *StepRowPresentationTests over StepRowPresentation (indicator, edit gating, strike-through, tap toggle); XCUITest of preview sheet deferred with T024d–f UI-test infra*
 
 ---
 

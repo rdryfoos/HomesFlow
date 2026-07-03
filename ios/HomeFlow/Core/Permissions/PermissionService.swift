@@ -22,32 +22,40 @@ struct PermissionService: Sendable {
         case (_, .invite, _):
             return false
 
+        // AC-PROC-02 / AC-USER-04: Managers modify only content whose
+        // visibility they can see; owner-only content fails closed.
         case (.read, .serviceProvider(let vis), let r):
             return visibilityAllows(role: r, visibility: vis)
-        case (.create, .serviceProvider, .owner), (.create, .serviceProvider, .manager):
-            return true
-        case (.update, .serviceProvider, .owner), (.update, .serviceProvider, .manager):
-            return true
-        case (.delete, .serviceProvider, .owner), (.delete, .serviceProvider, .manager):
-            return true
+        case (.create, .serviceProvider(let vis), .owner),
+             (.update, .serviceProvider(let vis), .owner),
+             (.delete, .serviceProvider(let vis), .owner):
+            return visibilityAllows(role: .owner, visibility: vis)
+        case (.create, .serviceProvider(let vis), .manager),
+             (.update, .serviceProvider(let vis), .manager),
+             (.delete, .serviceProvider(let vis), .manager):
+            return visibilityAllows(role: .manager, visibility: vis)
 
         case (.read, .document(let vis), let r):
             return visibilityAllows(role: r, visibility: vis)
-        case (.create, .document, .owner), (.create, .document, .manager):
-            return true
-        case (.update, .document, .owner), (.update, .document, .manager):
-            return true
-        case (.delete, .document, .owner), (.delete, .document, .manager):
-            return true
+        case (.create, .document(let vis), .owner),
+             (.update, .document(let vis), .owner),
+             (.delete, .document(let vis), .owner):
+            return visibilityAllows(role: .owner, visibility: vis)
+        case (.create, .document(let vis), .manager),
+             (.update, .document(let vis), .manager),
+             (.delete, .document(let vis), .manager):
+            return visibilityAllows(role: .manager, visibility: vis)
 
         case (.read, .procedure(let vis), let r):
             return visibilityAllows(role: r, visibility: vis)
-        case (.create, .procedure, .owner), (.create, .procedure, .manager):
-            return true
-        case (.update, .procedure, .owner), (.update, .procedure, .manager):
-            return true
-        case (.delete, .procedure, .owner), (.delete, .procedure, .manager):
-            return true
+        case (.create, .procedure(let vis), .owner),
+             (.update, .procedure(let vis), .owner),
+             (.delete, .procedure(let vis), .owner):
+            return visibilityAllows(role: .owner, visibility: vis)
+        case (.create, .procedure(let vis), .manager),
+             (.update, .procedure(let vis), .manager),
+             (.delete, .procedure(let vis), .manager):
+            return visibilityAllows(role: .manager, visibility: vis)
 
         case (.read, .procedureStep(let vis), let r):
             return visibilityAllows(role: r, visibility: vis)

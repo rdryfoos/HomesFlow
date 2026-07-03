@@ -9,8 +9,8 @@ CI fails if this file is stale. Source of truth: `HomesFlow.prd.md` registry × 
 |--------|-------|
 | Registry IDs | 79 |
 | Acceptance criteria | 50 |
-| ACs verified (test passing in suite) | 30 |
-| ACs implemented — test pending | 8 |
+| ACs verified (test passing in suite) | 36 |
+| ACs implemented — test pending | 4 |
 | ACs planned (tracked, not implemented) | 10 |
 
 ## Acceptance criteria
@@ -52,21 +52,21 @@ CI fails if this file is stale. Source of truth: `HomesFlow.prd.md` registry × 
 | AC-PROC-05 | Verified | T047b T050a | — | `test_AC_PROC_05_move_down_swaps_with_next_step`<br>`test_AC_PROC_05_move_is_noop_at_list_boundaries`<br>`test_AC_PROC_05_move_up_swaps_with_previous_step`<br>`test_AC_PROC_05_new_step_appends_at_end` |
 | AC-PROC-06 | Verified | T047a T050b | — | `test_AC_PROC_06_structure_changes_produce_activity_summaries` |
 | AC-PROC-07 | Verified | T047c T050c | — | `test_AC_PROC_07_guest_cannot_manage_step_structure` |
-| AC-PROC-08 | Implemented — test pending | T047d | T050d | — |
+| AC-PROC-08 | Verified | T047d T050d | — | `test_AC_PROC_08_photo_indicator_and_edit_controls`<br>`test_AC_PROC_08_tap_toggle_status_mapping`<br>`test_AC_PROC_08_terminal_statuses_strike_through` |
 | AC-SYNC-01 | Verified | T011 T020 T034 T037 T045 T053 T072 | T027 T038 | `test_AC_SYNC_01_conflict_decision_is_idempotent`<br>`test_AC_SYNC_01_home_timestamp_wins_matrix`<br>`test_AC_SYNC_01_provider_timestamp_wins_matrix`<br>`test_AC_SYNC_01_server_delete_matrix` |
 | AC-SYNC-02 | Implemented — test pending | T011 T072 | T035 T039 | — |
 | AC-SYNC-03 | Verified | T011 T036 T040 T072 | — | `test_AC_SYNC_03_permission_denied_revert_matrix` |
-| AC-SYNC-04 | Implemented — test pending | T015 T037 | T040a | — |
+| AC-SYNC-04 | Verified | T015 T037 T040a | — | `test_AC_SYNC_04_pending_state_announced_to_voiceover`<br>`test_AC_SYNC_04_pending_sync_visible_on_dashboard` |
 | AC-SYNC-05 | Planned | — | T074 T074a | — |
 | AC-SYNC-06 | Planned | — | T075 T075a | — |
 | AC-SYNC-07 | Planned | — | T076 T076a | — |
-| AC-USER-01 | Implemented — test pending | T025 T026 | T030 | — |
-| AC-USER-02 | Implemented — test pending | T025 | T031 | — |
+| AC-USER-01 | Verified | T025 T026 T030 | — | `test_AC_USER_01_invite_accepted_grants_role`<br>`test_AC_USER_01_invite_email_validation_and_token_shape` |
+| AC-USER-02 | Verified | T025 T031 | — | `test_AC_USER_02_revoked_token_invalid` |
 | AC-USER-03 | Planned | — | T027 T033a | — |
-| AC-USER-04 | Verified | T028 | T032 | `test_AC_USER_04_manager_can_update_step` |
+| AC-USER-04 | Verified | T028 T032 | — | `test_AC_USER_04_edit_role_can_modify_procedures`<br>`test_AC_USER_04_manager_can_update_step` |
 | AC-USER-05 | Verified | T028 T033 | — | `test_AC_USER_05_guest_role_read_only` |
-| AC-USER-06 | In progress | T028 T029 | T033b | — |
-| AC-USER-07 | In progress | T025 T026 | T033c | — |
+| AC-USER-06 | Verified | T028 T029 T033b | — | `test_AC_USER_06_concurrent_role_change_audit` |
+| AC-USER-07 | Verified | T025 T026 T033c | — | `test_AC_USER_07_paste_token_accepts_invite` |
 
 ## Functional requirements
 
@@ -105,9 +105,9 @@ CI fails if this file is stale. Source of truth: `HomesFlow.prd.md` registry × 
 | ID | Status | Done tasks | Pending tasks |
 |----|--------|------------|---------------|
 | US-ADMIN-01 | In progress | T014 T015 T016 T018 T019 T019a T020 T021 T021a T021b T021c T023 T024 T024a T024b T024c | T017 T022 T024d T024e T024f |
-| US-ADMIN-02 | In progress | T025 T026 | T027 T030 T031 T033a T033c |
-| US-ADMIN-03 | In progress | T028 T029 T033 | T032 T033b |
-| US-EDIT-01 | In progress | T041 T042 T043 T044 T045 T046 T047 T047a T047b T047c T047d T048 T049 T050 T050a T050b T050c | T050d |
+| US-ADMIN-02 | In progress | T025 T026 T030 T031 T033c | T027 T033a |
+| US-ADMIN-03 | Tasks done — no @covers | T028 T029 T032 T033 T033b | — |
+| US-EDIT-01 | Tasks done — no @covers | T041 T042 T043 T044 T045 T046 T047 T047a T047b T047c T047d T048 T049 T050 T050a T050b T050c T050d | — |
 | US-EDIT-02 | Tasks done — no @covers | T051 T052 T053 T054 T055 T056 | — |
 | US-GUEST-01 | In progress | T057 T058 T059 T062 T063a T063b | T064 |
 | US-GUEST-02 | Tasks done — no @covers | T060 T061 T063 T063c | — |

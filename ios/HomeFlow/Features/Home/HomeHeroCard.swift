@@ -80,7 +80,7 @@ struct HomeHeroCard: View {
             .padding(16)
             .frame(maxWidth: .infinity, alignment: .leading)
 
-            if home.isPendingSync {
+            if SyncIndicatorPolicy.showsBadge(for: home) {
                 syncBadge
                     .padding(12)
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
@@ -101,11 +101,7 @@ struct HomeHeroCard: View {
     }
 
     private var accessibilityText: String {
-        var parts = [home.name, home.locationLabel]
-        if home.isPendingSync {
-            parts.append("Not synced")
-        }
-        return parts.joined(separator: ", ")
+        SyncIndicatorPolicy.accessibilityLabel(for: home)
     }
 
     private var syncBadge: some View {

@@ -169,7 +169,7 @@ struct DashboardView: View {
             }
         }
 
-        if viewModel.homes.contains(where: \.isPendingSync) {
+        if SyncIndicatorPolicy.showsPendingBanner(homes: viewModel.homes) {
             Section {
                 Label(
                     "Some homes haven't synced to Supabase yet. Pull to refresh after confirming `supabase status` is running.",

@@ -1,6 +1,6 @@
 import SwiftUI
 
-// @covers AC-USER-01, FR-GUEST-02
+// @covers AC-USER-01, AC-USER-07, FR-GUEST-02
 
 struct InviteMemberView: View {
     let home: HomeSummary
@@ -112,10 +112,16 @@ struct AcceptInviteView: View {
 
     private func accept() async {
         guard let repo = appEnvironment?.memberRepository else { return }
+        // AC-USER-07: accept a bare token or a pasted invite link.
+        guard let extracted = InvitePolicy.extractToken(fromPastedText: token) else {
+            message = "That doesn't look like an invite code or link."
+            isError = true
+            return
+        }
         isWorking = true
         defer { isWorking = false }
         do {
-            _ = try await repo.acceptInvite(token: token.trimmingCharacters(in: .whitespacesAndNewlines))
+            _ = try await repo.acceptInvite(token: extracted)
             message = "Invite accepted — refresh your home list."
             isError = false
             onAccepted()

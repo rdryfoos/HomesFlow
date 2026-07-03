@@ -29,13 +29,10 @@ final class MemberRepository: ObservableObject {
 
     func createInvite(homeId: UUID, email: String, role: HomeRole) async throws -> InviteSummary {
         guard let userId = auth.session?.user.id else { throw AuthError.notSignedIn }
-        guard role == .manager || role == .guest else { throw MemberError.invalidInviteRole }
 
         let snapshot = try await fetchHomeMembers(homeId: homeId)
-        guard snapshot.currentUserRole == .owner else { throw MemberError.notAuthorized }
-
-        let trimmedEmail = email.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
-        guard trimmedEmail.contains("@") else { throw MemberError.invalidEmail }
+        try InvitePolicy.validate(email: email, role: role, currentUserRole: snapshot.currentUserRole)
+        let trimmedEmail = InvitePolicy.normalizedEmail(email)
 
         struct InviteInsert: Encodable {
             let home_id: UUID
@@ -45,7 +42,7 @@ final class MemberRepository: ObservableObject {
             let invited_by: UUID
         }
 
-        let token = UUID().uuidString.replacingOccurrences(of: "-", with: "")
+        let token = InvitePolicy.generateToken()
         let row = InviteInsert(
             home_id: homeId,
             email: trimmedEmail,
@@ -137,7 +134,7 @@ final class MemberRepository: ObservableObject {
             entityType: "membership",
             entityId: membershipId,
             action: "role_changed",
-            summary: "Changed \(member.email) from \(member.role.rawValue) to \(role.rawValue)"
+            summary: RoleChangeAudit.summary(email: member.email, from: member.role, to: role)
         )
     }
 
@@ -224,10 +221,7 @@ final class MemberRepository: ObservableObject {
 
         for row in rows {
             if let cached = existing.first(where: { $0.id == row.id }) {
-                cached.role = row.role.rawValue
-                cached.displayEmail = row.profiles?.email
-                cached.displayName = row.profiles?.displayName
-                cached.serverUpdatedAt = row.updatedAt
+                MembershipMerge.apply(row, to: cached)
             } else {
                 modelContext.insert(CachedMembership(
                     id: row.id,
@@ -297,7 +291,7 @@ final class MemberRepository: ObservableObject {
         }
 
         let pendingInvites = invites
-            .filter { $0.inviteStatus == .pending }
+            .filter { InvitePolicy.isAcceptable(status: $0.inviteStatus) }
             .map {
                 InviteSummary(
                     id: $0.id,

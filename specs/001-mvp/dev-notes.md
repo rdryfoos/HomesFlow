@@ -145,11 +145,13 @@ Section UI label **Files** implements document library (FR-HOME-03); code folder
 - **Phase 12 (T074–T076a)** — data-type-aware conflict model: protect terminal step statuses, human conflict resolution, connectivity-gated structural actions (AC-SYNC-05…07)
 - **Phase 13 (T077–T086)** — Log Book: user-authored household/procedure entries, unified view, grace-window editing, Guest exclusion (FR-LOG-02, AC-LOG-01…06)
 - **T035/T039** — AC-SYNC-02 field-level merge — **deferred post-MVP** (2026-07-03 decision; pairs with version vectors)
-- **T030–T033c** — member/invite unit tests; **T027/T033a** offline invite conflict
+- **T027/T033a** — offline invite conflict (implementation + test)
 - **T072a** — performance baselines (pair with device smoke session: launch, dashboard load, sync round-trip, Quick Look on large PDF)
 - **T069a** — manual VoiceOver + largest Dynamic Type pass on device
 - **T024d–f** — iPad layout tests (deferred pending snapshot/XCUITest infra; manual iPad pass until then)
-- **XCUITests** T017, T069; **T040a** AC-SYNC-04 test; **T050d** AC-PROC-08 test
+- **XCUITests** T017, T069 (note: `HomeFlowUITests.testLaunch` only passes on a simulator with a signed-in session — it asserts the HomesFlow dashboard nav bar, so a signed-out sim shows the auth screen instead)
+
+Test-debt sweep (2026-07-03): T030–T033c, T040a, T050d closed via extracted seams (`InvitePolicy`, `RoleChangeAudit`, `MembershipMerge`, `SyncIndicatorPolicy`, `StepRowPresentation`) — 36/50 ACs verified. The AC-USER-04 test exposed a real bug: `PermissionService` let Managers create/update/delete owner-only procedures, providers, and documents because those cases ignored visibility; now all mutations go through `visibilityAllows`. Bonus UX fix: pasting a full `homeflow://invite?token=…` link into Accept Invite now works (previously only the bare token did).
 
 ---
 
