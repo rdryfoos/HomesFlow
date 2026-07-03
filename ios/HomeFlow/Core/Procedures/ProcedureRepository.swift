@@ -3,7 +3,7 @@ import SwiftData
 import Supabase
 import UIKit
 
-// @covers FR-PROC-01, FR-PROC-02, FR-PROC-03, AC-PROC-01, AC-PROC-02, AC-PROC-03, AC-PROC-04, AC-PROC-05, AC-PROC-06, AC-PROC-07, AC-GUEST-03, AC-GUEST-05, FR-GUEST-01
+// @covers AC-PROC-01, FR-PROC-01, FR-PROC-02, FR-PROC-03, AC-PROC-02, AC-PROC-03, AC-PROC-04, AC-PROC-05, AC-PROC-06, AC-PROC-07, AC-GUEST-03, AC-GUEST-05, FR-GUEST-01, AC-SYNC-01
 
 @MainActor
 final class ProcedureRepository: ObservableObject {
@@ -856,7 +856,7 @@ final class ProcedureRepository: ObservableObject {
         }
 
         syncEngine.postNotification(
-            "Your offline change to \"\(server.title)\" was overwritten by a newer update."
+            OverwriteNotificationPolicy.message(for: .procedureStep(title: server.title))
         )
     }
 

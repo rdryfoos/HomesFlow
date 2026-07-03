@@ -53,7 +53,7 @@ CI fails if this file is stale. Source of truth: `HomesFlow.prd.md` registry × 
 | AC-PROC-06 | Verified | T047a T050b | — | `test_AC_PROC_06_structure_changes_produce_activity_summaries` |
 | AC-PROC-07 | Verified | T047c T050c | — | `test_AC_PROC_07_guest_cannot_manage_step_structure` |
 | AC-PROC-08 | Verified | T047d T050d | — | `test_AC_PROC_08_photo_indicator_and_edit_controls`<br>`test_AC_PROC_08_tap_toggle_status_mapping`<br>`test_AC_PROC_08_terminal_statuses_strike_through` |
-| AC-SYNC-01 | Verified | T011 T020 T034 T037 T045 T053 T072 | T027 T038 | `test_AC_SYNC_01_conflict_decision_is_idempotent`<br>`test_AC_SYNC_01_home_timestamp_wins_matrix`<br>`test_AC_SYNC_01_provider_timestamp_wins_matrix`<br>`test_AC_SYNC_01_server_delete_matrix` |
+| AC-SYNC-01 | Verified | T011 T020 T034 T037 T038 T045 T053 T072 | T027 | `test_AC_SYNC_01_conflict_decision_is_idempotent`<br>`test_AC_SYNC_01_home_timestamp_wins_matrix`<br>`test_AC_SYNC_01_offline_overwrite_notifies_loser`<br>`test_AC_SYNC_01_provider_timestamp_wins_matrix`<br>`test_AC_SYNC_01_server_delete_matrix` |
 | AC-SYNC-02 | Implemented — test pending | T011 T072 | T035 T039 | — |
 | AC-SYNC-03 | Verified | T011 T036 T040 T072 | — | `test_AC_SYNC_03_permission_denied_revert_matrix` |
 | AC-SYNC-04 | Verified | T015 T037 T040a | — | `test_AC_SYNC_04_pending_state_announced_to_voiceover`<br>`test_AC_SYNC_04_pending_sync_visible_on_dashboard` |

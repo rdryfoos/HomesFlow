@@ -247,7 +247,7 @@ final class ServiceProviderRepository: ObservableObject {
                     if cached.sync == .pending {
                         removeOutboxEntries(for: cached.id)
                         syncEngine.postNotification(
-                            "Your offline edit to \(row.companyName) was overwritten by a newer update."
+                            OverwriteNotificationPolicy.message(for: .serviceProvider(name: row.companyName))
                         )
                     }
                     applyServer(row, to: cached)

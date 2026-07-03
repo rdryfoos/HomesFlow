@@ -104,6 +104,45 @@ final class SyncConflictMatrixTests: XCTestCase {
         assertMeetsSC04(passed: passed, total: scenarios.count, matrix: "server delete")
     }
 
+    // MARK: - AC-SYNC-01 — loser notification on timestamp-wins overwrite
+
+    func test_AC_SYNC_01_offline_overwrite_notifies_loser() {
+        struct NotifyScenario {
+            let name: String
+            let localPending: Bool
+            let localUpdatedAt: Date
+            let serverUpdatedAt: Date?
+            let expectNotify: Bool
+        }
+
+        let scenarios: [NotifyScenario] = [
+            .init(name: "pending edit, server newer notifies", localPending: true, localUpdatedAt: t100, serverUpdatedAt: t200, expectNotify: true),
+            .init(name: "pending edit, local newer keeps edit silent", localPending: true, localUpdatedAt: t300, serverUpdatedAt: t200, expectNotify: false),
+            .init(name: "pending edit, equal timestamps keeps edit silent", localPending: true, localUpdatedAt: t200, serverUpdatedAt: t200, expectNotify: false),
+            .init(name: "pending edit, missing server timestamp keeps edit silent", localPending: true, localUpdatedAt: t100, serverUpdatedAt: nil, expectNotify: false),
+            .init(name: "synced row, server newer does not notify", localPending: false, localUpdatedAt: t100, serverUpdatedAt: t200, expectNotify: false)
+        ]
+
+        for scenario in scenarios {
+            let notify = OverwriteNotificationPolicy.shouldNotifyLoser(
+                localPending: scenario.localPending,
+                localUpdatedAt: scenario.localUpdatedAt,
+                serverUpdatedAt: scenario.serverUpdatedAt
+            )
+            XCTAssertEqual(notify, scenario.expectNotify, scenario.name)
+        }
+
+        let homeMessage = OverwriteNotificationPolicy.message(for: .home(name: "Lake Cabin"))
+        XCTAssertTrue(homeMessage.contains("Lake Cabin"))
+        XCTAssertTrue(homeMessage.localizedCaseInsensitiveContains("overwritten"))
+
+        let stepMessage = OverwriteNotificationPolicy.message(for: .procedureStep(title: "Shut off water"))
+        XCTAssertTrue(stepMessage.contains("Shut off water"))
+
+        let providerMessage = OverwriteNotificationPolicy.message(for: .serviceProvider(name: "Acme HVAC"))
+        XCTAssertTrue(providerMessage.contains("Acme HVAC"))
+    }
+
     // MARK: - AC-SYNC-03 — permission revert matrix
 
     func test_AC_SYNC_03_permission_denied_revert_matrix() {

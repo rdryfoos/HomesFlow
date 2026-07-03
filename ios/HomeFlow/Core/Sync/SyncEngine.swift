@@ -410,7 +410,7 @@ final class SyncEngine: ObservableObject {
 
         if let existing {
             if existing.sync == .pending {
-                if HomeConflictResolver.shouldApplyServer(
+                if OverwriteNotificationPolicy.shouldNotifyLoser(
                     localPending: true,
                     localUpdatedAt: existing.localUpdatedAt,
                     serverUpdatedAt: dto.updatedAt
@@ -422,6 +422,9 @@ final class SyncEngine: ObservableObject {
                         entityId: dto.id,
                         action: "conflict_resolved",
                         summary: "Home edit conflict — server version kept for \(dto.name)"
+                    )
+                    postNotification(
+                        OverwriteNotificationPolicy.message(for: .home(name: dto.name))
                     )
                     applyServerHome(dto, to: existing)
                 }

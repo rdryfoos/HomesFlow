@@ -13,7 +13,7 @@
 | 1–2 Setup + foundation | **Complete** | — |
 | 3–4 Auth, dashboard, homes | **Mostly complete** | XCUITest T017 |
 | 5 Invites & roles | **Mostly complete** | Deep links T026; offline conflict T027/T033a |
-| 6 Offline sync | **Partial** | Sync test T038; field merge T035 deferred post-MVP |
+| 6 Offline sync | **Partial** | Field merge T035 deferred post-MVP |
 | 7 Procedures | **Complete** | — |
 | 8–10 P2/P3 features | **Partial** | Phase 9 guest views done; Files, Settings next |
 | 11 Hardening | Not started | Re-run analyze after P1 checkpoint |
@@ -141,7 +141,7 @@ Partial deliverables documented in [dev-notes.md](./dev-notes.md). **Do not** en
 
 ### Tests
 
-- [ ] T038 [P] [NFR-OFFL-01] Unit test `test_AC_SYNC_01_offline_overwrite_notifies_loser` — **Traces**: AC-SYNC-01
+- [x] T038 [P] [NFR-OFFL-01] Unit test `test_AC_SYNC_01_offline_overwrite_notifies_loser` — **Traces**: AC-SYNC-01 — *SyncConflictMatrixTests over OverwriteNotificationPolicy; SyncEngine home merge now posts loser notification (steps/providers already did)*
 - [ ] T039 [P] [NFR-OFFL-01] Unit test `test_AC_SYNC_02_disjoint_fields_merge` — **Traces**: AC-SYNC-02 — *deferred post-MVP with T035*
 - [x] T040 [NFR-OFFL-01] Unit test `test_AC_SYNC_03_stale_permission_reverts` — **Traces**: AC-SYNC-03 — *covered by SyncConflictMatrixTests.test_AC_SYNC_03_permission_denied_revert_matrix over PermissionRevertPolicy*
 - [x] T040a [P] [NFR-OFFL-01] Unit test `test_AC_SYNC_04_pending_sync_visible_on_dashboard` — **Traces**: AC-SYNC-04 — *SyncIndicatorTests over SyncIndicatorPolicy*

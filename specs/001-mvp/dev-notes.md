@@ -153,6 +153,8 @@ Section UI label **Files** implements document library (FR-HOME-03); code folder
 
 Test-debt sweep (2026-07-03): T030–T033c, T040a, T050d closed via extracted seams (`InvitePolicy`, `RoleChangeAudit`, `MembershipMerge`, `SyncIndicatorPolicy`, `StepRowPresentation`) — 36/50 ACs verified. The AC-USER-04 test exposed a real bug: `PermissionService` let Managers create/update/delete owner-only procedures, providers, and documents because those cases ignored visibility; now all mutations go through `visibilityAllows`. Bonus UX fix: pasting a full `homeflow://invite?token=…` link into Accept Invite now works (previously only the bare token did).
 
+T038 (2026-07-03): `OverwriteNotificationPolicy` centralizes AC-SYNC-01 loser-notification rules; `SyncEngine.mergeHome` now posts the banner when a pending home edit loses to a newer server timestamp (steps and providers already did). Test: `test_AC_SYNC_01_offline_overwrite_notifies_loser` in SyncConflictMatrixTests.
+
 ---
 
 ## Traceability Gate 2
