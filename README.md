@@ -1,6 +1,6 @@
 # HomesFlow
 
-> I'm a product and engineering leader with 25 years in software delivery. I built this to find out whether AI-assisted development can hold up to the same rigor I've always demanded from teams. Short answer: it can, and the sprint that proved it took a few days, not months.
+> I'm a product and engineering leader with 25 years in software delivery. I built this to find out whether AI-assisted development can hold up to the same rigor I've always encouraged from teams. Short answer: it can, and the sprint that proved it took a few days, not months.
 
 A home management app for owners of multiple properties who need to coordinate maintenance and usage with family or a caretaking team.
 
