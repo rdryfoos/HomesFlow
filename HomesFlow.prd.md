@@ -37,10 +37,6 @@ HomesFlow is a responsive iOS app (iPhone and iPad) that empowers primary homeow
 * **US-EDIT-01** — As a Manager user, I want to update maintenance tasks, so that others can see what's done or outstanding.
 * **US-EDIT-02** — As a Manager user, I want to view and modify service provider details, so I can coordinate repairs or services if needed.
 
-**Persona: Product Team (Internal)**
-
-* **US-RENAME-01** — As a product team member, I want the app name **HomesFlow** applied consistently across all user-facing surfaces and project artifacts, so that users, reviewers, and contributors always encounter a single coherent brand name.
-
 **Persona: Guest (Guest User)**
 
 * **US-GUEST-01** — As a Guest, I want to see only guest-appropriate information (like WiFi codes/rules), so my access is controlled and simple.
@@ -263,15 +259,6 @@ Imagine Diane, a homeowner who spends most of her time in Florida, but owns a ch
 * **AC-GUEST-04** — Given a Guest opens a guest procedure, when they view it, then they can see step descriptions and read-only status but cannot change step statuses.
 * **AC-GUEST-05** — Given a Guest attempts to mark a guest step complete, when they submit, then the app rejects the change and logs the attempted unauthorized action for audit.
 
-### US-RENAME-01 — App name "HomesFlow" applied consistently
-
-* **AC-RENAME-01** — Given any user-facing surface (App Store listing, launch screen wordmark, onboarding copy, in-app navigation titles, email invite templates, push notification sender name), when it displays the app name, then it reads **HomesFlow**.
-* **AC-RENAME-02** — Given any project artifact (PRD, spec, README, glossary, plan, tasks, and release checklist files), when it references the app name as a proper noun, then it uses **HomesFlow** consistently with no occurrences of "HomeFlow".
-* **AC-RENAME-03** — Given the Xcode project, Swift source files, test targets, and `project.yml` configuration, when they reference the app display name or bundle identifier display string, then all values align to **HomesFlow**.
-* **AC-RENAME-04** — Given the Supabase schema, storage bucket names, and RLS policy descriptions reference the app name, when reviewed, then no "HomeFlow" strings remain in any migration file or config.
-
----
-
 ### Cross-cutting / NFR-OFFL-01 — Offline sync & conflict resolution
 
 > Conflict model evolution (decided 2026-07-03, source: story map; refined same day): v1 ships timestamp-wins (AC-SYNC-01, implemented and verified). The model is refined to be **data-type-aware**: terminal step statuses are protected (AC-SYNC-05), other status conflicts resolve automatically with loser notification — no human conflict-resolution UI (AC-SYNC-06), and structural actions are connectivity-gated (AC-SYNC-07). Field-level merge (AC-SYNC-02) is deferred to a later phase alongside version vectors.
@@ -312,7 +299,6 @@ Imagine Diane, a homeowner who spends most of her time in Florida, but owns a ch
 | US-EDIT-02 | User Story | Manager user manages providers |
 | US-GUEST-01 | User Story | Guest sees limited info |
 | US-GUEST-02 | User Story | Guest views guest procedures |
-| US-RENAME-01 | User Story | App name "HomesFlow" applied consistently |
 | FR-USER-01 | FR | Multi-role access per home |
 | FR-AUTH-01 | FR | OAuth / Apple sign-in |
 | FR-USER-02 | FR | Owner user management |
@@ -342,4 +328,3 @@ Imagine Diane, a homeowner who spends most of her time in Florida, but owns a ch
 | AC-SYNC-01 … AC-SYNC-07 | AC | Offline sync scenarios (05–07: data-type-aware model) |
 | AC-LOG-01 … AC-LOG-06 | AC | Log Book scenarios |
 | AC-A11Y-01 … AC-A11Y-03 | AC | Accessibility scenarios |
-| AC-RENAME-01 … AC-RENAME-04 | AC | App name "HomesFlow" consistency scenarios |
