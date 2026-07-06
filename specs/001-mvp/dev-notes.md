@@ -136,6 +136,13 @@ Section UI label **Files** implements document library (FR-HOME-03); code folder
 - Deep link / Universal Links **not wired** — manual token paste only
 - Email delivery of invite links **not implemented**
 
+### Pending invite UX (2026-07-06)
+
+- **Tap invite** → detail (share link + revoke). **Never** one-tap revoke from the list.
+- **iPad:** `PeopleSelection` tagged list (`.member` / `.invite`) drives split detail — see `PeopleSelection.swift`; do not use bare `UUID?` selection.
+- **iPhone:** same `PendingInviteDetailView` in a **sheet** (`inviteDetailSheet`); compact width has no split column.
+- Revoke requires confirmation dialog (**AC-USER-02**); disabled offline per **AC-SYNC-07**.
+
 ---
 
 ## Known gaps (next spec-aligned work)

@@ -32,7 +32,7 @@ struct InviteMemberView: View {
 
                 if let createdInvite {
                     Section("Invite link") {
-                        ShareLink(item: inviteLink(for: createdInvite.token)) {
+                        ShareLink(item: InvitePolicy.inviteLink(token: createdInvite.token)) {
                             Label("Share invite link", systemImage: "square.and.arrow.up")
                         }
                         Text("The invitee must sign in with \(createdInvite.email) to accept.")
@@ -82,10 +82,6 @@ struct InviteMemberView: View {
         } catch {
             errorMessage = error.localizedDescription
         }
-    }
-
-    private func inviteLink(for token: String) -> URL {
-        URL(string: "homeflow://invite?token=\(token)")!
     }
 }
 

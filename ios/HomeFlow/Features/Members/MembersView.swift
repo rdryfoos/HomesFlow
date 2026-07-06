@@ -1,6 +1,11 @@
 import SwiftUI
 
 // @covers FR-USER-02, AC-USER-01, AC-USER-02, AC-USER-04…06, FR-NAV-01, AC-HOME-12, AC-SYNC-07
+//
+// People tab layout:
+// - iPad (regular): NavigationSplitView + `PeopleSelection` tagged list → detail column.
+// - iPhone (compact): no list selection; pending invites use `inviteDetailSheet` (do not
+//   forget the sheet when changing iPad selection plumbing).
 
 struct MembersView: View {
     let home: HomeSummary
@@ -10,8 +15,11 @@ struct MembersView: View {
 
     @StateObject private var viewModel = MembersViewModel()
     @State private var showInviteSheet = false
-    @State private var selectedMemberId: UUID?
+    @State private var selectedPeople: PeopleSelection?
     @State private var memberPendingRemoval: MemberSummary?
+    @State private var invitePendingRevoke: InviteSummary?
+    /// iPhone only — compact width has no split detail column.
+    @State private var inviteDetailSheet: InviteSummary?
 
     private var canManageMembersOnline: Bool {
         viewModel.snapshot.currentUserRole == .owner
@@ -19,151 +27,244 @@ struct MembersView: View {
     }
 
     var body: some View {
-        Group {
-            if sizeClass == .regular {
-                NavigationSplitView {
-                    membersList(useSelection: true)
-                } detail: {
-                    memberDetailPanel
+        content
+            .overlay { loadingOverlay }
+            .refreshable { await reload() }
+            .toolbar { inviteToolbar }
+            .safeAreaInset(edge: .bottom) { offlineMembersHint }
+            .sheet(isPresented: $showInviteSheet) { createInviteSheet }
+            .sheet(item: $inviteDetailSheet) { invite in
+                compactInviteDetailSheet(invite)
+            }
+            .task { await reload() }
+            .onChange(of: viewModel.snapshot.members.map(\.id)) { _, _ in
+                repairSelectionIfNeeded()
+            }
+            .onChange(of: viewModel.snapshot.pendingInvites.map(\.id)) { _, _ in
+                repairSelectionIfNeeded()
+            }
+            .alert("Error", isPresented: errorAlertBinding) {
+                Button("OK", role: .cancel) {}
+            } message: {
+                Text(viewModel.errorMessage ?? "")
+            }
+            .confirmationDialog(
+                "Remove \(memberPendingRemoval?.displayName ?? "member")?",
+                isPresented: memberRemovalDialogBinding,
+                titleVisibility: .visible
+            ) {
+                Button("Remove from home", role: .destructive) {
+                    confirmMemberRemoval()
                 }
-            } else {
-                membersList(useSelection: false)
+            } message: {
+                Text("They will lose access to this home on their next sync.")
             }
-        }
-        .overlay {
-            if viewModel.isLoading && viewModel.snapshot.members.isEmpty {
-                ProgressView("Loading members…")
-            }
-        }
-        .refreshable {
-            await reload()
-        }
-        .toolbar {
-            // AC-HOME-12: parallel add construction across sections.
-            if viewModel.snapshot.currentUserRole == .owner {
-                ToolbarItem(placement: .primaryAction) {
-                    Button {
-                        showInviteSheet = true
-                    } label: {
-                        Label(SectionAddAction.people.label, systemImage: SectionAddAction.people.systemImage)
-                    }
-                    .disabled(!network.isConnected)
-                    .accessibilityLabel(SectionAddAction.people.accessibilityLabel)
+            .confirmationDialog(
+                "Revoke invite for \(invitePendingRevoke?.email ?? "invitee")?",
+                isPresented: inviteRevokeDialogBinding,
+                titleVisibility: .visible
+            ) {
+                Button("Revoke invite", role: .destructive) {
+                    confirmInviteRevoke()
                 }
-            }
-        }
-        .safeAreaInset(edge: .bottom) {
-            if viewModel.snapshot.currentUserRole == .owner && !network.isConnected {
-                Text(StructuralActionPolicy.offlineMessage(for: .members))
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
-                    .frame(maxWidth: .infinity)
-                    .padding(.horizontal)
-                    .padding(.vertical, 8)
-                    .background(.bar)
-            }
-        }
-        .sheet(isPresented: $showInviteSheet) {
-            InviteMemberView(home: home) {
-                Task { await reload() }
-            }
-            .environment(\.appEnvironment, appEnvironment)
-        }
-        .task { await reload() }
-        .onChange(of: viewModel.snapshot.members.map(\.id)) { _, ids in
-            guard sizeClass == .regular else { return }
-            if let selectedMemberId, ids.contains(selectedMemberId) { return }
-            selectedMemberId = ids.first
-        }
-        .alert("Error", isPresented: Binding(
-            get: { viewModel.errorMessage != nil },
-            set: { if !$0 { viewModel.errorMessage = nil } }
-        )) {
-            Button("OK", role: .cancel) {}
-        } message: {
-            Text(viewModel.errorMessage ?? "")
-        }
-        // FR-USER-02: owner removes member; access lost on next sync.
-        .confirmationDialog(
-            "Remove \(memberPendingRemoval?.displayName ?? "member")?",
-            isPresented: Binding(
-                get: { memberPendingRemoval != nil },
-                set: { if !$0 { memberPendingRemoval = nil } }
-            ),
-            titleVisibility: .visible
-        ) {
-            Button("Remove from home", role: .destructive) {
-                guard let member = memberPendingRemoval else { return }
-                memberPendingRemoval = nil
-                Task {
-                    await viewModel.remove(
-                        homeId: home.id,
-                        membershipId: member.id,
-                        using: appEnvironment?.memberRepository
-                    )
+            } message: {
+                if let email = invitePendingRevoke?.email {
+                    Text(InvitePolicy.revokeConfirmationMessage(email: email))
                 }
             }
-        } message: {
-            Text("They will lose access to this home on their next sync.")
+    }
+
+    @ViewBuilder
+    private var content: some View {
+        if sizeClass == .regular {
+            NavigationSplitView {
+                membersList(useSelection: true)
+            } detail: {
+                peopleDetailPanel
+            }
+        } else {
+            membersList(useSelection: false)
         }
     }
 
     @ViewBuilder
-    private var memberDetailPanel: some View {
-        if let member = selectedMember {
-            MemberDetailPanel(
-                member: member,
-                canManage: canManageMembersOnline,
-                canRemove: canManageMembersOnline && MemberRemovalPolicy.canRemove(
-                    currentUserRole: viewModel.snapshot.currentUserRole,
-                    memberRole: member.role
-                ),
-                onRoleChange: { role in
-                    Task {
-                        await viewModel.updateRole(
-                            homeId: home.id,
-                            membershipId: member.id,
-                            role: role,
-                            using: appEnvironment?.memberRepository
-                        )
-                    }
-                },
-                onRemove: { memberPendingRemoval = member }
-            )
-        } else if viewModel.isLoading {
+    private var loadingOverlay: some View {
+        if viewModel.isLoading && viewModel.snapshot.members.isEmpty {
             ProgressView("Loading members…")
-        } else {
-            ContentUnavailableView(
-                "Select a member",
-                systemImage: "person.2",
-                description: Text("Choose someone from the list to view their details.")
+        }
+    }
+
+    @ToolbarContentBuilder
+    private var inviteToolbar: some ToolbarContent {
+        if viewModel.snapshot.currentUserRole == .owner {
+            ToolbarItem(placement: .primaryAction) {
+                Button {
+                    showInviteSheet = true
+                } label: {
+                    Label(SectionAddAction.people.label, systemImage: SectionAddAction.people.systemImage)
+                }
+                .disabled(!network.isConnected)
+                .accessibilityLabel(SectionAddAction.people.accessibilityLabel)
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var offlineMembersHint: some View {
+        if viewModel.snapshot.currentUserRole == .owner && !network.isConnected {
+            Text(StructuralActionPolicy.offlineMessage(for: .members))
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+                .frame(maxWidth: .infinity)
+                .padding(.horizontal)
+                .padding(.vertical, 8)
+                .background(.bar)
+        }
+    }
+
+    private var createInviteSheet: some View {
+        InviteMemberView(home: home) {
+            Task { await reload() }
+        }
+        .environment(\.appEnvironment, appEnvironment)
+    }
+
+    private func compactInviteDetailSheet(_ invite: InviteSummary) -> some View {
+        NavigationStack {
+            PendingInviteDetailView(
+                invite: invite,
+                canRevoke: canManageMembersOnline,
+                onRevoke: { invitePendingRevoke = invite }
+            )
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Close") { inviteDetailSheet = nil }
+                }
+            }
+        }
+    }
+
+    private var errorAlertBinding: Binding<Bool> {
+        Binding(
+            get: { viewModel.errorMessage != nil },
+            set: { if !$0 { viewModel.errorMessage = nil } }
+        )
+    }
+
+    private var memberRemovalDialogBinding: Binding<Bool> {
+        Binding(
+            get: { memberPendingRemoval != nil },
+            set: { if !$0 { memberPendingRemoval = nil } }
+        )
+    }
+
+    private var inviteRevokeDialogBinding: Binding<Bool> {
+        Binding(
+            get: { invitePendingRevoke != nil },
+            set: { if !$0 { invitePendingRevoke = nil } }
+        )
+    }
+
+    private func confirmMemberRemoval() {
+        guard let member = memberPendingRemoval else { return }
+        memberPendingRemoval = nil
+        Task {
+            await viewModel.remove(
+                homeId: home.id,
+                membershipId: member.id,
+                using: appEnvironment?.memberRepository
             )
         }
     }
 
-    private var selectedMember: MemberSummary? {
-        if let selectedMemberId,
-           let member = viewModel.snapshot.members.first(where: { $0.id == selectedMemberId }) {
-            return member
+    private func confirmInviteRevoke() {
+        guard let invite = invitePendingRevoke else { return }
+        invitePendingRevoke = nil
+        inviteDetailSheet = nil
+        Task {
+            await viewModel.revoke(
+                homeId: home.id,
+                inviteId: invite.id,
+                using: appEnvironment?.memberRepository
+            )
+            repairSelectionIfNeeded()
         }
-        return viewModel.snapshot.members.first
+    }
+
+    @ViewBuilder
+    private var peopleDetailPanel: some View {
+        switch selectedPeople {
+        case .member(let memberId):
+            if let member = viewModel.snapshot.members.first(where: { $0.id == memberId }) {
+                MemberDetailPanel(
+                    member: member,
+                    canManage: canManageMembersOnline,
+                    canRemove: canManageMembersOnline && MemberRemovalPolicy.canRemove(
+                        currentUserRole: viewModel.snapshot.currentUserRole,
+                        memberRole: member.role
+                    ),
+                    onRoleChange: { role in
+                        Task {
+                            await viewModel.updateRole(
+                                homeId: home.id,
+                                membershipId: member.id,
+                                role: role,
+                                using: appEnvironment?.memberRepository
+                            )
+                        }
+                    },
+                    onRemove: { memberPendingRemoval = member }
+                )
+            } else {
+                peoplePlaceholder
+            }
+        case .invite(let inviteId):
+            if let invite = viewModel.snapshot.pendingInvites.first(where: { $0.id == inviteId }) {
+                PendingInviteDetailView(
+                    invite: invite,
+                    canRevoke: canManageMembersOnline,
+                    onRevoke: { invitePendingRevoke = invite }
+                )
+            } else {
+                peoplePlaceholder
+            }
+        case nil:
+            peoplePlaceholder
+        }
+    }
+
+    @ViewBuilder
+    private var peoplePlaceholder: some View {
+        if viewModel.isLoading {
+            ProgressView("Loading members…")
+        } else {
+            ContentUnavailableView(
+                "Select a person or invite",
+                systemImage: "person.2",
+                description: Text("Choose a member or pending invite to view details.")
+            )
+        }
     }
 
     @ViewBuilder
     private func membersList(useSelection: Bool) -> some View {
-        if useSelection && !viewModel.snapshot.members.isEmpty {
-            List(selection: $selectedMemberId) {
-                membersSections(showRolePicker: false)
+        if useSelection && hasSelectableRows {
+            List(selection: $selectedPeople) {
+                membersSections(showRolePicker: false, useSelection: true)
             }
         } else {
             List {
-                membersSections(showRolePicker: canManageMembersOnline)
+                membersSections(showRolePicker: canManageMembersOnline, useSelection: false)
             }
         }
     }
 
+    private var hasSelectableRows: Bool {
+        !viewModel.snapshot.members.isEmpty || !viewModel.snapshot.pendingInvites.isEmpty
+    }
+
     @ViewBuilder
-    private func membersSections(showRolePicker: Bool) -> some View {
+    private func membersSections(showRolePicker: Bool, useSelection: Bool) -> some View {
         Section("Members") {
             if viewModel.snapshot.members.isEmpty && !viewModel.isLoading {
                 ContentUnavailableView(
@@ -189,7 +290,7 @@ struct MembersView: View {
                             }
                         }
                     )
-                    .tag(member.id)
+                    .tag(PeopleSelection.member(member.id))
                     .swipeActions(edge: .trailing, allowsFullSwipe: false) {
                         if canManageMembersOnline && MemberRemovalPolicy.canRemove(
                             currentUserRole: viewModel.snapshot.currentUserRole,
@@ -208,27 +309,41 @@ struct MembersView: View {
         if !viewModel.snapshot.pendingInvites.isEmpty {
             Section("Pending invites") {
                 ForEach(viewModel.snapshot.pendingInvites) { invite in
-                    InviteRow(
-                        invite: invite,
-                        canRevoke: canManageMembersOnline,
-                        onRevoke: {
-                            Task {
-                                await viewModel.revoke(
-                                    homeId: home.id,
-                                    inviteId: invite.id,
-                                    using: appEnvironment?.memberRepository
-                                )
-                            }
-                        }
-                    )
+                    pendingInviteRow(invite: invite, useSelection: useSelection)
                 }
             }
         }
     }
 
+    @ViewBuilder
+    private func pendingInviteRow(invite: InviteSummary, useSelection: Bool) -> some View {
+        if useSelection {
+            InviteRow(invite: invite)
+                .tag(PeopleSelection.invite(invite.id))
+        } else {
+            Button {
+                inviteDetailSheet = invite
+            } label: {
+                InviteRow(invite: invite)
+            }
+            .buttonStyle(.plain)
+            .accessibilityHint("Opens invite details and share link")
+        }
+    }
+
+    private func repairSelectionIfNeeded() {
+        guard sizeClass == .regular else { return }
+        selectedPeople = PeopleSelectionRepair.repair(
+            current: selectedPeople,
+            memberIds: viewModel.snapshot.members.map(\.id),
+            inviteIds: viewModel.snapshot.pendingInvites.map(\.id)
+        )
+    }
+
     private func reload() async {
         guard let repo = appEnvironment?.memberRepository else { return }
         await viewModel.load(homeId: home.id, using: repo)
+        repairSelectionIfNeeded()
     }
 }
 
@@ -301,34 +416,16 @@ private struct MemberRow: View {
 
 private struct InviteRow: View {
     let invite: InviteSummary
-    let canRevoke: Bool
-    let onRevoke: () -> Void
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            HStack {
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(invite.email).font(.headline)
-                    Text("\(invite.role.displayName) · Pending")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
-                Spacer()
-                if canRevoke {
-                    Button("Revoke", role: .destructive, action: onRevoke)
-                        .font(.caption)
-                }
-            }
-            ShareLink(item: inviteLink(for: invite.token)) {
-                Label("Copy invite link", systemImage: "link")
-                    .font(.caption)
-            }
+        VStack(alignment: .leading, spacing: 2) {
+            Text(invite.email).font(.headline)
+            Text("\(invite.role.displayName) · Pending")
+                .font(.caption)
+                .foregroundStyle(.secondary)
         }
         .padding(.vertical, 4)
-    }
-
-    private func inviteLink(for token: String) -> URL {
-        URL(string: "homeflow://invite?token=\(token)")!
+        .contentShape(Rectangle())
     }
 }
 

@@ -31,6 +31,15 @@ enum InvitePolicy {
 
     /// AC-USER-07: accept either a bare token or a pasted invite link
     /// (`homeflow://invite?token=…`). Returns nil when no token is present.
+    static func inviteLink(token: String) -> URL {
+        URL(string: "homeflow://invite?token=\(token)")!
+    }
+
+    /// AC-USER-02: destructive revoke copy for confirmation dialogs.
+    static func revokeConfirmationMessage(email: String) -> String {
+        "They won't be able to join with this invite link."
+    }
+
     static func extractToken(fromPastedText text: String) -> String? {
         let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return nil }
