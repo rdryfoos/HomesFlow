@@ -25,7 +25,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Prepare Debug secrets for CI build
-        run: cp ios/HomeFlow/Resources/Secrets.xcconfig.example ios/HomeFlow/Resources/Secrets.xcconfig
+        run: |
+          cp ios/HomeFlow/Resources/Secrets.xcconfig.example ios/HomeFlow/Resources/Secrets.xcconfig
+          cp ios/HomeFlow/Resources/Secrets.Release.xcconfig.example ios/HomeFlow/Resources/Secrets.Release.xcconfig
       - name: Install tooling
         run: brew install xcodegen swiftlint
       - name: Generate Xcode project
