@@ -31,9 +31,18 @@ final class HomeRepository: ObservableObject {
         if NetworkMonitor.shared.isConnected {
             await syncEngine.run()
         }
+        guard let userId = auth.session?.user.id else { return [] }
+
         let descriptor = FetchDescriptor<CachedHome>(sortBy: [SortDescriptor(\.name)])
         let cached = try modelContext.fetch(descriptor)
-        let homes = cached.map(summary(from:))
+        let memberships = (try? modelContext.fetch(FetchDescriptor<CachedMembership>())) ?? []
+        let authorized = HomeAccessPolicy.authorizedHomes(
+            from: cached,
+            memberships: memberships,
+            userId: userId,
+            serverHomeIds: syncEngine.lastSyncedHomeIds
+        )
+        let homes = authorized.map(summary(from:))
         homePhotoService.prefetch(storagePaths: homes.compactMap(\.photoURL))
         return homes
     }

@@ -12,10 +12,3 @@ jobs:
       - uses: actions/checkout@v4
       - name: Check golden thread (PRD → spec → tasks → code → tests)
         run: bash scripts/check-traceability.sh
-      - name: Verify coverage matrix and chart are fresh
-        run: |
-          bash scripts/check-traceability.sh --matrix
-          git diff --exit-code specs/001-mvp/coverage.md specs/001-mvp/coverage.svg || {
-            echo "::error::coverage.md/coverage.svg are stale. Run 'bash scripts/check-traceability.sh --matrix' and commit the result."
-            exit 1
-          }

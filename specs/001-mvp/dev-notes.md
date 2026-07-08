@@ -188,7 +188,7 @@ T076 (2026-07-03): `StructuralActionPolicy` implements AC-SYNC-07 — structural
 
 `scripts/check-traceability.sh` verifies the golden thread (registry drift, missing `Traces:`, untraced scope, untested ACs with no tracked task). Runs in CI via `.github/workflows/traceability.yml` on every push/PR; run locally with `bash scripts/check-traceability.sh`.
 
-Modes: `--matrix` regenerates [coverage.md](./coverage.md) (commit after traceability changes; CI fails if stale). `--canvas` updates the local **Golden Thread Coverage** Cursor canvas. `--refresh` runs Gate 2 + matrix + canvas — use after changing tasks, `@covers`, or tests. See `.cursor/rules/golden-thread-coverage.mdc`. The canvas helper (`scripts/update-golden-thread-canvas.py`) resolves and confines CLI paths to allowed directories before any file read/write.
+Modes: `--matrix` regenerates [coverage.md](./coverage.md) and `coverage.svg` (portfolio snapshot — commit before hiring or release pushes; not CI-enforced). `--json` prints per-ID status to stdout. `--canvas` updates the local **Golden Thread Coverage** Cursor canvas. `--refresh` runs Gate 2 + matrix + optional canvas — use after changing tasks, `@covers`, or tests. See `.cursor/rules/golden-thread-coverage.mdc`.
 
 ---
 

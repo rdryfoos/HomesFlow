@@ -1,7 +1,8 @@
 # Coverage Matrix: HomesFlow MVP
 
 **GENERATED FILE — do not edit.** Regenerate with `bash scripts/check-traceability.sh --matrix`.
-CI fails if this file is stale. Source of truth: `HomesFlow.prd.md` registry × `tasks.md` × `@covers` annotations × test names.
+Portfolio snapshot for cold readers; CI enforces the golden thread via the gate script, not file freshness.
+Source of truth: `HomesFlow.prd.md` registry × `tasks.md` × `@covers` annotations × test names.
 
 ## Summary
 
@@ -9,9 +10,9 @@ CI fails if this file is stale. Source of truth: `HomesFlow.prd.md` registry × 
 |--------|-------|
 | Registry IDs | 79 |
 | Acceptance criteria | 50 |
-| ACs verified (test passing in suite) | 38 |
+| ACs verified (test passing in suite) | 45 |
 | ACs implemented — test pending | 4 |
-| ACs planned (tracked, not implemented) | 8 |
+| ACs planned (tracked, not implemented) | 1 |
 
 ## Acceptance criteria
 
@@ -39,12 +40,12 @@ CI fails if this file is stale. Source of truth: `HomesFlow.prd.md` registry × 
 | AC-HOME-12 | Verified | T065a T065d | — | `test_AC_HOME_12_contacts_and_files_add_for_owner_and_manager`<br>`test_AC_HOME_12_guest_has_no_section_add_actions`<br>`test_AC_HOME_12_matches_repository_manage_flags`<br>`test_AC_HOME_12_people_add_owner_only`<br>`test_AC_HOME_12_section_add_actions_use_parallel_construction` |
 | AC-HOME-13 | Verified | T065b T065e T065d | — | `test_AC_HOME_13_local_file_name_falls_back_to_id_and_extension`<br>`test_AC_HOME_13_local_file_name_uses_storage_path`<br>`test_AC_HOME_13_non_success_download_throws`<br>`test_AC_HOME_13_preview_icon_maps_by_extension`<br>`test_AC_HOME_13_streams_download_to_preview_directory` |
 | AC-HOME-14 | Verified | T065c T065d | — | `test_AC_HOME_14_apply_pick_fills_title_from_file_name`<br>`test_AC_HOME_14_apply_pick_preserves_existing_title`<br>`test_AC_HOME_14_camera_file_name_is_dated_jpeg`<br>`test_AC_HOME_14_includes_camera_when_available`<br>`test_AC_HOME_14_offers_library_and_file_browser_sources`<br>`test_AC_HOME_14_upload_requires_valid_draft_and_file_data` |
-| AC-LOG-01 | Planned | — | T078 T084 | — |
-| AC-LOG-02 | Planned | — | T079 T084 | — |
-| AC-LOG-03 | Planned | — | T080 T085 | — |
-| AC-LOG-04 | Planned | — | T081 T085 | — |
-| AC-LOG-05 | Planned | — | T082 T086 | — |
-| AC-LOG-06 | Planned | — | T077 T083 T086 | — |
+| AC-LOG-01 | Verified | T078 T084 | — | `test_AC_LOG_01_household_entry_appears_in_log` |
+| AC-LOG-02 | Verified | T079 T084 | — | `test_AC_LOG_02_procedure_entry_attached_and_in_log` |
+| AC-LOG-03 | Verified | T080 T085 | — | `test_AC_LOG_03_offline_entry_syncs_append_only` |
+| AC-LOG-04 | Verified | T081 T085 | — | `test_AC_LOG_04_edit_only_within_grace_window` |
+| AC-LOG-05 | Verified | T082 T086 | — | `test_AC_LOG_05_unified_log_chronological_and_filterable` |
+| AC-LOG-06 | Verified | T077 T083 T086 | — | `test_AC_LOG_06_guest_denied_log_access` |
 | AC-PROC-01 | Verified | T042 T046 T048 | — | `test_AC_PROC_01_complete_and_na_steps_mark_procedure_complete`<br>`test_AC_PROC_01_completed_step_counts_toward_progress`<br>`test_AC_PROC_01_final_step_completion_marks_procedure_complete` |
 | AC-PROC-02 | Verified | T010 T044 T049 | — | `test_AC_PROC_02_guest_cannot_update_guest_visible_step`<br>`test_AC_PROC_02_manager_cannot_update_owner_only_step` |
 | AC-PROC-03 | Verified | T037 T045 T050 | — | `test_AC_PROC_03_local_newer_keeps_pending_local`<br>`test_AC_PROC_03_server_newer_overwrites_pending_local` |
@@ -59,7 +60,7 @@ CI fails if this file is stale. Source of truth: `HomesFlow.prd.md` registry × 
 | AC-SYNC-04 | Verified | T015 T037 T040a | — | `test_AC_SYNC_04_pending_state_announced_to_voiceover`<br>`test_AC_SYNC_04_pending_sync_visible_on_dashboard` |
 | AC-SYNC-05 | Verified | T074 T074a | — | `test_AC_SYNC_05_terminal_status_never_silently_regressed` |
 | AC-SYNC-06 | Verified | T075 T075a | — | `test_AC_SYNC_06_losing_user_notified_with_reapply_guidance` |
-| AC-SYNC-07 | Planned | — | T076 T076a | — |
+| AC-SYNC-07 | Verified | T076 T076a | — | `test_AC_SYNC_07_structural_actions_blocked_offline` |
 | AC-USER-01 | Verified | T025 T026 T030 | — | `test_AC_USER_01_invite_accepted_grants_role`<br>`test_AC_USER_01_invite_email_validation_and_token_shape` |
 | AC-USER-02 | Verified | T025 T031 | — | `test_AC_USER_02_revoked_token_invalid` |
 | AC-USER-03 | Planned | — | T027 T033a | — |
@@ -79,7 +80,7 @@ CI fails if this file is stale. Source of truth: `HomesFlow.prd.md` registry × 
 | FR-HOME-02 | Implemented | T051 T054 | — |
 | FR-HOME-03 | Implemented | T007 T065 | — |
 | FR-LOG-01 | Implemented | T012 T020 T029 T046 T061 | — |
-| FR-LOG-02 | Planned | — | T077 |
+| FR-LOG-02 | Implemented | T077 | — |
 | FR-NAV-01 | Implemented | T021a T021b T021c | — |
 | FR-NOTIF-01 | Implemented | T066 | — |
 | FR-PROC-01 | Implemented | T004 T041 | — |

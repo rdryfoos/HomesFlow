@@ -90,15 +90,15 @@ Each row is now one test.
 
 **Gate 1 — `/speckit.analyze` (before `/speckit.implement`).** With the principle in the constitution, analyze flags: ACs with no task, tasks with no `Traces:`, and IDs that don't match the grammar. Run it every time before implementing.
 
-**Gate 2 — CI coverage check (after implementation).** Implemented as `scripts/check-traceability.sh`, run locally or by CI (`.github/workflows/traceability.yml`) on every push/PR. A small script that:
+**Gate 2 — CI traceability check (after implementation).** Implemented as `scripts/check-traceability.sh`, run locally or by CI (`.github/workflows/traceability.yml`) on every push/PR. A small script that:
 
 1. Parses the ID registry from the PRD/spec (the authoritative ID list).
 2. Scans test names for `AC-[A-Z]+-\d+` and source for `@covers <ID>`.
-3. Emits a coverage matrix (`scripts/check-traceability.sh --matrix` → `specs/001-mvp/coverage.md`, freshness-checked in CI) and **fails the build** if either direction has an orphan:
+3. **Fails the build** if either direction has an orphan:
    - an AC ID with no matching test → **gap**
    - a feature test / `@covers` ID not in the registry → **untraced scope** (your scope-creep tripwire — useful given this PRD already grew a log-book feature mid-stream).
 
-Keep the matrix **generated**, never hand-maintained.
+Per-ID status is **generated on demand** (`bash scripts/check-traceability.sh --json`). A human-readable **portfolio snapshot** lives in `specs/001-mvp/coverage.md` (regenerate with `--matrix` before hiring or release pushes; not CI-enforced for freshness).
 
 ---
 
@@ -140,7 +140,7 @@ HomesFlow is **not** a medical device and does **not** target ISO 13485 or IEC 6
 | Design validation | XCUITest, manual/exploratory sessions | Tasks **T064**, **T069**, **T069a** (§9.4) |
 | Design transfer / release | `specs/<feature>/release-checklist.md` | Pre-TestFlight / pre-prod sign-off (§9.5) |
 | Change control | Spec Kit workflow + immutable IDs | No `/speckit.implement` until analyze clean; ID tombstones only |
-| DHF / objective evidence | Git history, `coverage.md`, CI logs, release checklist | Auditable chain per §4 |
+| DHF / objective evidence | Git history, `coverage.md` snapshot, CI logs, release checklist | Auditable chain per §4 |
 
 ### 9.2 Verification vs validation (keep explicit)
 

@@ -9,7 +9,7 @@ struct AuthView: View {
     var body: some View {
         NavigationStack {
             Form {
-                Section("Sign in") {
+                Section {
                     TextField("Email", text: $viewModel.email)
                         .textContentType(.emailAddress)
                         .keyboardType(.emailAddress)
@@ -18,41 +18,25 @@ struct AuthView: View {
                     if let error = viewModel.errorMessage {
                         Text(error).foregroundStyle(.red).font(.caption)
                     }
-                    Button {
-                        Task { await viewModel.signIn() }
-                    } label: {
-                        if viewModel.isLoading {
-                            ProgressView()
-                        } else {
-                            Text("Sign In")
-                        }
-                    }
-                    .disabled(viewModel.isLoading || !viewModel.canSubmit)
                 }
 
                 Section {
                     Button {
-                        Task { await viewModel.signUp() }
+                        Task { await viewModel.continueWithEmail() }
                     } label: {
                         if viewModel.isLoading {
                             ProgressView()
                         } else {
-                            Text("Create Account")
+                            Text("Continue")
                         }
                     }
                     .disabled(viewModel.isLoading || !viewModel.canSubmit)
-                } header: {
-                    Text("New account")
-                } footer: {
-                    Text("Password must be at least 6 characters. Local test user: diane@test.com / homeflow123")
                 }
 
                 Section {
                     Button("Sign in with Apple") {
-                        viewModel.errorMessage = "Apple Sign-In wiring in Phase 1 — use email for local dev."
+                        viewModel.errorMessage = "Apple Sign-In is not available yet — use email and password."
                     }
-                } footer: {
-                    Text("Apple Sign-In + email/password per FR-AUTH-01")
                 }
             }
             .navigationTitle("HomesFlow")
@@ -78,26 +62,30 @@ final class AuthViewModel: ObservableObject {
         email.contains("@") && password.count >= 6
     }
 
-    func signIn() async {
-        isLoading = true
-        defer { isLoading = false }
-        do {
-            try await auth.signIn(email: email, password: password)
-            errorMessage = nil
-        } catch {
-            errorMessage = friendlyAuthError(error)
-        }
-    }
-
-    func signUp() async {
+    func continueWithEmail() async {
         isLoading = true
         defer { isLoading = false }
         do {
             try await auth.signUp(email: email, password: password)
             errorMessage = nil
-        } catch {
-            errorMessage = friendlyAuthError(error)
+        } catch let signUpError {
+            guard isAlreadyRegistered(signUpError) else {
+                errorMessage = friendlyAuthError(signUpError)
+                return
+            }
+            do {
+                try await auth.signIn(email: email, password: password)
+                errorMessage = nil
+            } catch {
+                errorMessage = friendlyAuthError(error)
+            }
         }
+    }
+
+    private func isAlreadyRegistered(_ error: Error) -> Bool {
+        let message = error.localizedDescription
+        return message.localizedCaseInsensitiveContains("already registered")
+            || message.localizedCaseInsensitiveContains("already exists")
     }
 
     private func friendlyAuthError(_ error: Error) -> String {
@@ -112,7 +100,7 @@ final class AuthViewModel: ObservableObject {
         }
         if message.localizedCaseInsensitiveContains("already registered")
             || message.localizedCaseInsensitiveContains("already exists") {
-            return "That email is already registered. Sign in instead, or use a different email."
+            return "That email is already registered. Check your password and try again."
         }
         if message.localizedCaseInsensitiveContains("invalid login")
             || message.localizedCaseInsensitiveContains("invalid credentials") {

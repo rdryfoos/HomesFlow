@@ -12,6 +12,7 @@ struct SyncNotification: Identifiable, Sendable {
 @MainActor
 final class SyncEngine: ObservableObject {
     @Published var lastNotification: SyncNotification?
+    private(set) var lastSyncedHomeIds: Set<UUID> = []
 
     private let modelContext: ModelContext
     private let client: SupabaseClient
@@ -477,18 +478,84 @@ final class SyncEngine: ObservableObject {
     }
 
     private func pullChanges() async {
+        guard client.auth.currentSession != nil else { return }
+
+        var serverIds: Set<UUID> = []
         do {
             let rows: [HomeDTO] = try await client
                 .from("homes")
                 .select()
                 .execute()
                 .value
+            serverIds = Set(rows.map(\.id))
+            lastSyncedHomeIds = serverIds
             for row in rows {
                 mergeHome(row)
             }
             try? modelContext.save()
         } catch {
             lastNotification = SyncNotification(message: "Could not refresh homes: \(error.localizedDescription)")
+            return
+        }
+
+        do {
+            try await pullMyMemberships()
+            try? modelContext.save()
+        } catch {
+            lastNotification = SyncNotification(
+                message: "Could not refresh memberships: \(error.localizedDescription)"
+            )
+        }
+
+        pruneStaleHomes(serverIds: serverIds)
+        try? modelContext.save()
+    }
+
+    private func pullMyMemberships() async throws {
+        guard let userId = client.auth.currentSession?.user.id else { return }
+
+        let rows: [MembershipDTO] = try await client
+            .from("memberships")
+            .select("*, profiles(email, display_name)")
+            .eq("user_id", value: userId.uuidString)
+            .execute()
+            .value
+
+        let userTarget = userId
+        let existing = (try? modelContext.fetch(FetchDescriptor<CachedMembership>(
+            predicate: #Predicate<CachedMembership> { $0.userId == userTarget }
+        ))) ?? []
+
+        let incomingIds = Set(rows.map(\.id))
+        for stale in existing where !incomingIds.contains(stale.id) {
+            modelContext.delete(stale)
+        }
+
+        for row in rows {
+            if let cached = existing.first(where: { $0.id == row.id }) {
+                MembershipMerge.apply(row, to: cached)
+            } else {
+                modelContext.insert(CachedMembership(
+                    id: row.id,
+                    homeId: row.homeId,
+                    userId: row.userId,
+                    role: row.role,
+                    displayEmail: row.profiles?.email,
+                    displayName: row.profiles?.displayName,
+                    serverUpdatedAt: row.updatedAt
+                ))
+            }
+        }
+    }
+
+    private func pruneStaleHomes(serverIds: Set<UUID>) {
+        guard let userId = client.auth.currentSession?.user.id else { return }
+        let cached = (try? modelContext.fetch(FetchDescriptor<CachedHome>())) ?? []
+        for home in cached where !serverIds.contains(home.id) {
+            if home.sync == .pending && home.createdBy == userId {
+                continue
+            }
+            LocalDataStore.purgeHome(home.id, modelContext: modelContext)
         }
     }
 

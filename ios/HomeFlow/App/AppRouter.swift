@@ -57,7 +57,10 @@ struct RootView: View {
                 Task { await appEnvironment?.syncEngine.run() }
             }
         }
-        .onChange(of: auth.isAuthenticated) { _, _ in
+        .onChange(of: auth.isAuthenticated) { wasAuthenticated, isAuthenticated in
+            if wasAuthenticated && !isAuthenticated {
+                LocalDataStore.purgeAll(modelContext: modelContext)
+            }
             router.refreshRoute()
         }
     }

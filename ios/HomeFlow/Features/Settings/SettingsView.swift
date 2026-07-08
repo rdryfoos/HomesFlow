@@ -37,7 +37,7 @@ struct SettingsView: View {
                     Task { await signOut() }
                 }
             } message: {
-                Text("Offline changes stay on this device and sync the next time you sign in.")
+                Text("Homes stored on this device are removed when you sign out.")
             }
             .alert("Error", isPresented: Binding(
                 get: { errorMessage != nil },

@@ -6,7 +6,7 @@ A home management app for owners of multiple properties who need to coordinate m
 
 Also, a working case study in how to bring real product discipline, traceability, and architectural rigor to AI-assisted development. Built spec-first, iteratively, with traceable requirements and proper verification & validation, because I've spent years watching teams skip the rigor, and I wanted to prove that AI assistance makes software craftsmanship so affordable it's practically a fiscal imperative.
 
-**If you have five minutes:** look at the [coverage matrix](specs/001-mvp/coverage.md) for the state of the build, then [traceability.md](traceability.md) for how the thread works, then [HomesFlow.prd.md](HomesFlow.prd.md) for the product itself.
+**If you have five minutes:** look at the [coverage matrix](specs/001-mvp/coverage.md) for scope and build state, read [traceability.md](traceability.md) for how the thread works, then [HomesFlow.prd.md](HomesFlow.prd.md) for the product itself.
 
 ---
 
@@ -24,7 +24,7 @@ How one thread runs, using a real example:
 
 ![Golden thread pipeline: PRD to spec to tasks to code to tests to the CI gate that fails the build if the thread breaks](docs/golden-thread.svg)
 
-No orphan code, no silent scope, no untracked debt: an acceptance criterion is either verified by a test that names it, or it appears in an unchecked task; anything else fails `scripts/check-traceability.sh`. The full per-criterion status lives in the generated [coverage matrix](specs/001-mvp/coverage.md); mechanics are documented in [traceability.md](traceability.md).
+No orphan code, no silent scope, no untracked debt: an acceptance criterion is either verified by a test that names it, or it appears in an unchecked task; anything else fails `scripts/check-traceability.sh`. The [coverage matrix](specs/001-mvp/coverage.md) is a generated portfolio snapshot (regenerate with `--matrix` before hiring or release pushes); CI enforces integrity, not file freshness. Mechanics are documented in [traceability.md](traceability.md).
 
 ## Core documents
 
@@ -76,7 +76,7 @@ export SPECIFY_FEATURE_DIRECTORY=specs/001-mvp
 
 ## Quality checks
 
-- **Traceability (Gate 2, enforced)**: `bash scripts/check-traceability.sh --refresh` verifies the PRD → spec → tasks → `@covers` → tests golden thread; CI fails on every push if broken (`.github/workflows/traceability.yml`).
+- **Traceability (Gate 2, enforced)**: `bash scripts/check-traceability.sh` verifies the PRD → spec → tasks → `@covers` → tests golden thread; CI fails on every push if broken (`.github/workflows/traceability.yml`). Optional: `--matrix` refreshes the portfolio snapshot in `specs/001-mvp/coverage.md`; `--json` for machine-readable per-ID status; `--refresh` for matrix + gate + local canvas.
 - **Static analysis (Phase 1 integration)**: [SonarCloud dashboard](https://sonarcloud.io/project/overview?id=rdryfoos_HomeFlow) actively tracks code smells and security hotspots on every push. Roadmap: hard-blocking CI branch protection once baseline thresholds are finalized.
 
 ## Run locally (Phase 0)
