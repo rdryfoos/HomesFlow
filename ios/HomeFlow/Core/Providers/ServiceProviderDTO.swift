@@ -65,7 +65,7 @@ struct ServiceProviderDraft: Sendable, Equatable {
     var notes = ""
     var visibility: Visibility = .manager
 
-    init() {}
+    init() { /* default empty draft */ }
 
     init(from summary: ServiceProviderSummary) {
         companyName = summary.companyName
