@@ -54,3 +54,18 @@ jobs:
             -destination "platform=iOS Simulator,id=${SIM_ID}" \
             -only-testing:HomeFlowTests \
             CODE_SIGNING_ALLOWED=NO
+
+  craft-gate:
+    runs-on: ubuntu-latest
+    needs: [shellcheck, traceability, ios]
+    if: always()
+    steps:
+      - name: Gate 0 — all craft checks passed
+        run: |
+          if [[ "${{ needs.shellcheck.result }}" != "success" ]] || \
+             [[ "${{ needs.traceability.result }}" != "success" ]] || \
+             [[ "${{ needs.ios.result }}" != "success" ]]; then
+            echo "craft-gate: one or more jobs failed"
+            exit 1
+          fi
+          echo "craft-gate: shellcheck, traceability, and ios all passed"

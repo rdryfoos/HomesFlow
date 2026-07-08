@@ -186,7 +186,7 @@ T076 (2026-07-03): `StructuralActionPolicy` implements AC-SYNC-07 — structural
 | **Craft Phase A** | `sonar-project.properties`, `craft-conventions.md`, `sonar-disposition.md`, quick fixes | **Done** (2026-07-08) |
 | **Craft Phase B** | CI: shellcheck + Gate 2 + SwiftLint + build + `HomeFlowTests` | **Done** (2026-07-08) — `.github/workflows/ci.yml` |
 | **Craft Phase C** | Tighten SwiftLint incrementally (re-enable size/complexity rules as files are split); optional `unused_parameter` as warning-as-error | **Next** |
-| **Craft Phase D** | SonarCloud **quality gate on new code** + GitHub branch protection on `main` | **Next** |
+| **Craft Phase D** | SonarCloud suppressions (UI) + GitHub branch protection on `main` | **In progress** |
 | Observability | Mobile crash/sync telemetry (e.g. Sentry for iOS), queued upload after reconnect | Not integrated |
 | Regression evals | Scripted sync/conflict scenario datasets in CI (SC-04 matrix) | Partial — unit tests only |
 
@@ -202,9 +202,9 @@ Pre-release sign-off: [`release-checklist.md`](./release-checklist.md) per `trac
 
 **Phase D** — make Sonar enforceable:
 
-1. Confirm next analysis picks up `sonar-project.properties` from git  
-2. In SonarCloud: Quality Gate = 0 new bugs/vulns/blocker/critical on new code (post-suppressions)  
-3. In GitHub: require SonarCloud check + `CI (Craft Gate 0)` on `main` before merge
+1. ~~Confirm CI green on push~~ ✅ (run #3)
+2. In SonarCloud UI → **Analysis Scope → Ignore Issues on Multiple Criteria**: add the four rows from `sonar-disposition.md` (automatic analysis ignores git multicriteria)
+3. In GitHub → **Settings → Branches → `main`**: require **`craft-gate`** + **`SonarCloud Code Analysis`**, enable “Require branches to be up to date”
 
 ---
 

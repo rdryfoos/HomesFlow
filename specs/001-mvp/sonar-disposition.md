@@ -1,22 +1,24 @@
 # SonarCloud Disposition: HomesFlow MVP
 
 **Project**: [rdryfoos_HomeFlow](https://sonarcloud.io/project/overview?id=rdryfoos_HomeFlow)  
-**Policy file**: `sonar-project.properties` (version-controlled)  
+**Policy files**: `sonar-project.properties` (CI-based analysis) · `.sonarcloud.properties` (automatic analysis scope)  
 **Craft context**: `craft-conventions.md`
 
 SonarCloud reports **code smells only** (no bugs/vulnerabilities at baseline). Most findings were **tool misconfiguration**, not craft failures.
 
+> **Automatic analysis limitation**: SonarCloud ignores `sonar.issue.ignore.multicriteria` from properties files. Until we switch to CI-based scan, enter the suppressions below in **Project Administration → General Settings → Analysis Scope → Ignore Issues on Multiple Criteria** (same patterns as git).
+
 ---
 
-## Configured suppressions (in git)
+## Configured suppressions (in git + Sonar UI)
 
-| Rule | Count (baseline) | Disposition | Rationale |
-|------|----------------:|-------------|-----------|
-| **swift:S100** | 109 | Ignore on `HomeFlowTests/**` | Gate 2 requires `test_AC_*` snake_case names |
-| **swift:S115** | 26 | Ignore on `ios/**` | Supabase JSON uses `snake_case` field names |
-| **swift:S1075** | 7 | Ignore on `HomeFlowTests/**` | Test fixture URIs, not production config |
-| **swift:S1186** | 13 | Ignore on `Features/**` | SwiftUI dismiss-only closures |
-| **plsql:S1192** | 19 | Exclude `supabase/**` | Immutable migrations; “extract constant” is inappropriate |
+| Rule key pattern | File path pattern | Count (baseline) | Rationale |
+|------------------|-------------------|----------------:|-----------|
+| **swift:S100** | `**/HomeFlowTests/**` | 109 | Gate 2 requires `test_AC_*` snake_case names |
+| **swift:S115** | `**/ios/**` | 26 | Supabase JSON uses `snake_case` field names |
+| **swift:S1075** | `**/HomeFlowTests/**` | 7 | Test fixture URIs, not production config |
+| **swift:S1186** | `**/ios/HomeFlow/Features/**` | 13 | SwiftUI dismiss-only closures |
+| *(scope)* | `supabase/**` excluded | 19 plsql | Immutable migrations — via `.sonarcloud.properties` |
 
 ---
 
