@@ -50,7 +50,7 @@ enum LocalDataStore {
         try? modelContext.save()
     }
 
-    private static func deleteAll<T: PersistentModel>(_ type: T.Type, in modelContext: ModelContext) {
+    private static func deleteAll<T: PersistentModel>(_: T.Type, in modelContext: ModelContext) {
         guard let rows = try? modelContext.fetch(FetchDescriptor<T>()) else { return }
         rows.forEach { modelContext.delete($0) }
     }

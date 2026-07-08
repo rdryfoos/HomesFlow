@@ -1,0 +1,17 @@
+---
+description: Craft gates after Swift or shell changes
+globs: ios/HomeFlow/**/*.swift,ios/HomeFlowTests/**/*.swift,scripts/*.sh
+alwaysApply: false
+---
+
+# Craft check
+
+After substantive Swift or shell changes:
+
+1. `shellcheck scripts/*.sh` (if scripts touched)
+2. `cd ios && swiftlint lint --config .swiftlint.yml` (if production Swift touched)
+3. `bash scripts/check-traceability.sh` (if IDs, tasks, `@covers`, or `test_AC_*` touched)
+
+Before hiring/release pushes: `bash scripts/check-traceability.sh --refresh` and commit `coverage.md` if the public snapshot should change.
+
+Conventions: `specs/001-mvp/craft-conventions.md`

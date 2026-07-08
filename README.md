@@ -34,7 +34,8 @@ No orphan code, no silent scope, no untracked debt: an acceptance criterion is e
 | **`HomesFlow.prd.md`** | Product requirements, user stories, acceptance criteria |
 | **`.specify/memory/constitution.md`** | Non-negotiable architectural and process laws |
 | **`traceability.md`** | How IDs flow from PRD → spec → tasks → code → tests |
-| **`specs/001-mvp/dev-notes.md`** | Engineering operational notes (environments, signing, gaps) |
+| **`specs/001-mvp/craft-conventions.md`** | Swift, shell, lint, and Sonar policy (craft gates) |
+| **`specs/001-mvp/dev-notes.md`** | Environments, deployment, feature breadcrumbs, platform backlog |
 
 ## Repository layout
 
@@ -76,8 +77,22 @@ export SPECIFY_FEATURE_DIRECTORY=specs/001-mvp
 
 ## Quality checks
 
-- **Traceability (Gate 2, enforced)**: `bash scripts/check-traceability.sh` verifies the PRD → spec → tasks → `@covers` → tests golden thread; CI fails on every push if broken (`.github/workflows/traceability.yml`). Optional: `--matrix` refreshes the portfolio snapshot in `specs/001-mvp/coverage.md`; `--json` for machine-readable per-ID status; `--refresh` for matrix + gate + local canvas.
-- **Static analysis (Phase 1 integration)**: [SonarCloud dashboard](https://sonarcloud.io/project/overview?id=rdryfoos_HomeFlow) actively tracks code smells and security hotspots on every push. Roadmap: hard-blocking CI branch protection once baseline thresholds are finalized.
+| Gate | What | CI |
+|------|------|-----|
+| **Gate 0** | Build + unit tests + SwiftLint + shellcheck | `.github/workflows/ci.yml` |
+| **Gate 2** | Golden thread (`check-traceability.sh`) | same workflow (ubuntu job) |
+| **SonarCloud** | Static analysis ([dashboard](https://sonarcloud.io/project/overview?id=rdryfoos_HomeFlow)); policy in `sonar-project.properties` | SonarCloud on push |
+
+Local:
+
+```bash
+bash scripts/check-traceability.sh          # Gate 2
+bash scripts/check-traceability.sh --matrix # portfolio snapshot (coverage.md)
+shellcheck scripts/*.sh
+cd ios && swiftlint lint --config .swiftlint.yml
+```
+
+Craft conventions: `specs/001-mvp/craft-conventions.md`. Sonar suppressions: `specs/001-mvp/sonar-disposition.md`.
 
 ## Run locally (Phase 0)
 

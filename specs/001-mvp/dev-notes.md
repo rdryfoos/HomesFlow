@@ -1,10 +1,14 @@
 # Dev Notes: HomesFlow MVP Implementation
 
-**Feature**: `001-mvp` | **Updated**: 2026-06-28
+**Feature**: `001-mvp` | **Updated**: 2026-07-08
 
-Operational learnings from `/speckit.implement` (Phases 0–5 partial). **Product requirements remain in [spec.md](./spec.md)** — this file is engineering-only.
+Operational learnings from `/speckit.implement`. **Product requirements remain in [spec.md](./spec.md)** — this file is engineering-only (environments, deployment, feature breadcrumbs, backlog).
 
-For traceability mechanics and design-control mapping, see [traceability.md](../../traceability.md). Archived process narrative: `process.deprecated.rtf`.
+| Topic | Where |
+|-------|--------|
+| Product traceability | [traceability.md](../../traceability.md) |
+| Code craft & lint policy | [craft-conventions.md](./craft-conventions.md) |
+| Sonar waivers | [sonar-disposition.md](./sonar-disposition.md) |
 
 ---
 
@@ -72,10 +76,10 @@ Safari visiting `https://<ref>.supabase.co` and seeing `{"error":"requested path
 ## Auth implementation
 
 - **MVP scope (FR-AUTH-01)**: Email/password only on device builds; Apple Sign-In deferred pending entitlement wiring — see spec Assumptions + research D12
-- `SupabaseClientProvider` applies session from sign-in response + listens to `authStateChanges` (do not rely on `try? await client.auth.session` alone after sign-in)
-- **supabase-swift session emit (2026-07-03)**: `emitLocalSessionAsInitialSession: true` on `SupabaseClientOptions` (opt-in to upcoming 3.x default); `applySession` treats `session.isExpired` as signed-out so stale Keychain tokens do not route to the dashboard
 - Local Supabase: `auth.external.apple.enabled = false` in `config.toml` for email-only dev
 - Cloud: enable **Email** provider; Apple deferred for MVP device demos
+
+Session and sign-out craft patterns: [craft-conventions.md](./craft-conventions.md#auth--session-implementation).
 
 ---
 
@@ -94,20 +98,11 @@ Safari visiting `https://<ref>.supabase.co` and seeing `{"error":"requested path
 
 ---
 
-## Navigation (SwiftUI)
+## Navigation & accessibility (pointers)
 
-| Device | Dashboard | Home detail |
-|--------|-------------|---------------|
-| iPhone | `NavigationStack` push; hero cards **~152pt** | Full-bleed hero + horizontal tabs; single-column section content |
-| iPad | `NavigationStack` push; hero cards **~528pt**, vertically centered photo, name + address/`locationLabel` | **Three-panel**: leading sidebar (compact hero + vertical tabs) + trailing nested split (section list \| section detail) for **all** sections (**AC-HOME-09…10**) |
+SwiftUI layout rules, iPad shells, and accessibility engineering conventions: [craft-conventions.md](./craft-conventions.md#swiftui-layout) (manual **T069a** device pass still tracked below).
 
-**Do not** use `List(selection:)` on iPhone with `NavigationLink` — selection mode blocks push navigation.
-
-iPad home detail leading column is **not** a persistent home picker. Use **All Homes** (or equivalent) to return to dashboard and switch homes (**FR-NAV-01**).
-
-Section UI label **Files** implements document library (FR-HOME-03); code folder may remain `Documents/`.
-
-**iPad section shells** (list | detail placeholders until Phases 8–10): `ContactsView`, `FilesView`, `MembersView` (People), `ProceduresView`.
+Feature breadcrumbs: iPhone hero ~152pt; iPad hero ~528pt; section shells use `ContactsView`, `FilesView`, `MembersView`, `ProceduresView`.
 
 ---
 
@@ -116,15 +111,6 @@ Section UI label **Files** implements document library (FR-HOME-03); code folder
 - Static launch via `UILaunchScreen` in Info.plist: `LaunchBackground` (black) + `LaunchLogo` imageset.
 - Assets regenerated ~**1.5×** prior wordmark/icon size with **tighter** green-house-to-text spacing (@1x/@2x/@3x PNG).
 - Regenerate with PIL crop/recompose from master `@3x` if adjusting again (see git history `2244b42`).
-
----
-
-## Accessibility
-
-- **NFR-A11Y-01**: Respect Dynamic Type, VoiceOver, Reduce Motion, contrast.
-- Shared rules live in `AccessibilityBaseline` (unit tested, T066a): hero card heights scale with Dynamic Type (**AC-A11Y-01**), section tab hints (**AC-A11Y-02**), `animation(reduceMotion:)` returns nil under Reduce Motion (**AC-A11Y-03**), 44pt `minimumTapTarget` applied to section tabs and procedure step actions.
-- Step rows announce status via `accessibilityValue` ("N/A" spoken as "Not applicable").
-- Manual pass at largest Accessibility text sizes + VoiceOver remains **T069a** (device).
 
 ---
 
@@ -147,7 +133,7 @@ Section UI label **Files** implements document library (FR-HOME-03); code folder
 
 ## Known gaps (next spec-aligned work)
 
-*Updated 2026-07-03. Suite: 77 unit tests; coverage 30/50 ACs verified (Gate 2 green; registry grew to 50 ACs with Log Book + conflict model evolution).*
+*Updated 2026-07-08. Suite: 109 unit tests; 45/50 ACs verified (Gate 2 green).*
 
 - **Apple Sign-In wiring** — paid Developer Program now active; restore entitlement, Services ID, enable Supabase Apple provider (App Store requirement — research D12)
 - **Phase 12 (T074–T076a)** — data-type-aware conflict model: protect terminal step statuses (T074), auto-resolve status conflicts with loser notification (T075), connectivity-gated structural actions with upfront UI disable + repository guard (T076, AC-SYNC-07)
@@ -184,43 +170,44 @@ T076 (2026-07-03): `StructuralActionPolicy` implements AC-SYNC-07 — structural
 
 ---
 
-## Traceability Gate 2
+## Quality gates (pointers)
 
-`scripts/check-traceability.sh` verifies the golden thread (registry drift, missing `Traces:`, untraced scope, untested ACs with no tracked task). Runs in CI via `.github/workflows/traceability.yml` on every push/PR; run locally with `bash scripts/check-traceability.sh`.
-
-Modes: `--matrix` regenerates [coverage.md](./coverage.md) and `coverage.svg` (portfolio snapshot — commit before hiring or release pushes; not CI-enforced). `--json` prints per-ID status to stdout. `--canvas` updates the local **Golden Thread Coverage** Cursor canvas. `--refresh` runs Gate 2 + matrix + optional canvas — use after changing tasks, `@covers`, or tests. See `.cursor/rules/golden-thread-coverage.mdc`.
+- **Gate 2 (traceability)**: [traceability.md](../../traceability.md) — `bash scripts/check-traceability.sh`
+- **Gate 0 + craft**: [craft-conventions.md](./craft-conventions.md) — CI in `.github/workflows/ci.yml`
 
 ---
 
-## Platform readiness (planned)
+## Platform readiness
 
 | Area | Target practice | Status |
 |------|-----------------|--------|
 | Schema evolution | Supabase migrations in Git (`supabase db push`); no manual dashboard DDL on staging/prod | In use |
 | Secrets | `Secrets*.xcconfig` gitignored; never commit service-role keys | In use |
+| **Craft Phase A** | `sonar-project.properties`, `craft-conventions.md`, `sonar-disposition.md`, quick fixes | **Done** (2026-07-08) |
+| **Craft Phase B** | CI: shellcheck + Gate 2 + SwiftLint + build + `HomeFlowTests` | **Done** (2026-07-08) — `.github/workflows/ci.yml` |
+| **Craft Phase C** | Tighten SwiftLint incrementally (re-enable size/complexity rules as files are split); optional `unused_parameter` as warning-as-error | **Next** |
+| **Craft Phase D** | SonarCloud **quality gate on new code** + GitHub branch protection on `main` | **Next** |
 | Observability | Mobile crash/sync telemetry (e.g. Sentry for iOS), queued upload after reconnect | Not integrated |
 | Regression evals | Scripted sync/conflict scenario datasets in CI (SC-04 matrix) | Partial — unit tests only |
 
 Pre-release sign-off: [`release-checklist.md`](./release-checklist.md) per `traceability.md` §9.5.
 
+### Craft roadmap detail
+
+**Phase C** — expand lint without boiling the ocean:
+
+1. Pick one high-churn file (e.g. split `ProcedureRepository`) and enable `type_body_length` for new code only, or per-file SwiftLint config  
+2. Add `unused_closure_parameter` fixes as encountered  
+3. Document any new rule adoptions in `craft-conventions.md`
+
+**Phase D** — make Sonar enforceable:
+
+1. Confirm next analysis picks up `sonar-project.properties` from git  
+2. In SonarCloud: Quality Gate = 0 new bugs/vulns/blocker/critical on new code (post-suppressions)  
+3. In GitHub: require SonarCloud check + `CI (Craft Gate 0)` on `main` before merge
+
 ---
 
 ## Regenerating Xcode project
 
-`ios/HomeFlow.xcodeproj/` is **generated and untracked** (since `54dca64`): Xcode kept
-rewriting the personal signing team into the XcodeGen output, causing permanent diff
-noise. `ios/project.yml` is the source of truth.
-
-- **Fresh clone / new machine**: run `xcodegen generate` before opening the project.
-- After editing `ios/project.yml`:
-
-```bash
-cd ~/Developer/HomeFlow/ios && xcodegen generate
-```
-
-- Re-select **Team** in Signing if xcodegen resets `DEVELOPMENT_TEAM` (safe now — stays local).
-- **Dependency pinning trade-off**: `Package.resolved` lives inside the untracked
-  `.xcodeproj`, so exact SPM versions are no longer pinned in git. Builds resolve
-  Supabase from the `from: 2.5.1` constraint in `project.yml` and may pick up newer
-  minors. Pin an exact version in `project.yml` if reproducible builds start to matter
-  (e.g. before TestFlight/App Store submissions).
+See [craft-conventions.md § Xcode project generation](./craft-conventions.md#xcode-project-generation). Historical note: `.xcodeproj` has been gitignored since `54dca64` to avoid signing-team diff noise.

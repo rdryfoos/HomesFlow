@@ -1,0 +1,54 @@
+name: CI (Craft Gate 0)
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  shellcheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Shellcheck gate scripts
+        run: shellcheck -S warning scripts/*.sh
+
+  traceability:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Gate 2 — golden thread
+        run: bash scripts/check-traceability.sh
+
+  ios:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Prepare Debug secrets for CI build
+        run: cp ios/HomeFlow/Resources/Secrets.xcconfig.example ios/HomeFlow/Resources/Secrets.xcconfig
+      - name: Generate Xcode project
+        run: cd ios && xcodegen generate
+      - name: SwiftLint
+        run: |
+          brew install swiftlint
+          cd ios && swiftlint lint --config .swiftlint.yml --strict
+      - name: Build
+        run: |
+          cd ios
+          SIM_ID=$(xcrun simctl list devices available | grep -E '^\s+iPhone' | head -1 | grep -oE '[0-9A-F-]{36}')
+          echo "Using simulator id=${SIM_ID}"
+          xcodebuild build \
+            -project HomeFlow.xcodeproj \
+            -scheme HomeFlow \
+            -destination "platform=iOS Simulator,id=${SIM_ID}" \
+            CODE_SIGNING_ALLOWED=NO
+      - name: Unit tests
+        run: |
+          cd ios
+          SIM_ID=$(xcrun simctl list devices available | grep -E '^\s+iPhone' | head -1 | grep -oE '[0-9A-F-]{36}')
+          xcodebuild test \
+            -project HomeFlow.xcodeproj \
+            -scheme HomeFlow \
+            -destination "platform=iOS Simulator,id=${SIM_ID}" \
+            -only-testing:HomeFlowTests \
+            CODE_SIGNING_ALLOWED=NO

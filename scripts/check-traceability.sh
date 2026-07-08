@@ -76,23 +76,23 @@ is_tested()  { grep -qx "$1" "$tmp/test_acs.txt"; }
 
 status_for() { # $1=id  $2=done_tasks  $3=pending_tasks
   local id="$1" done_t="$2" pend_t="$3" type="${1%%-*}"
-  if [ "$type" = "AC" ]; then
+  if [[ "$type" == "AC" ]]; then
     if is_tested "$id"; then echo "verified"; return; fi
     if is_covered "$id"; then
-      if [ -n "$pend_t" ]; then echo "implemented-test-pending"; else echo "gap"; fi
+      if [[ -n "$pend_t" ]]; then echo "implemented-test-pending"; else echo "gap"; fi
       return
     fi
   else
     if is_covered "$id"; then
-      if [ -n "$pend_t" ]; then echo "in-progress"; else echo "implemented"; fi
+      if [[ -n "$pend_t" ]]; then echo "in-progress"; else echo "implemented"; fi
       return
     fi
   fi
-  if [ -n "$pend_t" ]; then
-    if [ -n "$done_t" ]; then echo "in-progress"; else echo "planned"; fi
+  if [[ -n "$pend_t" ]]; then
+    if [[ -n "$done_t" ]]; then echo "in-progress"; else echo "planned"; fi
     return
   fi
-  if [ -n "$done_t" ]; then echo "done-no-covers"; return; fi
+  if [[ -n "$done_t" ]]; then echo "done-no-covers"; return; fi
   echo "unmapped"
 }
 
@@ -109,12 +109,12 @@ write_json_file() { # $1=output path
       done_t=$(tasks_for "$id" "x")
       pend_t=$(tasks_for "$id" " ")
       tests=""
-      if [ "${id%%-*}" = "AC" ]; then tests=$(tests_for "$id"); fi
+      if [[ "${id%%-*}" == "AC" ]]; then tests=$(tests_for "$id"); fi
       covered=false
       if is_covered "$id"; then covered=true; fi
       status=$(status_for "$id" "$done_t" "$pend_t")
       domain=$(echo "$id" | cut -d- -f2)
-      if [ $first -eq 0 ]; then echo ","; fi
+      if [[ $first -eq 0 ]]; then echo ","; fi
       first=0
       printf '  {"id":"%s","type":"%s","domain":"%s","status":"%s","covered":%s,"doneTasks":[%s],"pendingTasks":[%s],"tests":[%s]}' \
         "$id" "${id%%-*}" "$domain" "$status" "$covered" \
@@ -143,7 +143,7 @@ emit_matrix() {
     local type="$1" heading="$2" with_tests="$3"
     echo "## $heading"
     echo
-    if [ "$with_tests" = "yes" ]; then
+    if [[ "$with_tests" == "yes" ]]; then
       echo "| ID | Status | Done tasks | Pending tasks | Tests |"
       echo "|----|--------|------------|---------------|-------|"
     else
@@ -151,12 +151,12 @@ emit_matrix() {
       echo "|----|--------|------------|---------------|"
     fi
     while IFS= read -r id; do
-      [ "${id%%-*}" = "$type" ] || continue
+      [[ "${id%%-*}" == "$type" ]] || continue
       local done_t pend_t tests status
       done_t=$(tasks_for "$id" "x")
       pend_t=$(tasks_for "$id" " ")
       status=$(label_for "$(status_for "$id" "$done_t" "$pend_t")")
-      if [ "$with_tests" = "yes" ]; then
+      if [[ "$with_tests" == "yes" ]]; then
         tests=$(tests_for "$id" | tr ' ' '\n' | { grep -v '^$' || true; } | sed 's/.*/`&`/' \
           | awk '{ printf "%s%s", (NR > 1 ? "<br>" : ""), $0 } END { print "" }')
         echo "| $id | $status | ${done_t:-—} | ${pend_t:-—} | ${tests:-—} |"
@@ -245,14 +245,14 @@ SVGEOF
 # ---------------------------------------------------------------------------
 # Mode routing
 # ---------------------------------------------------------------------------
-if [ "$MODE" = "--json" ]; then
+if [[ "$MODE" == "--json" ]]; then
   write_json_file /dev/stdout
   exit 0
 fi
 
-if [ "$MODE" = "--canvas" ]; then
+if [[ "$MODE" == "--canvas" ]]; then
   write_json_file "$tmp/data.json"
-  if [ ! -f "$CANVAS" ]; then
+  if [[ ! -f "$CANVAS" ]]; then
     echo "Canvas not found: $CANVAS" >&2
     echo "Set GOLDEN_THREAD_CANVAS or open the Golden Thread Coverage canvas once in Cursor." >&2
     exit 1
@@ -261,14 +261,14 @@ if [ "$MODE" = "--canvas" ]; then
   exit 0
 fi
 
-if [ "$MODE" = "--matrix" ]; then
+if [[ "$MODE" == "--matrix" ]]; then
   emit_matrix
   exit 0
 fi
 
-if [ "$MODE" = "--refresh" ]; then
+if [[ "$MODE" == "--refresh" ]]; then
   emit_matrix
-  if [ -f "$CANVAS" ]; then
+  if [[ -f "$CANVAS" ]]; then
     write_json_file "$tmp/data.json"
     python3 scripts/update-golden-thread-canvas.py "$tmp/data.json" "$CANVAS"
   else
@@ -291,20 +291,20 @@ done
 
 # --- 2. Tasks without a Traces field ----------------------------------------
 untraced_tasks=$(grep -En '^- \[[ x]\] T[0-9]+' "$TASKS" | grep -v '\*\*Traces\*\*' || true)
-if [ -n "$untraced_tasks" ]; then
+if [[ -n "$untraced_tasks" ]]; then
   err "tasks missing a Traces field:"
   echo "$untraced_tasks" | sed 's/^/  /' >&2
 fi
 
 # --- 3. Untraced scope (code/tests referencing unknown IDs) ------------------
 orphan_covers=$(comm -13 "$tmp/prd.txt" "$tmp/covers.txt")
-if [ -n "$orphan_covers" ]; then
+if [[ -n "$orphan_covers" ]]; then
   err "@covers IDs not in the PRD registry (untraced scope):"
   echo "$orphan_covers" | sed 's/^/  /' >&2
 fi
 
 orphan_tests=$(comm -13 <(grep '^AC-' "$tmp/prd.txt") "$tmp/test_acs.txt")
-if [ -n "$orphan_tests" ]; then
+if [[ -n "$orphan_tests" ]]; then
   err "test names encode AC IDs not in the PRD registry (untraced scope):"
   echo "$orphan_tests" | sed 's/^/  /' >&2
 fi
@@ -331,7 +331,7 @@ echo "  Untested ACs are tracked as pending tasks unless flagged above."
 echo "  Per-ID detail on demand:   bash scripts/check-traceability.sh --json"
 echo "  Portfolio snapshot:        bash scripts/check-traceability.sh --matrix"
 
-if [ "$fail" -ne 0 ]; then
+if [[ "$fail" -ne 0 ]]; then
   echo "Gate 2: FAILED — golden thread broken (see FAIL lines above)." >&2
   exit 1
 fi

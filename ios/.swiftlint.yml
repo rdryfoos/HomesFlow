@@ -1,0 +1,23 @@
+# Minimal craft lint — see specs/001-mvp/craft-conventions.md
+included:
+  - HomeFlow
+excluded:
+  - HomeFlowTests
+  - HomeFlowUITests
+disabled_rules:
+  - line_length
+  - file_length
+  - type_name
+  - identifier_name
+  - function_body_length
+  - cyclomatic_complexity
+  - type_body_length
+  - function_parameter_count
+  - nesting
+  - unused_closure_parameter
+opt_in_rules:
+  - unused_optional_binding
+  - empty_count
+  - force_cast
+  - force_try
+  - redundant_discardable_let
