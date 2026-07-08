@@ -90,13 +90,22 @@ if command -v gh >/dev/null 2>&1 && gh auth status >/dev/null 2>&1; then
     gh api \
       --method PUT \
       "repos/${REPO}/branches/${BRANCH}/protection" \
-      -f required_status_checks[strict]=true \
-      -f required_status_checks[checks][][context]="${CRAFT_CHECK}" \
-      -f required_status_checks[checks][][context]="${SONAR_CHECK}" \
-      -F enforce_admins=false \
-      -F allow_force_pushes=false \
-      -F allow_deletions=false \
-      >/dev/null
+      --input - <<EOF
+{
+  "required_status_checks": {
+    "strict": true,
+    "checks": [
+      {"context": "${CRAFT_CHECK}"},
+      {"context": "${SONAR_CHECK}"}
+    ]
+  },
+  "enforce_admins": false,
+  "required_pull_request_reviews": null,
+  "restrictions": null,
+  "allow_force_pushes": false,
+  "allow_deletions": false
+}
+EOF
     echo "✓ Branch protection configured (${CRAFT_CHECK} + ${SONAR_CHECK})"
   else
     echo "--- Branch protection skipped (checks not ready) ---"
