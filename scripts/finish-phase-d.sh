@@ -49,12 +49,12 @@ echo "Latest commit: $SHA"
 echo "Checking GitHub status checks..."
 
 CHECKS=$(fetch_checks "$SHA")
-if $WAIT_FOR_CI && ! checks_ready <<< "$CHECKS"; then
+if $WAIT_FOR_CI && ! checks_ready "$CHECKS"; then
   echo "(waiting for craft-gate + Sonar — ios job takes ~3–4 min)"
   for _ in $(seq 1 40); do
     sleep 15
     CHECKS=$(fetch_checks "$SHA")
-    if checks_ready <<< "$CHECKS"; then
+    if checks_ready "$CHECKS"; then
       break
     fi
     echo "  … still waiting ($(date +%H:%M:%S))"
@@ -64,7 +64,7 @@ fi
 echo "$CHECKS"
 echo
 
-if checks_ready <<< "$CHECKS"; then
+if checks_ready "$CHECKS"; then
   echo "✓ Required checks present on HEAD"
   READY=true
 else
