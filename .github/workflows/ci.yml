@@ -26,12 +26,12 @@ jobs:
       - uses: actions/checkout@v4
       - name: Prepare Debug secrets for CI build
         run: cp ios/HomeFlow/Resources/Secrets.xcconfig.example ios/HomeFlow/Resources/Secrets.xcconfig
+      - name: Install tooling
+        run: brew install xcodegen swiftlint
       - name: Generate Xcode project
         run: cd ios && xcodegen generate
       - name: SwiftLint
-        run: |
-          brew install swiftlint
-          cd ios && swiftlint lint --config .swiftlint.yml --strict
+        run: cd ios && swiftlint lint --config .swiftlint.yml --strict
       - name: Build
         run: |
           cd ios
