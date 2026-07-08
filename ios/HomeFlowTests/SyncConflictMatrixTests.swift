@@ -180,6 +180,117 @@ final class SyncConflictMatrixTests: XCTestCase {
         assertMeetsSC04(passed: passed, total: scenarios.count, matrix: "permission revert")
     }
 
+    // MARK: - AC-SYNC-05 — terminal step protection matrix
+
+    func test_AC_SYNC_05_terminal_step_protection_matrix() {
+        struct TerminalScenario {
+            let name: String
+            let localStatus: StepStatus
+            let serverStatus: StepStatus
+            let localPending: Bool
+            let localUpdatedAt: Date
+            let serverUpdatedAt: Date
+            let expectApplyServer: Bool
+        }
+
+        let scenarios: [TerminalScenario] = [
+            .init(
+                name: "Complete blocked despite newer server",
+                localStatus: .complete, serverStatus: .notStarted,
+                localPending: true, localUpdatedAt: t100, serverUpdatedAt: t200,
+                expectApplyServer: false
+            ),
+            .init(
+                name: "N/A blocked despite newer server",
+                localStatus: .na, serverStatus: .inProgress,
+                localPending: true, localUpdatedAt: t100, serverUpdatedAt: t300,
+                expectApplyServer: false
+            ),
+            .init(
+                name: "Complete unchanged allows server apply",
+                localStatus: .complete, serverStatus: .complete,
+                localPending: false, localUpdatedAt: t100, serverUpdatedAt: t200,
+                expectApplyServer: true
+            ),
+            .init(
+                name: "In progress still timestamp-wins when server newer",
+                localStatus: .inProgress, serverStatus: .complete,
+                localPending: true, localUpdatedAt: t100, serverUpdatedAt: t200,
+                expectApplyServer: true
+            ),
+            .init(
+                name: "In progress keeps local when newer",
+                localStatus: .inProgress, serverStatus: .complete,
+                localPending: true, localUpdatedAt: t300, serverUpdatedAt: t200,
+                expectApplyServer: false
+            )
+        ]
+
+        var passed = 0
+        for scenario in scenarios {
+            let apply = StepStatusConflictPolicy.shouldApplyServerStep(
+                localStatus: scenario.localStatus,
+                localPending: scenario.localPending,
+                localUpdatedAt: scenario.localUpdatedAt,
+                serverStatus: scenario.serverStatus,
+                serverUpdatedAt: scenario.serverUpdatedAt
+            )
+            XCTAssertEqual(apply, scenario.expectApplyServer, scenario.name)
+            if apply == scenario.expectApplyServer { passed += 1 }
+        }
+        assertMeetsSC04(passed: passed, total: scenarios.count, matrix: "terminal step protection")
+    }
+
+    // MARK: - AC-SYNC-07 — structural offline gate matrix
+
+    func test_AC_SYNC_07_structural_offline_gate_matrix() {
+        struct OfflineScenario {
+            let name: String
+            let isConnected: Bool
+            let context: StructuralActionPolicy.Context
+            let expectAllowed: Bool
+        }
+
+        let scenarios: [OfflineScenario] = [
+            .init(name: "offline blocks steps", isConnected: false, context: .steps, expectAllowed: false),
+            .init(name: "offline blocks contacts", isConnected: false, context: .contacts, expectAllowed: false),
+            .init(name: "offline blocks members", isConnected: false, context: .members, expectAllowed: false),
+            .init(name: "offline blocks general", isConnected: false, context: .general, expectAllowed: false),
+            .init(name: "online allows steps", isConnected: true, context: .steps, expectAllowed: true),
+            .init(name: "online allows members", isConnected: true, context: .members, expectAllowed: true)
+        ]
+
+        var passed = 0
+        for scenario in scenarios {
+            let allowed = StructuralActionPolicy.canPerformStructuralActions(isConnected: scenario.isConnected)
+            XCTAssertEqual(allowed, scenario.expectAllowed, scenario.name)
+            if allowed != scenario.expectAllowed { continue }
+
+            if scenario.expectAllowed {
+                XCTAssertNoThrow(
+                    try StructuralActionPolicy.assertConnectivity(
+                        isConnected: scenario.isConnected,
+                        context: scenario.context
+                    )
+                )
+            } else {
+                XCTAssertThrowsError(
+                    try StructuralActionPolicy.assertConnectivity(
+                        isConnected: scenario.isConnected,
+                        context: scenario.context
+                    )
+                ) { error in
+                    XCTAssertEqual(
+                        error as? StructuralActionError,
+                        .requiresConnectivity(context: scenario.context)
+                    )
+                }
+            }
+            passed += 1
+        }
+        assertMeetsSC04(passed: passed, total: scenarios.count, matrix: "structural offline gate")
+    }
+
     // MARK: - Helpers
 
     private func runTimestampMatrix(

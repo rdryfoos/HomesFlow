@@ -112,6 +112,19 @@ Manual VoiceOver + largest Dynamic Type pass on device remains **T069a** (tracke
 
 ---
 
+## Observability (optional)
+
+Crash telemetry via [Sentry](https://sentry.io) — **disabled by default** (empty `SENTRY_DSN` in xcconfig).
+
+| Topic | Convention |
+|-------|------------|
+| Activation | Set `SENTRY_DSN` in `Secrets.Release.xcconfig` before TestFlight |
+| Local dev | Leave `SENTRY_DSN` empty in `Secrets.xcconfig` |
+| Privacy | No PII, emails, or home names in Sentry breadcrumbs/tags |
+| Wiring | `CrashReporting.start()` in `HomeFlowApp` — no-op without DSN |
+
+---
+
 ## Xcode project generation
 
 `ios/HomeFlow.xcodeproj/` is **generated** from `ios/project.yml` (often gitignored). After clone or `project.yml` edits:

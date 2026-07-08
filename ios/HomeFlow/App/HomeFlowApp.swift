@@ -8,6 +8,7 @@ struct HomeFlowApp: App {
     @StateObject private var router = AppRouter()
 
     init() {
+        CrashReporting.start()
         do {
             modelContainer = try SwiftDataContainer.makeContainer()
         } catch {

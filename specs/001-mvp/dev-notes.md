@@ -133,7 +133,7 @@ Feature breadcrumbs: iPhone hero ~152pt; iPad hero ~528pt; section shells use `C
 
 ## Known gaps (next spec-aligned work)
 
-*Updated 2026-07-08. Suite: 109 unit tests; 45/50 ACs verified (Gate 2 green).*
+*Updated 2026-07-08. Suite: 111 unit tests; 45/50 ACs verified (Gate 2 green).*
 
 - **Apple Sign-In wiring** — paid Developer Program now active; restore entitlement, Services ID, enable Supabase Apple provider (App Store requirement — research D12)
 - **Phase 12 (T074–T076a)** — data-type-aware conflict model: protect terminal step statuses (T074), auto-resolve status conflicts with loser notification (T075), connectivity-gated structural actions with upfront UI disable + repository guard (T076, AC-SYNC-07)
@@ -186,9 +186,9 @@ T076 (2026-07-03): `StructuralActionPolicy` implements AC-SYNC-07 — structural
 | **Craft Phase A** | `sonar-project.properties`, `craft-conventions.md`, `sonar-disposition.md`, quick fixes | **Done** (2026-07-08) |
 | **Craft Phase B** | CI: shellcheck + Gate 2 + SwiftLint + build + `HomeFlowTests` | **Done** (2026-07-08) — `.github/workflows/ci.yml` |
 | **Craft Phase C** | Tighten SwiftLint incrementally (re-enable size/complexity rules as files are split); optional `unused_parameter` as warning-as-error | **Next** |
-| **Craft Phase D** | SonarCloud suppressions (UI) + GitHub branch protection on `main` | **In progress** |
-| Observability | Mobile crash/sync telemetry (e.g. Sentry for iOS), queued upload after reconnect | Not integrated |
-| Regression evals | Scripted sync/conflict scenario datasets in CI (SC-04 matrix) | Partial — unit tests only |
+| **Craft Phase D** | SonarCloud suppressions (UI) + GitHub branch protection on `main` | **Script**: `bash scripts/finish-phase-d.sh` |
+| Observability | Sentry crash telemetry (DSN-gated via `SENTRY_DSN`) | **Done** — optional until TestFlight |
+| Regression evals | Scripted sync/conflict scenario datasets in CI (SC-04 matrix) | **Done** — `SyncConflictMatrixTests` |
 
 Pre-release sign-off: [`release-checklist.md`](./release-checklist.md) per `traceability.md` §9.5.
 
@@ -202,9 +202,9 @@ Pre-release sign-off: [`release-checklist.md`](./release-checklist.md) per `trac
 
 **Phase D** — make Sonar enforceable:
 
-1. ~~Confirm CI green on push~~ ✅ (run #3)
-2. In SonarCloud UI → **Analysis Scope → Ignore Issues on Multiple Criteria**: add the four rows from `sonar-disposition.md` (automatic analysis ignores git multicriteria)
-3. In GitHub → **Settings → Branches → `main`**: require **`craft-gate`** + **`SonarCloud Code Analysis`**, enable “Require branches to be up to date”
+1. ~~Confirm CI green on push~~ ✅ (run #4)
+2. Run `bash scripts/finish-phase-d.sh` — prints Sonar UI rows; configures branch protection if `gh auth login` done
+3. ~~GitHub branch protection~~ — `craft-gate` + `SonarCloud Code Analysis` on `main`
 
 ---
 
