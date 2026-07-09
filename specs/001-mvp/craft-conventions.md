@@ -108,6 +108,7 @@ Manual VoiceOver + largest Dynamic Type pass on device remains **T069a** (tracke
 
 - Apply session from sign-in/sign-up **response** and subscribe to `authStateChanges` — do not rely on `try? await client.auth.session` alone immediately after sign-in
 - `emitLocalSessionAsInitialSession: true` on `SupabaseClientOptions`; treat `session.isExpired` as signed-out in `applySession`
+- Sign in with Apple: generate raw nonce → SHA-256 hash on `ASAuthorizationAppleIDRequest.nonce` → exchange identity token via `signInWithIdToken` with raw nonce (see `AppleSignInPolicy`, `AuthViewModel`)
 - Sign-out purges local SwiftData (`LocalDataStore.purgeAll`) so the next account does not inherit cached homes
 
 ---

@@ -58,6 +58,17 @@ final class SupabaseClientProvider: ObservableObject {
         applySession(session)
     }
 
+    func signInWithApple(idToken: String, nonce: String) async throws {
+        let session = try await client.auth.signInWithIdToken(
+            credentials: OpenIDConnectCredentials(
+                provider: .apple,
+                idToken: idToken,
+                nonce: nonce
+            )
+        )
+        applySession(session)
+    }
+
     func signOut() async throws {
         try await client.auth.signOut()
         applySession(nil)

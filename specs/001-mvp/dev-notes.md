@@ -55,7 +55,7 @@ After editing any `*.xcconfig`, **save the file** before building. Verify in Xco
    supabase link --project-ref <ref>
    supabase db push
    ```
-3. Migrations: `001_initial_schema.sql`, `002_storage_profiles_invites.sql`
+3. Migrations: `001`–`006` in `supabase/migrations/` (schema, storage/invites, roles, step photos, documents bucket, log book)
 4. Create test users under **Authentication → Users** (not Table Editor)
 5. Profile rows appear in **`public.profiles`** (auto-created on signup)
 6. Paused free-tier projects cause connection failures — **Restore** in dashboard
@@ -75,11 +75,21 @@ Safari visiting `https://<ref>.supabase.co` and seeing `{"error":"requested path
 
 ## Auth implementation
 
-- **MVP scope (FR-AUTH-01)**: Email/password only on device builds; Apple Sign-In deferred pending entitlement wiring — see spec Assumptions + research D12
-- Local Supabase: `auth.external.apple.enabled = false` in `config.toml` for email-only dev
-- Cloud: enable **Email** provider; Apple deferred for MVP device demos
+- **FR-AUTH-01**: Email/password + **Sign in with Apple** on device builds. Entitlement restored in `HomeFlow.entitlements`; app exchanges Apple identity token via `SupabaseClientProvider.signInWithApple`.
+- **Local Supabase**: `auth.external.apple.enabled = false` in `config.toml` — Apple button shows but Supabase rejects until cloud provider is configured; use email/password for local Docker dev.
+- **Cloud / TestFlight**: Enable **Apple** provider in Supabase Dashboard → Authentication → Providers (Services ID + secret per [research.md](./research.md) D12). Email provider remains enabled.
 
 Session and sign-out craft patterns: [craft-conventions.md](./craft-conventions.md#auth--session-implementation).
+
+### Cloud Apple provider (device / TestFlight)
+
+1. **Apple Developer** → Identifiers → App ID `com.rdryfoos.homeflow` → enable **Sign in with Apple**
+2. Create a **Services ID** (e.g. `com.rdryfoos.homeflow.auth`) → configure Sign in with Apple → domain = `<ref>.supabase.co`, return URL = `https://<ref>.supabase.co/auth/v1/callback`
+3. Create a **Sign in with Apple key** (.p8) → note Key ID and Team ID
+4. **Supabase Dashboard** → Authentication → Providers → **Apple** → enable; paste Services ID as Client ID; generate JWT secret from Team ID + Key ID + .p8 (Supabase docs) or use Apple's secret generator
+5. Build **Release** scheme with `Secrets.Release.xcconfig` pointing at cloud Supabase → run on physical device → tap **Sign in with Apple**
+
+Local Docker: Apple provider stays disabled; friendly error guides to email/password or cloud config.
 
 ---
 
@@ -93,7 +103,7 @@ Session and sign-out craft patterns: [craft-conventions.md](./craft-conventions.
 - **FR-USER-02 (T068)**: owner removes member via swipe or detail action → confirmation → `memberships` row deleted (RLS owner-only); revoked user loses access on next sync since `is_home_member` fails closed. Removal requires connectivity (`StructuralActionPolicy`, context `.members`); gating in `MemberRemovalPolicy` + UI disables invite/role/remove controls when offline (T076)
 - **AC-SYNC-04**: pending-sync cloud icons on home heroes, sync issue banners, pull-to-refresh on dashboard
 - `HomeConflictResolver` + activity log on home edit conflicts (timestamp wins)
-- **Conflict model evolution (2026-07-03, decided on story map; refined same day)**: timestamp-wins (AC-SYNC-01) stays shipped/verified for v1, but the model becomes **data-type-aware** — never silently regress Complete/N/A step statuses (AC-SYNC-05, T074), auto-resolve other status conflicts and notify the loser with re-apply guidance — **no human resolution UI** (AC-SYNC-06, T075), connectivity-gate structural actions (AC-SYNC-07, T076). Field-level merge (AC-SYNC-02, T035/T039) **deferred post-MVP** with version vectors. Constitution Principle III amended to 1.2.0 to match. Current code still silently applies server-newer — Phase 12 changes that. Full per-type rules: data-model.md "Conflict semantics" table.
+- **Conflict model evolution (Phase 12, shipped 2026-07-03)**: timestamp-wins (AC-SYNC-01) plus **data-type-aware** rules — never silently regress Complete/N/A step statuses (AC-SYNC-05, `StepStatusConflictPolicy`), auto-resolve other status conflicts and notify the loser with re-apply guidance — **no human resolution UI** (AC-SYNC-06), connectivity-gate structural actions (AC-SYNC-07, `StructuralActionPolicy`). Pull-before-push in `SyncEngine.run()` prevents stale offline overwrites. Field-level merge (AC-SYNC-02, T035/T039) **deferred post-MVP** with version vectors. Full per-type rules: data-model.md "Conflict semantics" table.
 - Invite offline conflicts (AC-USER-03) **not yet implemented**
 
 ---
@@ -133,31 +143,57 @@ Feature breadcrumbs: iPhone hero ~152pt; iPad hero ~528pt; section shells use `C
 
 ## Known gaps (next spec-aligned work)
 
-*Updated 2026-07-08. Suite: 111 unit tests; 45/50 ACs verified (Gate 2 green).*
+*Updated 2026-07-08. Suite: 111 unit tests; 45/50 ACs verified (Gate 2 green). Task checkboxes: [tasks.md](./tasks.md).*
 
-- **Apple Sign-In wiring** — paid Developer Program now active; restore entitlement, Services ID, enable Supabase Apple provider (App Store requirement — research D12)
-- **Phase 12 (T074–T076a)** — data-type-aware conflict model: protect terminal step statuses (T074), auto-resolve status conflicts with loser notification (T075), connectivity-gated structural actions with upfront UI disable + repository guard (T076, AC-SYNC-07)
-- **Phase 13 (T077–T086)** — Communications Log shipped: `log_book_entries` migration + RLS, offline append sync, grace-window edit policy, unified view with scope filter, guest denial; UI label "Communications Log"
-- **T035/T039** — AC-SYNC-02 field-level merge — **deferred post-MVP** (2026-07-03 decision; pairs with version vectors)
-- **T027/T033a** — offline invite conflict (implementation + test)
-- **T072a** — performance baselines (pair with device smoke session: launch, dashboard load, sync round-trip, Quick Look on large PDF)
+### Open — ship path
+
+- **Supabase Apple provider (cloud)** — Dashboard config for device/TestFlight sign-in (Services ID + secret); see Auth implementation below
+- **T027/T033a** — offline invite conflict (`AC-USER-03`); only unchecked P1 *implementation* task
+
+### Open — validation debt
+
 - **T069a** — manual VoiceOver + largest Dynamic Type pass on device
-- **T024d–f** — iPad layout tests (deferred pending snapshot/XCUITest infra; manual iPad pass until then)
-- **XCUITests** T017, T069 (note: `HomeFlowUITests.testLaunch` only passes on a simulator with a signed-in session — it asserts the HomesFlow dashboard nav bar, so a signed-out sim shows the auth screen instead)
+- **T024d–f** — iPad layout tests for AC-HOME-09…11; manual iPad pass until snapshot/XCUITest infra
+- **XCUITests** T017, T064, T069 — see [release-checklist.md](./release-checklist.md) (note: `HomeFlowUITests.testLaunch` only passes on a simulator with a signed-in session)
+- **T022** — AC-HOME-01 integration test (validator-only today)
 
-Test-debt sweep (2026-07-03): T030–T033c, T040a, T050d closed via extracted seams (`InvitePolicy`, `RoleChangeAudit`, `MembershipMerge`, `SyncIndicatorPolicy`, `StepRowPresentation`) — 36/50 ACs verified. The AC-USER-04 test exposed a real bug: `PermissionService` let Managers create/update/delete owner-only procedures, providers, and documents because those cases ignored visibility; now all mutations go through `visibilityAllows`. Bonus UX fix: pasting a full `homeflow://invite?token=…` link into Accept Invite now works (previously only the bare token did).
+### Open — hardening
 
-T038 (2026-07-03): `OverwriteNotificationPolicy` centralizes AC-SYNC-01 loser-notification rules; `SyncEngine.mergeHome` now posts the banner when a pending home edit loses to a newer server timestamp (steps and providers already did). Test: `test_AC_SYNC_01_offline_overwrite_notifies_loser` in SyncConflictMatrixTests.
+- **T070** — `/speckit.analyze` pass
+- **T071** — RLS integration tests against `contracts/rls-permissions.md`
+- **T072a** — performance smoke baselines (launch, dashboard load, sync round-trip, Quick Look on large PDF)
+- **T072b/c** — NFR-SCALE-01 assumptions in plan.md; NFR-REL-01 crash monitoring path
 
-T074 (2026-07-03): `StepStatusConflictPolicy` implements AC-SYNC-05 — Complete/N/A never silently regress on step merge; conflicting server status is surfaced via activity log + notification while non-status fields still merge. Test: `StepStatusConflictPolicyTests.test_AC_SYNC_05_terminal_status_never_silently_regressed`.
+### Deferred post-MVP
 
-**Sync pull-before-push (2026-07-03)**: `SyncEngine.run()` now pulls homes before pushing the outbox so timestamp-wins merge runs first (AC-SYNC-01 / AC-HOME-03). Fixes the two-device home-rename scenario where an older offline iPhone edit overwrote a newer iPad edit. Provider updates get a pre-push server fetch via `OutboxSyncPolicy` + `reconcileProviderBeforePush`. Re-test: iPhone offline rename → iPad online rename → iPhone reconnect should keep the iPad name and notify the iPhone.
+- **T035/T039** — AC-SYNC-02 field-level merge (pairs with version vectors)
+
+### Shipped milestones (complete — do not reopen unless regressing)
+
+| Phase | Tasks | Summary |
+|-------|-------|---------|
+| **12** | T074–T076a | Data-type-aware conflict: terminal status protection, auto-resolve + loser notify, structural offline gate |
+| **13** | T077–T086 | Communications Log: migration `006`, offline append, grace-window edit, unified view, guest denial |
+
+See [Implementation changelog](#implementation-changelog) below for dated breadcrumbs.
+
+---
+
+## Implementation changelog
+
+Test-debt sweep (2026-07-03): T030–T033c, T040a, T050d closed via extracted seams (`InvitePolicy`, `RoleChangeAudit`, `MembershipMerge`, `SyncIndicatorPolicy`, `StepRowPresentation`). The AC-USER-04 test exposed a real bug: `PermissionService` let Managers create/update/delete owner-only procedures, providers, and documents because those cases ignored visibility; now all mutations go through `visibilityAllows`. Bonus UX fix: pasting a full `homeflow://invite?token=…` link into Accept Invite now works (previously only the bare token did).
+
+T038 (2026-07-03): `OverwriteNotificationPolicy` centralizes AC-SYNC-01 loser-notification rules; `SyncEngine.mergeHome` now posts the banner when a pending home edit loses to a newer server timestamp. Test: `test_AC_SYNC_01_offline_overwrite_notifies_loser` in SyncConflictMatrixTests.
+
+T074 (2026-07-03): `StepStatusConflictPolicy` implements AC-SYNC-05. Test: `StepStatusConflictPolicyTests.test_AC_SYNC_05_terminal_status_never_silently_regressed`.
+
+**Sync pull-before-push (2026-07-03)**: `SyncEngine.run()` pulls homes before pushing the outbox (AC-SYNC-01 / AC-HOME-03). Provider updates get a pre-push server fetch via `OutboxSyncPolicy` + `reconcileProviderBeforePush`.
 
 T075 (2026-07-03): AC-SYNC-06 auto-resolve status conflicts with loser notification + re-apply guidance (no human resolution UI).
 
-T076 (2026-07-03): `StructuralActionPolicy` implements AC-SYNC-07 — structural actions blocked offline; UI disables controls up front. Step status, notes, and home edits remain offline-capable.
+T076 (2026-07-03): `StructuralActionPolicy` implements AC-SYNC-07 — structural actions blocked offline; UI disables controls up front.
 
-**Phase 13 Communications Log (2026-07-03)**: migration `006_log_book_entries.sql`; `LogBookRepository` + outbox push in `SyncEngine`; `CommunicationsLogView` (household + unified); procedure detail add/view; `LogBookGraceWindowPolicy` (10 min from server receipt); occurrence-time sort via `LogBookEntryOrganizer`. 100 unit tests green. Apply migration before device test: `supabase db push`.
+**Phase 13 Communications Log (2026-07-03)**: migration `006_log_book_entries.sql`; `LogBookRepository` + outbox push in `SyncEngine`; `CommunicationsLogView`; `LogBookGraceWindowPolicy` (10 min from server receipt); occurrence-time sort via `LogBookEntryOrganizer`. Apply migration before device test: `supabase db push`.
 
 ### Offline ordering — decided breadcrumb (2026-07-03)
 
@@ -185,8 +221,8 @@ T076 (2026-07-03): `StructuralActionPolicy` implements AC-SYNC-07 — structural
 | Secrets | `Secrets*.xcconfig` gitignored; never commit service-role keys | In use |
 | **Craft Phase A** | `sonar-project.properties`, `craft-conventions.md`, `sonar-disposition.md`, quick fixes | **Done** (2026-07-08) |
 | **Craft Phase B** | CI: shellcheck + Gate 2 + SwiftLint + build + `HomeFlowTests` | **Done** (2026-07-08) — `.github/workflows/ci.yml` |
-| **Craft Phase C** | Tighten SwiftLint incrementally (re-enable size/complexity rules as files are split); optional `unused_parameter` as warning-as-error | **Next** |
-| **Craft Phase D** | SonarCloud suppressions (UI) + GitHub branch protection on `main` | **Script**: `bash scripts/finish-phase-d.sh` |
+| **Craft Phase C** | Tighten SwiftLint incrementally (re-enable size/complexity rules as files are split); optional `unused_parameter` as warning-as-error | **Next** (opportunistic) |
+| **Craft Phase D** | SonarCloud suppressions (UI) + GitHub branch protection on `main` | **Done** (2026-07-08) |
 | Observability | Sentry crash telemetry (DSN-gated via `SENTRY_DSN`) | **Done** — optional until TestFlight |
 | Regression evals | Scripted sync/conflict scenario datasets in CI (SC-04 matrix) | **Done** — `SyncConflictMatrixTests` |
 
@@ -200,11 +236,11 @@ Pre-release sign-off: [`release-checklist.md`](./release-checklist.md) per `trac
 2. Add `unused_closure_parameter` fixes as encountered  
 3. Document any new rule adoptions in `craft-conventions.md`
 
-**Phase D** — make Sonar enforceable:
+**Phase D** — make Sonar enforceable: **done** (2026-07-08)
 
 1. ~~Confirm CI green on push~~ ✅ (run #4)
-2. Run `bash scripts/finish-phase-d.sh` — prints Sonar UI rows; configures branch protection if `gh auth login` done
-3. ~~GitHub branch protection~~ — `craft-gate` + `SonarCloud Code Analysis` on `main`
+2. ~~SonarCloud UI suppressions~~ ✅ per `sonar-disposition.md` (git `multicriteria` ignored by automatic analysis)
+3. ~~GitHub branch protection~~ ✅ — `craft-gate` + `SonarCloud Code Analysis` on `main`
 
 ---
 

@@ -122,15 +122,17 @@
 
 ---
 
-### D12 — Apple Sign-In & entitlements for device demos (2026-06-28)
+### D12 — Apple Sign-In & entitlements (2026-06-28, updated 2026-07-08)
 
-**Decision**: Email/password only for current MVP device builds. Sign in with Apple entitlement **removed** from `HomeFlow.entitlements` temporarily so **Personal Team** (free Apple ID) code signing works. Apple Sign-In UI shows placeholder message.
+**Decision (original)**: Email/password only for device builds while Personal Team signing blocked Apple entitlement.
 
-**Rationale**: Paid Apple Developer Program + Services ID setup required for production Sign in with Apple. Email auth sufficient for internal cloud demos.
+**Update (2026-07-03)**: Paid Apple Developer Program active (Admin role).
 
-**Revisit before**: App Store submission (FR-AUTH-01 requires Apple when email is offered).
+**Update (2026-07-08)**: Apple Sign-In **shipped in app** — `HomeFlow.entitlements` restored; `SignInWithAppleButton` + `signInWithIdToken` in `SupabaseClientProvider`. Remaining ops: enable Apple provider on **cloud** Supabase (Services ID `com.rdryfoos.homeflow`, JWT secret from Apple Developer portal).
 
-**Update (2026-07-03)**: Paid Apple Developer Program active (Admin role). The Personal Team constraint no longer applies; remaining work is restoring the entitlement in `HomeFlow.entitlements`, Services ID setup, and enabling the Apple provider in Supabase.
+**Local dev**: Keep `[auth.external.apple] enabled = false` in `config.toml`; use email/password.
+
+**Revisit before App Store**: Confirm cloud Apple provider + App Store Connect Sign in with Apple capability on production bundle ID.
 
 ---
 

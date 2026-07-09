@@ -2,7 +2,7 @@
 
 **Input**: [spec.md](./spec.md) · [plan.md](./plan.md) · [data-model.md](./data-model.md) · [contracts/](./contracts/)
 
-**Feature**: `001-mvp` | **Updated**: 2026-07-03
+**Feature**: `001-mvp` | **Updated**: 2026-07-08
 
 **UI reference** (non-authoritative): https://haze-rabbit-58180688.figma.site — SwiftUI-native iPhone/iPad only.
 
@@ -15,7 +15,7 @@
 | 5 Invites & roles | **Mostly complete** | Deep links T026; offline conflict T027/T033a |
 | 6 Offline sync | **Partial** | Field merge T035 deferred post-MVP |
 | 7 Procedures | **Complete** | — |
-| 8–10 P2/P3 features | **Partial** | Phase 9 guest views done; Files, Settings next |
+| 8–10 P2/P3 features | **Mostly complete** | XCUITests T064/T069; validation T069a |
 | 11 Hardening | Not started | Re-run analyze after P1 checkpoint |
 | 12 Conflict model evolution | **Complete** | — |
 | 13 Log Book | **Complete** | — |
@@ -46,7 +46,7 @@ Partial deliverables documented in [dev-notes.md](./dev-notes.md). **Do not** en
 
 - [x] T004 Write `supabase/migrations/001_initial_schema.sql` from data-model.md (enums, tables, indexes) — **Traces**: FR-HOME-01, FR-USER-01, FR-PROC-01
 - [x] T005 Implement RLS policies + `get_user_role()` per contracts/rls-permissions.md — **Traces**: FR-USER-01, FR-GUEST-01, AC-GUEST-02
-- [x] T006 [P] Configure Supabase Auth: Apple + email/password providers — **Traces**: FR-AUTH-01 — *email/password done; Apple deferred (see dev-notes D12)*
+- [x] T006 [P] Configure Supabase Auth: Apple + email/password providers — **Traces**: FR-AUTH-01 — *email/password done; Apple app-side shipped 2026-07-08; cloud dashboard provider remains ops step (D12)*
 - [x] T007 [P] Create Supabase Storage buckets + policies (home-photos, documents, procedure-attachments) — **Traces**: FR-HOME-01, FR-HOME-03, FR-PROC-03 — *002_storage_profiles_invites.sql*
 - [x] T008 Implement `ios/HomeFlow/Core/Supabase/SupabaseClientProvider.swift` + Keychain session — **Traces**: FR-AUTH-01, NFR-SEC-01 — *supabase-swift session + authStateChanges*
 - [x] T009 Define SwiftData models mirroring server tables + `MutationOutbox` in `ios/HomeFlow/Core/Models/` — **Traces**: NFR-OFFL-01
@@ -65,7 +65,7 @@ Partial deliverables documented in [dev-notes.md](./dev-notes.md). **Do not** en
 
 ### Implementation
 
-- [x] T014 [US-ADMIN-01] Auth screens: email/password sign-up, sign-in, Sign in with Apple in `ios/HomeFlow/Features/Auth/` — **Traces**: FR-AUTH-01 — *Apple placeholder only*
+- [x] T014 [US-ADMIN-01] Auth screens: email/password sign-up, sign-in, Sign in with Apple in `ios/HomeFlow/Features/Auth/` — **Traces**: FR-AUTH-01 — *Apple wired 2026-07-08*
 - [x] T015 [US-ADMIN-01] Dashboard home list view (SwiftUI) — full-bleed photo hero cards with name/address in `ios/HomeFlow/Features/Dashboard/` — **Traces**: FR-HOME-01, AC-SYNC-04 — *procedure count placeholder not yet*
 - [x] T016 [P] [US-ADMIN-01] Adaptive layout: iPhone `NavigationStack`, iPad `NavigationSplitView` shell for dashboard — **Traces**: NFR-PERF-01
 

@@ -77,9 +77,9 @@ SUPABASE_ANON_KEY = <anon or sb_publishable_... — NOT sb_secret_...>
 
 | Environment | Email/password | Apple Sign-In |
 |-------------|----------------|---------------|
-| Local (`config.toml`) | Enabled | Disabled for dev |
-| Cloud dashboard | Enable Email | Deferred for MVP demos |
-| App Store (future) | Enabled | Required when email offered |
+| Local (`config.toml`) | Enabled | Disabled in Supabase — use email |
+| Cloud dashboard | Enable Email | **Enable Apple** (Services ID + secret) |
+| Device / TestFlight | Enabled | Required — app entitlement + cloud provider |
 
 Sign-up: password ≥ 6 characters.
 
@@ -151,7 +151,7 @@ Implementation status: [tasks.md](./tasks.md) (checkboxes) + [dev-notes.md](./de
 |-------|-----|
 | RLS denies insert | User needs profile + admin membership (auto on home create via trigger) |
 | Sync not running | Pull to refresh; check dashboard sync banner; confirm online |
-| Apple Sign-In fails in sim | Use email/password (Apple deferred) |
+| Apple Sign-In fails on device | Enable Apple provider in cloud Supabase (D12); local Docker uses email only |
 | **Could not connect / hostname not found** on iPhone | Release secrets not saved or still `YOUR_PROJECT_REF`; Clean Build (⇧⌘K); verify Build Settings `SUPABASE_URL` |
 | Sign-in does nothing (no error) | Fixed: session from sign-in response — pull latest; clean rebuild |
 | Photo upload fails | Sync home first; must be online; check storage policies (migration 002) |
