@@ -2,7 +2,7 @@
 
 **Input**: [spec.md](./spec.md) · [plan.md](./plan.md) · [data-model.md](./data-model.md) · [contracts/](./contracts/)
 
-**Feature**: `001-mvp` | **Updated**: 2026-07-08
+**Feature**: `001-mvp` | **Updated**: 2026-07-09
 
 **UI reference** (non-authoritative): https://haze-rabbit-58180688.figma.site — SwiftUI-native iPhone/iPad only.
 
@@ -19,6 +19,7 @@
 | 11 Hardening | Not started | Re-run analyze after P1 checkpoint |
 | 12 Conflict model evolution | **Complete** | — |
 | 13 Log Book | **Complete** | — |
+| 14 Delivery hygiene (craft Phase E) | Not started | PR-only merge; CI Sonar scan |
 
 Partial deliverables documented in [dev-notes.md](./dev-notes.md). **Do not** encode implementation details in [spec.md](./spec.md).
 
@@ -296,6 +297,17 @@ Partial deliverables documented in [dev-notes.md](./dev-notes.md). **Do not** en
 
 ---
 
+## Phase 14: Delivery hygiene (craft Phase E)
+
+**Goal**: PR-based delivery to `main` with the same gates that already run on push — no silent admin bypass; Sonar suppressions authoritative in git.
+
+- [ ] T087 [P] Enforce PR-only merge to `main`: branch protection requires pull request, `craft-gate` + `SonarCloud Code Analysis`, and disallow admin bypass — **Traces**: plan Phase 0 (infrastructure), NFR-SEC-01 — *today: direct push to main still possible as admin; see dev-notes craft Phase E*
+- [ ] T088 [P] Add `.github/pull_request_template.md`: task ID(s), `Traces:` AC/FR IDs, test evidence, Gate 2 status — **Traces**: plan Phase 0 (infrastructure) — *golden thread visible at review time*
+- [ ] T089 [P] Run SonarCloud from CI (`.github/workflows/ci.yml` or dedicated job) so `sonar-project.properties` multicriteria suppressions apply; retire automatic-analysis-only suppressions where redundant — **Traces**: plan Phase 0 (infrastructure) — *see sonar-disposition.md automatic-analysis limitation*
+- [ ] T090 [P] Document delivery workflow in `craft-conventions.md` + README: feature branch → PR → green gates → merge; link `finish-phase-d.sh` for protection setup — **Traces**: plan Phase 0 (infrastructure)
+
+---
+
 ## Dependencies
 
 ```text
@@ -305,6 +317,7 @@ Phases 7–8 → Phases 9–10 (P3)
 All → Phase 11
 Phase 6 → Phase 12 (conflict model evolution; supersedes blanket timestamp-wins for step statuses)
 Phase 7 → Phase 13 (Log Book; procedure-scope entries need procedure detail)
+Phase 14 (craft Phase E) can start after Phase D; independent of product phases
 ```
 
 ## MVP scope reminders
