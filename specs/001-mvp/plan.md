@@ -12,7 +12,7 @@
 | 3 P3 guest/docs | Not started | Files tab (UI label), Settings, guest views |
 | 4 Testing/hardening | Not started | |
 
-**Deployed path validated**: Supabase Cloud + Release build on physical iPhone (`com.rdryfoos.homeflow`). Local Docker + Debug Simulator also supported. See [quickstart.md](./quickstart.md).
+**Deployed path validated**: Supabase Cloud + Release build on physical iPhone (`com.rdryfoos.homesflow`). Local Docker + Debug Simulator also supported. See [quickstart.md](./quickstart.md).
 
 ## Summary
 
@@ -65,11 +65,11 @@ specs/001-mvp/
 
 ```text
 ios/
-├── HomeFlow.xcodeproj      # generated via project.yml + xcodegen
+├── HomesFlow.xcodeproj      # generated via project.yml + xcodegen
 ├── project.yml
-├── HomeFlow/
+├── HomesFlow/
 │   ├── App/
-│   │   ├── HomeFlowApp.swift
+│   │   ├── HomesFlowApp.swift
 │   │   └── AppRouter.swift
 │   ├── Features/
 │   │   ├── Auth/
@@ -94,9 +94,9 @@ ios/
 │   └── Resources/
 │       ├── Secrets.xcconfig.example          # Debug / local
 │       ├── Secrets.Release.xcconfig.example  # Release / cloud
-│       └── HomeFlow.entitlements             # Apple Sign-In deferred
-├── HomeFlowTests/
-└── HomeFlowUITests/
+│       └── HomesFlow.entitlements             # Apple Sign-In deferred
+├── HomesFlowTests/
+└── HomesFlowUITests/
 
 supabase/
 ├── config.toml

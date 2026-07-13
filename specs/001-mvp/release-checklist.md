@@ -14,7 +14,7 @@ Per `traceability.md` §9.5. Complete before TestFlight, staging demo, or produc
 - [ ] All migrations for this release applied to target Supabase project (`supabase db push` on staging/prod as appropriate)
 - [ ] `Secrets*.xcconfig` / cloud keys configured for target environment (no service-role key in app)
 - [ ] `bash scripts/check-traceability.sh --refresh` — Gate 2 **PASSED**; coverage snapshot refreshed (`coverage.md` / `coverage.svg`)
-- [ ] Unit tests green: `xcodebuild test -scheme HomeFlow -destination 'platform=iOS Simulator,name=iPhone 17' -only-testing:HomeFlowTests`
+- [ ] Unit tests green: `xcodebuild test -scheme HomesFlow -destination 'platform=iOS Simulator,name=iPhone 17' -only-testing:HomesFlowTests`
 - [ ] App builds Release on physical device (or CI artifact equivalent)
 
 ## Validation status (design validation — not optional long-term)

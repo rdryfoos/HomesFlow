@@ -3,7 +3,7 @@
 # Usage: bash scripts/finish-phase-d.sh [--no-wait]
 set -euo pipefail
 
-REPO="rdryfoos/HomeFlow"
+REPO="rdryfoos/HomesFlow"
 BRANCH="main"
 CRAFT_CHECK="craft-gate"
 SONAR_CHECK="SonarCloud Code Analysis"
@@ -75,13 +75,13 @@ fi
 
 echo
 echo "--- Sonar suppressions (UI — automatic analysis ignores git multicriteria) ---"
-echo "Open: https://sonarcloud.io/project/settings?id=rdryfoos_HomeFlow&category=exclusions"
+echo "Open: https://sonarcloud.io/project/settings?id=rdryfoos_HomesFlow&category=exclusions"
 echo "Add under 'Ignore Issues on Multiple Criteria':"
 echo
-printf "  %-14s %s\n" "swift:S100" "**/HomeFlowTests/**"
+printf "  %-14s %s\n" "swift:S100" "**/HomesFlowTests/**"
 printf "  %-14s %s\n" "swift:S115" "**/ios/**"
-printf "  %-14s %s\n" "swift:S1075" "**/HomeFlowTests/**"
-printf "  %-14s %s\n" "swift:S1186" "**/ios/HomeFlow/Features/**"
+printf "  %-14s %s\n" "swift:S1075" "**/HomesFlowTests/**"
+printf "  %-14s %s\n" "swift:S1186" "**/ios/HomesFlow/Features/**"
 echo
 
 if command -v gh >/dev/null 2>&1 && gh auth status >/dev/null 2>&1; then

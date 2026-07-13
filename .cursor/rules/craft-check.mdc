@@ -1,6 +1,6 @@
 ---
 description: Craft gates after Swift or shell changes
-globs: ios/HomeFlow/**/*.swift,ios/HomeFlowTests/**/*.swift,scripts/*.sh
+globs: ios/HomesFlow/**/*.swift,ios/HomesFlowTests/**/*.swift,scripts/*.sh
 alwaysApply: false
 ---
 

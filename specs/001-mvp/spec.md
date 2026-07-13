@@ -167,7 +167,7 @@ All roles can read and write while offline; sync on reconnect with deterministic
 
 All primary screens respect iOS accessibility settings, especially Dynamic Type text scaling.
 
-**Why this priority**: HomeFlow serves multi-generational households; accessibility is a first-class product requirement, not polish.
+**Why this priority**: HomesFlow serves multi-generational households; accessibility is a first-class product requirement, not polish.
 
 **Independent Test**: Enable largest Dynamic Type and VoiceOver; navigate dashboard → home → procedure; all primary actions remain reachable and readable.
 
@@ -264,8 +264,8 @@ Owners and Managers write free-form log entries — household-scope or attached 
 
 - MVP targets iOS 17+ on iPhone and iPad; no Android/web/desktop.
 - **Backend**: Supabase (PostgreSQL, Auth, Storage, Realtime).
-- **Auth (MVP)**: Email/password and Sign in with Apple via Supabase Auth. Apple entitlement in `HomeFlow.entitlements`; cloud Supabase must enable the Apple provider (Services ID + secret — see [research.md](./research.md) D12). Local Docker dev remains email/password only (`config.toml`).
-- **Invites (MVP)**: Owner shares `homeflow://invite?token=…` via system share sheet; invitee uses **Join with Invite** and pastes token while signed in with invited email (**AC-USER-07**). Automated email/SMS delivery, Universal Links, and deep-link auto-accept are **Out of Scope** for MVP.
+- **Auth (MVP)**: Email/password and Sign in with Apple via Supabase Auth. Apple entitlement in `HomesFlow.entitlements`; cloud Supabase must enable the Apple provider (Services ID + secret — see [research.md](./research.md) D12). Local Docker dev remains email/password only (`config.toml`).
+- **Invites (MVP)**: Owner shares `homesflow://invite?token=…` via system share sheet; invitee uses **Join with Invite** and pastes token while signed in with invited email (**AC-USER-07**). Automated email/SMS delivery, Universal Links, and deep-link auto-accept are **Out of Scope** for MVP.
 - **Push notifications (FR-NOTIF-01)**: Deferred in MVP — Settings UI placeholder only; no APNs wiring.
 - Document upload uses standard iOS file/photo pickers; files stored in Supabase Storage.
 - Home photos: client resizes before upload (AC-HOME-06); dashboard and iPhone home-detail hero cards use disk/memory cache (AC-HOME-07); photo upload requires home synced first (AC-HOME-08). Signed URLs may be cached for the session; full-resolution originals are not required for hero display in MVP. Prefetch runs at most two concurrent downloads (NFR-PERF-01). File preview uses streaming download to temp before Quick Look (NFR-PERF-01, AC-HOME-13).
@@ -289,4 +289,4 @@ Owners and Managers write free-form log entries — household-scope or attached 
 - Per-step assignees
 - Separate key-contacts entity (use service providers)
 - Automated invite email/SMS delivery (MVP uses manual share + token paste per AC-USER-07)
-- Universal Links / deep-link auto-accept for invites (`homeflow://` scheme only; paste fallback)
+- Universal Links / deep-link auto-accept for invites (`homesflow://` scheme only; paste fallback)

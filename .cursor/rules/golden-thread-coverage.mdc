@@ -1,6 +1,6 @@
 ---
 description: Run Gate 2 and refresh portfolio snapshot after traceability changes
-globs: specs/001-mvp/tasks.md,HomesFlow.prd.md,specs/001-mvp/spec.md,ios/HomeFlow/**/*.swift,ios/HomeFlowTests/**/*.swift
+globs: specs/001-mvp/tasks.md,HomesFlow.prd.md,specs/001-mvp/spec.md,ios/HomesFlow/**/*.swift,ios/HomesFlowTests/**/*.swift
 alwaysApply: false
 ---
 
@@ -26,4 +26,4 @@ Then before marking the task complete:
 
 Canvas path (override with `GOLDEN_THREAD_CANVAS`):
 
-`~/.cursor/projects/Users-rik-Developer-HomeFlow/canvases/golden-thread-coverage.canvas.tsx`
+`~/.cursor/projects/Users-rik-Developer-HomesFlow/canvases/golden-thread-coverage.canvas.tsx`

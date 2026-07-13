@@ -27,9 +27,9 @@ SPEC=specs/001-mvp/spec.md
 TASKS=specs/001-mvp/tasks.md
 MATRIX=specs/001-mvp/coverage.md
 SVG=specs/001-mvp/coverage.svg
-CANVAS="${GOLDEN_THREAD_CANVAS:-$HOME/.cursor/projects/Users-rik-Developer-HomeFlow/canvases/golden-thread-coverage.canvas.tsx}"
-SRC_DIRS=(ios/HomeFlow)
-TEST_DIRS=(ios/HomeFlowTests ios/HomeFlowUITests)
+CANVAS="${GOLDEN_THREAD_CANVAS:-$HOME/.cursor/projects/Users-rik-Developer-HomesFlow/canvases/golden-thread-coverage.canvas.tsx}"
+SRC_DIRS=(ios/HomesFlow)
+TEST_DIRS=(ios/HomesFlowTests ios/HomesFlowUITests)
 
 MODE="${1:-check}"
 

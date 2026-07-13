@@ -30,7 +30,7 @@ No orphan code, no silent scope, no untracked debt: an acceptance criterion is e
 
 | Document | Role |
 |----------|------|
-| **[Story map](https://homeflow.storiesonboard.com/m/homeflow1)** (StoriesOnBoard) | Product planning view: releases, story slices, and what's next; feeds the PRD |
+| **[Story map](https://homesflow.storiesonboard.com/m/homesflow1)** (StoriesOnBoard) | Product planning view: releases, story slices, and what's next; feeds the PRD |
 | **`HomesFlow.prd.md`** | Product requirements, user stories, acceptance criteria |
 | **`.specify/memory/constitution.md`** | Non-negotiable architectural and process laws |
 | **`traceability.md`** | How IDs flow from PRD → spec → tasks → code → tests |
@@ -81,7 +81,7 @@ export SPECIFY_FEATURE_DIRECTORY=specs/001-mvp
 |------|------|-----|
 | **Gate 0** | Build + unit tests + SwiftLint + shellcheck | `.github/workflows/ci.yml` |
 | **Gate 2** | Golden thread (`check-traceability.sh`) | same workflow (ubuntu job) |
-| **SonarCloud** | Static analysis ([dashboard](https://sonarcloud.io/project/overview?id=rdryfoos_HomeFlow)); policy in `sonar-project.properties` | SonarCloud on push |
+| **SonarCloud** | Static analysis ([dashboard](https://sonarcloud.io/project/overview?id=rdryfoos_HomesFlow)); policy in `sonar-project.properties` | SonarCloud on push |
 
 Local:
 
@@ -98,9 +98,9 @@ Craft conventions: `specs/001-mvp/craft-conventions.md`. Sonar suppressions: `sp
 
 ```bash
 supabase start && supabase db reset
-cp ios/HomeFlow/Resources/Secrets.xcconfig.example ios/HomeFlow/Resources/Secrets.xcconfig
+cp ios/HomesFlow/Resources/Secrets.xcconfig.example ios/HomesFlow/Resources/Secrets.xcconfig
 # Paste SUPABASE_URL and SUPABASE_ANON_KEY from `supabase start` output
-cd ios && xcodegen generate && open HomeFlow.xcodeproj
+cd ios && xcodegen generate && open HomesFlow.xcodeproj
 ```
 
 UI reference (non-authoritative): https://haze-rabbit-58180688.figma.site

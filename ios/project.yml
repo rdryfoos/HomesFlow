@@ -1,4 +1,4 @@
-name: HomeFlow
+name: HomesFlow
 options:
   bundleIdPrefix: com.rdryfoos
   deploymentTarget:
@@ -20,57 +20,57 @@ settings:
     DEVELOPMENT_TEAM: ""
     CODE_SIGN_STYLE: Automatic
 targets:
-  HomeFlow:
+  HomesFlow:
     type: application
     platform: iOS
     sources:
-      - path: HomeFlow
+      - path: HomesFlow
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.rdryfoos.homeflow
-        INFOPLIST_FILE: HomeFlow/Resources/Info.plist
-        CODE_SIGN_ENTITLEMENTS: HomeFlow/Resources/HomeFlow.entitlements
+        PRODUCT_BUNDLE_IDENTIFIER: com.rdryfoos.homesflow
+        INFOPLIST_FILE: HomesFlow/Resources/Info.plist
+        CODE_SIGN_ENTITLEMENTS: HomesFlow/Resources/HomesFlow.entitlements
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         ENABLE_TESTABILITY: YES
     configFiles:
-      Debug: HomeFlow/Resources/Secrets.xcconfig
-      Release: HomeFlow/Resources/Secrets.Release.xcconfig
+      Debug: HomesFlow/Resources/Secrets.xcconfig
+      Release: HomesFlow/Resources/Secrets.Release.xcconfig
     dependencies:
       - package: Supabase
         product: Supabase
       - package: Sentry
         product: Sentry
-  HomeFlowTests:
+  HomesFlowTests:
     type: bundle.unit-test
     platform: iOS
     sources:
-      - path: HomeFlowTests
+      - path: HomesFlowTests
     dependencies:
-      - target: HomeFlow
+      - target: HomesFlow
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.rdryfoos.homeflow.tests
+        PRODUCT_BUNDLE_IDENTIFIER: com.rdryfoos.homesflow.tests
         GENERATE_INFOPLIST_FILE: YES
-  HomeFlowUITests:
+  HomesFlowUITests:
     type: bundle.ui-testing
     platform: iOS
     sources:
-      - path: HomeFlowUITests
+      - path: HomesFlowUITests
     dependencies:
-      - target: HomeFlow
+      - target: HomesFlow
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.rdryfoos.homeflow.uitests
+        PRODUCT_BUNDLE_IDENTIFIER: com.rdryfoos.homesflow.uitests
         GENERATE_INFOPLIST_FILE: YES
 schemes:
-  HomeFlow:
+  HomesFlow:
     build:
       targets:
-        HomeFlow: all
+        HomesFlow: all
     test:
       targets:
-        - HomeFlowTests
-        - HomeFlowUITests
+        - HomesFlowTests
+        - HomesFlowUITests
     run:
       config: Debug
     profile:

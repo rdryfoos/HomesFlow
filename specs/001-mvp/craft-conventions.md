@@ -18,7 +18,7 @@ When Sonar and Gate 2 disagree, **Gate 2 wins** for tests; **Supabase API shape 
 
 ---
 
-## Swift — production (`ios/HomeFlow/`)
+## Swift — production (`ios/HomesFlow/`)
 
 | Topic | Convention |
 |-------|------------|
@@ -30,13 +30,13 @@ When Sonar and Gate 2 disagree, **Gate 2 wins** for tests; **Supabase API shape 
 
 ---
 
-## Swift — tests (`ios/HomeFlowTests/`)
+## Swift — tests (`ios/HomesFlowTests/`)
 
 | Topic | Convention |
 |-------|------------|
 | AC tests | `func test_AC_<DOMAIN>_<NN>_<description>()` — **required** for Gate 2 |
 | Naming style | `snake_case` after `test_` prefix (overrides Sonar S100) |
-| Fixture URIs | `homeflow://…` strings in tests are intentional (not production config) |
+| Fixture URIs | `homesflow://…` strings in tests are intentional (not production config) |
 
 ---
 
@@ -68,7 +68,7 @@ When Sonar and Gate 2 disagree, **Gate 2 wins** for tests; **Supabase API shape 
 
 | Gate | Command | Runner |
 |------|---------|--------|
-| **Gate 0** | `xcodebuild build` + `xcodebuild test` (`HomeFlowTests`) | macOS |
+| **Gate 0** | `xcodebuild build` + `xcodebuild test` (`HomesFlowTests`) | macOS |
 | **Gate 2** | `bash scripts/check-traceability.sh` | Linux or macOS |
 | **Shell** | `shellcheck scripts/*.sh` | Linux or macOS |
 | **SwiftLint** | `swiftlint lint --config ios/.swiftlint.yml` | macOS |
@@ -122,16 +122,16 @@ Crash telemetry via [Sentry](https://sentry.io) — **disabled by default** (emp
 | Activation | Set `SENTRY_DSN` in `Secrets.Release.xcconfig` before TestFlight |
 | Local dev | Leave `SENTRY_DSN` empty in `Secrets.xcconfig` |
 | Privacy | No PII, emails, or home names in Sentry breadcrumbs/tags |
-| Wiring | `CrashReporting.start()` in `HomeFlowApp` — no-op without DSN |
+| Wiring | `CrashReporting.start()` in `HomesFlowApp` — no-op without DSN |
 
 ---
 
 ## Xcode project generation
 
-`ios/HomeFlow.xcodeproj/` is **generated** from `ios/project.yml` (often gitignored). After clone or `project.yml` edits:
+`ios/HomesFlow.xcodeproj/` is **generated** from `ios/project.yml` (often gitignored). After clone or `project.yml` edits:
 
 ```bash
-cd ~/Developer/HomeFlow/ios && xcodegen generate
+cd ~/Developer/HomesFlow/ios && xcodegen generate
 ```
 
 Re-select **Team** in Signing if needed. SPM versions resolve from `project.yml` (`from: 2.5.1`); pin exact versions before App Store submission if reproducible builds matter.
@@ -150,7 +150,7 @@ When logic grows testable, extract **policy objects** and merge helpers (`Invite
 bash scripts/check-traceability.sh --refresh   # Gate 2 + portfolio snapshot
 shellcheck scripts/*.sh
 cd ios && swiftlint lint --config .swiftlint.yml
-xcodebuild test … -only-testing:HomeFlowTests
+xcodebuild test … -only-testing:HomesFlowTests
 ```
 
 Commit refreshed `coverage.md` / `coverage.svg` when the public snapshot should change.

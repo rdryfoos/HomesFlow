@@ -1,6 +1,6 @@
 # SonarCloud Disposition: HomesFlow MVP
 
-**Project**: [rdryfoos_HomeFlow](https://sonarcloud.io/project/overview?id=rdryfoos_HomeFlow)  
+**Project**: [rdryfoos_HomesFlow](https://sonarcloud.io/project/overview?id=rdryfoos_HomesFlow)  
 **Policy files**: `sonar-project.properties` (CI-based analysis) · `.sonarcloud.properties` (automatic analysis scope)  
 **Craft context**: `craft-conventions.md`
 
@@ -14,10 +14,10 @@ SonarCloud reports **code smells only** (no bugs/vulnerabilities at baseline). M
 
 | Rule key pattern | File path pattern | Count (baseline) | Rationale |
 |------------------|-------------------|----------------:|-----------|
-| **swift:S100** | `**/HomeFlowTests/**` | 109 | Gate 2 requires `test_AC_*` snake_case names |
+| **swift:S100** | `**/HomesFlowTests/**` | 109 | Gate 2 requires `test_AC_*` snake_case names |
 | **swift:S115** | `**/ios/**` | 26 | Supabase JSON uses `snake_case` field names |
-| **swift:S1075** | `**/HomeFlowTests/**` | 7 | Test fixture URIs, not production config |
-| **swift:S1186** | `**/ios/HomeFlow/Features/**` | 13 | SwiftUI dismiss-only closures |
+| **swift:S1075** | `**/HomesFlowTests/**` | 7 | Test fixture URIs, not production config |
+| **swift:S1186** | `**/ios/HomesFlow/Features/**` | 13 | SwiftUI dismiss-only closures |
 | *(scope)* | `supabase/**` excluded | 19 plsql | Immutable migrations — via `.sonarcloud.properties` |
 
 ---
@@ -43,7 +43,7 @@ After the next analysis, bulk-close any remaining **S1186** outside `Features/` 
 Once baseline is calibrated:
 
 - **0** new bugs, vulnerabilities, blocker issues  
-- **0** new critical on `ios/HomeFlow/**` (excluding configured suppressions)  
+- **0** new critical on `ios/HomesFlow/**` (excluding configured suppressions)  
 - Legacy debt on old code: trend down, not zero  
 
 ---

@@ -26,8 +26,8 @@ jobs:
       - uses: actions/checkout@v4
       - name: Prepare Debug secrets for CI build
         run: |
-          cp ios/HomeFlow/Resources/Secrets.xcconfig.example ios/HomeFlow/Resources/Secrets.xcconfig
-          cp ios/HomeFlow/Resources/Secrets.Release.xcconfig.example ios/HomeFlow/Resources/Secrets.Release.xcconfig
+          cp ios/HomesFlow/Resources/Secrets.xcconfig.example ios/HomesFlow/Resources/Secrets.xcconfig
+          cp ios/HomesFlow/Resources/Secrets.Release.xcconfig.example ios/HomesFlow/Resources/Secrets.Release.xcconfig
       - name: Install tooling
         run: brew install xcodegen swiftlint
       - name: Generate Xcode project
@@ -40,8 +40,8 @@ jobs:
           SIM_ID=$(xcrun simctl list devices available | grep -E '^\s+iPhone' | head -1 | grep -oE '[0-9A-F-]{36}')
           echo "Using simulator id=${SIM_ID}"
           xcodebuild build \
-            -project HomeFlow.xcodeproj \
-            -scheme HomeFlow \
+            -project HomesFlow.xcodeproj \
+            -scheme HomesFlow \
             -destination "platform=iOS Simulator,id=${SIM_ID}" \
             CODE_SIGNING_ALLOWED=NO
       - name: Unit tests
@@ -49,10 +49,10 @@ jobs:
           cd ios
           SIM_ID=$(xcrun simctl list devices available | grep -E '^\s+iPhone' | head -1 | grep -oE '[0-9A-F-]{36}')
           xcodebuild test \
-            -project HomeFlow.xcodeproj \
-            -scheme HomeFlow \
+            -project HomesFlow.xcodeproj \
+            -scheme HomesFlow \
             -destination "platform=iOS Simulator,id=${SIM_ID}" \
-            -only-testing:HomeFlowTests \
+            -only-testing:HomesFlowTests \
             CODE_SIGNING_ALLOWED=NO
 
   craft-gate:

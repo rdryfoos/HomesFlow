@@ -1,9 +1,9 @@
 # Minimal craft lint — see specs/001-mvp/craft-conventions.md
 included:
-  - HomeFlow
+  - HomesFlow
 excluded:
-  - HomeFlowTests
-  - HomeFlowUITests
+  - HomesFlowTests
+  - HomesFlowUITests
 disabled_rules:
   - line_length
   - file_length

@@ -16,10 +16,10 @@ See also: [dev-notes.md](./dev-notes.md) for implementation gotchas discovered d
 ## 1. Clone and open
 
 ```bash
-cd ~/Developer/HomeFlow
+cd ~/Developer/HomesFlow
 git pull
 cd ios && xcodegen generate   # required after pull when Swift files or project.yml changed
-open HomeFlow.xcodeproj       # open from ios/, not the repo root
+open HomesFlow.xcodeproj       # open from ios/, not the repo root
 ```
 
 > **Build error “Cannot find type … in scope”** after pulling? Run `xcodegen generate` from `ios/`, then **Product → Clean Build Folder** (⇧⌘K) and rebuild.
@@ -31,13 +31,13 @@ open HomeFlow.xcodeproj       # open from ios/, not the repo root
 ### Option A — Local Supabase (Simulator / Debug)
 
 ```bash
-cd ~/Developer/HomeFlow
+cd ~/Developer/HomesFlow
 supabase start
 supabase db reset    # applies migrations + seed
 supabase status      # copy API URL and anon key
 ```
 
-Create `ios/HomeFlow/Resources/Secrets.xcconfig` (gitignored):
+Create `ios/HomesFlow/Resources/Secrets.xcconfig` (gitignored):
 
 ```text
 SUPABASE_URL = http:/$()/127.0.0.1:54321
@@ -57,7 +57,7 @@ Run with **Debug** scheme on **Simulator** (⌘R).
    ```
 3. Copy **Project URL** and **anon public** or **publishable** key from **Project Settings → API**
 
-Create `ios/HomeFlow/Resources/Secrets.Release.xcconfig` (gitignored):
+Create `ios/HomesFlow/Resources/Secrets.Release.xcconfig` (gitignored):
 
 ```text
 SUPABASE_URL = https:/$()/YOUR_PROJECT_REF.supabase.co
@@ -66,10 +66,10 @@ SUPABASE_ANON_KEY = <anon or sb_publishable_... — NOT sb_secret_...>
 
 4. Create test users in **Authentication → Users**
 5. In Xcode: **Product → Scheme → Edit Scheme → Run → Build Configuration → Release**
-6. Set **Signing & Capabilities → Team** on HomeFlow target
+6. Set **Signing & Capabilities → Team** on HomesFlow target
 7. Select your **iPhone** → ⌘R
 
-**Bundle ID**: `com.rdryfoos.homeflow`
+**Bundle ID**: `com.rdryfoos.homesflow`
 
 ---
 
@@ -109,10 +109,10 @@ supabase db shell --command "select id, name from public.homes;"
 ## 5. Run tests
 
 ```bash
-cd ~/Developer/HomeFlow/ios
+cd ~/Developer/HomesFlow/ios
 xcodebuild test \
-  -project HomeFlow.xcodeproj \
-  -scheme HomeFlow \
+  -project HomesFlow.xcodeproj \
+  -scheme HomesFlow \
   -destination 'platform=iOS Simulator,name=iPhone 17' \
   CODE_SIGNING_ALLOWED=NO
 ```
@@ -139,8 +139,8 @@ Implementation status: [tasks.md](./tasks.md) (checkboxes) + [dev-notes.md](./de
 | Dev / deploy notes | `specs/001-mvp/dev-notes.md` |
 | Schema | `specs/001-mvp/data-model.md` |
 | Migrations | `supabase/migrations/` |
-| Debug secrets template | `ios/HomeFlow/Resources/Secrets.xcconfig.example` |
-| Release secrets template | `ios/HomeFlow/Resources/Secrets.Release.xcconfig.example` |
+| Debug secrets template | `ios/HomesFlow/Resources/Secrets.xcconfig.example` |
+| Release secrets template | `ios/HomesFlow/Resources/Secrets.Release.xcconfig.example` |
 | PRD | `HomesFlow.prd.md` |
 
 ---
@@ -157,7 +157,7 @@ Implementation status: [tasks.md](./tasks.md) (checkboxes) + [dev-notes.md](./de
 | Photo upload fails | Sync home first; must be online; check storage policies (migration 002) |
 | Home row highlights but won't open | Fixed: iPhone must not use `List(selection:)` — pull latest |
 | Signing requires development team | Xcode → Settings → Accounts; pick Team on target |
-| Bundle ID unavailable | Use `com.rdryfoos.homeflow` (already in project) |
+| Bundle ID unavailable | Use `com.rdryfoos.homesflow` (already in project) |
 | `diane@test.com` exists (local) | Sign in, don't re-register; or `supabase db reset` |
 | Safari shows invalid path at supabase.co | Normal — API is up |
 | Cloud project paused | Restore in Supabase dashboard |

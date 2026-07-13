@@ -35,7 +35,7 @@ Partial deliverables documented in [dev-notes.md](./dev-notes.md). **Do not** en
 
 **Purpose**: Repo tooling and project skeleton
 
-- [x] T001 Create `ios/HomeFlow.xcodeproj` — universal iOS 17+ SwiftUI app target + unit/UI test targets per plan.md — **Traces**: plan Phase 0 (infrastructure)
+- [x] T001 Create `ios/HomesFlow.xcodeproj` — universal iOS 17+ SwiftUI app target + unit/UI test targets per plan.md — **Traces**: plan Phase 0 (infrastructure)
 - [x] T002 [P] Initialize `supabase/` with `config.toml` and local dev setup per quickstart.md — **Traces**: plan Phase 0 (infrastructure)
 - [x] T003 [P] Add `.gitignore` entries for `Secrets.xcconfig`, DerivedData (verify ios secrets not committed) — **Traces**: NFR-SEC-01
 
@@ -49,12 +49,12 @@ Partial deliverables documented in [dev-notes.md](./dev-notes.md). **Do not** en
 - [x] T005 Implement RLS policies + `get_user_role()` per contracts/rls-permissions.md — **Traces**: FR-USER-01, FR-GUEST-01, AC-GUEST-02
 - [x] T006 [P] Configure Supabase Auth: Apple + email/password providers — **Traces**: FR-AUTH-01 — *email/password done; Apple app-side shipped 2026-07-08; cloud dashboard provider remains ops step (D12)*
 - [x] T007 [P] Create Supabase Storage buckets + policies (home-photos, documents, procedure-attachments) — **Traces**: FR-HOME-01, FR-HOME-03, FR-PROC-03 — *002_storage_profiles_invites.sql*
-- [x] T008 Implement `ios/HomeFlow/Core/Supabase/SupabaseClientProvider.swift` + Keychain session — **Traces**: FR-AUTH-01, NFR-SEC-01 — *supabase-swift session + authStateChanges*
-- [x] T009 Define SwiftData models mirroring server tables + `MutationOutbox` in `ios/HomeFlow/Core/Models/` — **Traces**: NFR-OFFL-01
-- [x] T010 Implement `PermissionService` matching RLS matrix in `ios/HomeFlow/Core/Permissions/` — **Traces**: FR-USER-01, AC-PROC-02, AC-GUEST-02
-- [x] T011 Implement `SyncEngine` skeleton (outbox enqueue, push, pull, revert-on-deny) in `ios/HomeFlow/Core/Sync/` — **Traces**: NFR-OFFL-01, AC-SYNC-01, AC-SYNC-02, AC-SYNC-03 — *homes push/pull; partial AC-SYNC-02*
-- [x] T012 Implement `ActivityLogService` append + fetch in `ios/HomeFlow/Core/ActivityLog/` — **Traces**: FR-LOG-01 — *append done; fetch UI pending*
-- [x] T013 Wire `AppRouter` + root auth gate in `ios/HomeFlow/App/` — **Traces**: FR-AUTH-01
+- [x] T008 Implement `ios/HomesFlow/Core/Supabase/SupabaseClientProvider.swift` + Keychain session — **Traces**: FR-AUTH-01, NFR-SEC-01 — *supabase-swift session + authStateChanges*
+- [x] T009 Define SwiftData models mirroring server tables + `MutationOutbox` in `ios/HomesFlow/Core/Models/` — **Traces**: NFR-OFFL-01
+- [x] T010 Implement `PermissionService` matching RLS matrix in `ios/HomesFlow/Core/Permissions/` — **Traces**: FR-USER-01, AC-PROC-02, AC-GUEST-02
+- [x] T011 Implement `SyncEngine` skeleton (outbox enqueue, push, pull, revert-on-deny) in `ios/HomesFlow/Core/Sync/` — **Traces**: NFR-OFFL-01, AC-SYNC-01, AC-SYNC-02, AC-SYNC-03 — *homes push/pull; partial AC-SYNC-02*
+- [x] T012 Implement `ActivityLogService` append + fetch in `ios/HomesFlow/Core/ActivityLog/` — **Traces**: FR-LOG-01 — *append done; fetch UI pending*
+- [x] T013 Wire `AppRouter` + root auth gate in `ios/HomesFlow/App/` — **Traces**: FR-AUTH-01
 
 **Checkpoint**: Sign-in works; empty authenticated shell loads; migrations apply cleanly. ✅
 
@@ -66,8 +66,8 @@ Partial deliverables documented in [dev-notes.md](./dev-notes.md). **Do not** en
 
 ### Implementation
 
-- [x] T014 [US-ADMIN-01] Auth screens: email/password sign-up, sign-in, Sign in with Apple in `ios/HomeFlow/Features/Auth/` — **Traces**: FR-AUTH-01 — *Apple wired 2026-07-08*
-- [x] T015 [US-ADMIN-01] Dashboard home list view (SwiftUI) — full-bleed photo hero cards with name/address in `ios/HomeFlow/Features/Dashboard/` — **Traces**: FR-HOME-01, AC-SYNC-04 — *procedure count placeholder not yet*
+- [x] T014 [US-ADMIN-01] Auth screens: email/password sign-up, sign-in, Sign in with Apple in `ios/HomesFlow/Features/Auth/` — **Traces**: FR-AUTH-01 — *Apple wired 2026-07-08*
+- [x] T015 [US-ADMIN-01] Dashboard home list view (SwiftUI) — full-bleed photo hero cards with name/address in `ios/HomesFlow/Features/Dashboard/` — **Traces**: FR-HOME-01, AC-SYNC-04 — *procedure count placeholder not yet*
 - [x] T016 [P] [US-ADMIN-01] Adaptive layout: iPhone `NavigationStack`, iPad `NavigationSplitView` shell for dashboard — **Traces**: NFR-PERF-01
 
 ### Tests
@@ -82,9 +82,9 @@ Partial deliverables documented in [dev-notes.md](./dev-notes.md). **Do not** en
 
 ### Implementation
 
-- [x] T018 [US-ADMIN-01] Home create/edit form + validation in `ios/HomeFlow/Features/HomeSetup/` — **Traces**: AC-HOME-01, AC-HOME-02, FR-HOME-01
+- [x] T018 [US-ADMIN-01] Home create/edit form + validation in `ios/HomesFlow/Features/HomeSetup/` — **Traces**: AC-HOME-01, AC-HOME-02, FR-HOME-01
 - [x] T019 [US-ADMIN-01] Home photo pick + upload to Supabase Storage — **Traces**: AC-HOME-01, AC-HOME-08, FR-HOME-01 — *sync-before-upload*
-- [x] T019a [P] [US-ADMIN-01] Home photo display optimization: resize on upload, disk/memory cache, signed-URL reuse, throttled dashboard prefetch (max 2 concurrent) in `ios/HomeFlow/Core/Storage/` — **Traces**: AC-HOME-06, AC-HOME-07, FR-HOME-01, NFR-PERF-01
+- [x] T019a [P] [US-ADMIN-01] Home photo display optimization: resize on upload, disk/memory cache, signed-URL reuse, throttled dashboard prefetch (max 2 concurrent) in `ios/HomesFlow/Core/Storage/` — **Traces**: AC-HOME-06, AC-HOME-07, FR-HOME-01, NFR-PERF-01
 - [x] T020 [US-ADMIN-01] Home edit offline + sync conflict (timestamp wins + activity log) — **Traces**: AC-HOME-03, AC-SYNC-01, FR-LOG-01 — *HomeConflictResolver + merge; full offline E2E pending*
 - [x] T021 [P] [US-ADMIN-01] Home detail full-bleed photo hero header + tab bar shell (Procedures | Contacts | Documents | People) — **Traces**: FR-HOME-01 — *superseded by T021a–b*
 - [x] T021a [P] [US-ADMIN-01] iPad home detail: compact left-column hero + vertical icon tabs; trailing area three-panel (list | detail) for **all** sections — **Traces**: FR-NAV-01, AC-HOME-09, AC-HOME-10 — *ContactsView, FilesView, MembersView split shells*
@@ -111,7 +111,7 @@ Partial deliverables documented in [dev-notes.md](./dev-notes.md). **Do not** en
 
 ### Implementation
 
-- [x] T025 [US-ADMIN-02] Invite flow: create/revoke invite token, share invite link in `ios/HomeFlow/Features/Members/` — **Traces**: AC-USER-01, AC-USER-02, AC-USER-07, FR-GUEST-02, FR-USER-02 — *share sheet; no email/SMS send*
+- [x] T025 [US-ADMIN-02] Invite flow: create/revoke invite token, share invite link in `ios/HomesFlow/Features/Members/` — **Traces**: AC-USER-01, AC-USER-02, AC-USER-07, FR-GUEST-02, FR-USER-02 — *share sheet; no email/SMS send*
 - [x] T026 [US-ADMIN-02] Accept invite → create membership with role — **Traces**: AC-USER-01, AC-USER-07 — *paste token + RPC; deep link pending*
 - [ ] T027 [US-ADMIN-02] Offline invite conflict resolution — **Traces**: AC-USER-03, AC-SYNC-01
 - [x] T028 [US-ADMIN-03] Members list (People tab) + role assignment UI — **Traces**: AC-USER-04, AC-USER-05, AC-USER-06, FR-USER-02
@@ -135,7 +135,7 @@ Partial deliverables documented in [dev-notes.md](./dev-notes.md). **Do not** en
 
 ### Implementation
 
-- [x] T034 [NFR-OFFL-01] Network reachability → trigger `SyncEngine.run()` on reconnect in `ios/HomeFlow/Core/Sync/` — **Traces**: AC-SYNC-01
+- [x] T034 [NFR-OFFL-01] Network reachability → trigger `SyncEngine.run()` on reconnect in `ios/HomesFlow/Core/Sync/` — **Traces**: AC-SYNC-01
 - [ ] T035 [NFR-OFFL-01] Field-level merge for non-conflicting offline edits — **Traces**: AC-SYNC-02 — *deferred post-MVP (2026-07-03 conflict model decision); pairs with version vectors*
 - [x] T036 [NFR-OFFL-01] Stale-permission revert + user-facing error — **Traces**: AC-SYNC-03 — *revert + SyncNotification*
 - [x] T037 [P] [NFR-OFFL-01] In-app conflict/overwrite notification banners + pending-sync dashboard indicators — **Traces**: AC-SYNC-01, AC-SYNC-04, AC-PROC-03, AC-HOME-05 — *dashboard sync banners, cloud icons, pull-to-refresh*
@@ -157,7 +157,7 @@ Partial deliverables documented in [dev-notes.md](./dev-notes.md). **Do not** en
 
 ### Implementation
 
-- [x] T041 [US-EDIT-01] Procedures list with progress (e.g. 2/6) in `ios/HomeFlow/Features/Procedures/` — **Traces**: FR-PROC-01, FR-PROC-02
+- [x] T041 [US-EDIT-01] Procedures list with progress (e.g. 2/6) in `ios/HomesFlow/Features/Procedures/` — **Traces**: FR-PROC-01, FR-PROC-02
 - [x] T042 [US-EDIT-01] Procedure detail: step checklist, status toggle, N/A option — **Traces**: FR-PROC-02, AC-PROC-01
 - [x] T043 [US-EDIT-01] Step notes + photo attach (Storage) — **Traces**: FR-PROC-03
 - [x] T044 [US-EDIT-01] Block step update when permission insufficient — **Traces**: AC-PROC-02
@@ -187,7 +187,7 @@ Partial deliverables documented in [dev-notes.md](./dev-notes.md). **Do not** en
 
 ### Implementation
 
-- [x] T051 [US-EDIT-02] Service provider list + search in `ios/HomeFlow/Features/Providers/` (UI tab: Contacts) — **Traces**: FR-HOME-02, AC-HOME-04
+- [x] T051 [US-EDIT-02] Service provider list + search in `ios/HomesFlow/Features/Providers/` (UI tab: Contacts) — **Traces**: FR-HOME-02, AC-HOME-04
 - [x] T052 [US-EDIT-02] Provider create/edit form (company, type, phone, website, hours, notes) — **Traces**: AC-HOME-04
 - [x] T053 [US-EDIT-02] Provider edit vs delete sync conflict — **Traces**: AC-HOME-05, AC-SYNC-01
 - [x] T054 [P] [US-EDIT-02] Tap phone → `tel:` link — **Traces**: FR-HOME-02
@@ -228,13 +228,13 @@ Partial deliverables documented in [dev-notes.md](./dev-notes.md). **Do not** en
 
 ### Implementation
 
-- [x] T065 [FR-HOME-03] Files tab: documents list + upload + visibility in `ios/HomeFlow/Features/Documents/` — **Traces**: FR-HOME-03, AC-GUEST-01, AC-HOME-11
+- [x] T065 [FR-HOME-03] Files tab: documents list + upload + visibility in `ios/HomesFlow/Features/Documents/` — **Traces**: FR-HOME-03, AC-GUEST-01, AC-HOME-11
 - [x] T065a [FR-HOME-03] Standardize section add actions on the Contacts pattern (plus icon, primary action, accessible label) across Contacts, Files, People — **Traces**: AC-HOME-12
 - [x] T065b [FR-HOME-03] File detail: Preview via system Quick Look (zoom, PDF, media); summary + metadata and actions below — **Traces**: AC-HOME-13
 - [x] T065c [FR-HOME-03] File sources: camera capture, photo library, and file browser feeding one metadata flow — **Traces**: AC-HOME-14
 - [x] T065e [FR-HOME-03] Stream file download to temp for Quick Look preview (no full in-memory buffer) — **Traces**: AC-HOME-13, NFR-PERF-01
 - [x] T065d [P] [FR-HOME-03] Tests for section add parity, file preview, and file sources — **Traces**: AC-HOME-12, AC-HOME-13, AC-HOME-14
-- [x] T066 [P] [FR-NOTIF-01] Settings screen: account, notification toggle disabled (“Coming soon”) in `ios/HomeFlow/Features/Settings/` — **Traces**: FR-NOTIF-01 — *gear icon on dashboard; email, sign out with confirmation, version*
+- [x] T066 [P] [FR-NOTIF-01] Settings screen: account, notification toggle disabled (“Coming soon”) in `ios/HomesFlow/Features/Settings/` — **Traces**: FR-NOTIF-01 — *gear icon on dashboard; email, sign out with confirmation, version*
 - [x] T066a [P] Accessibility baseline: Dynamic Type layouts, VoiceOver labels on section tabs, Reduce Motion, 44pt targets across dashboard/home/procedures — **Traces**: NFR-A11Y-01, AC-A11Y-01, AC-A11Y-02, AC-A11Y-03 — *AccessibilityBaseline helper: scaled hero heights, 44pt step actions, step status VoiceOver value; manual VoiceOver pass remains T069a*
 - [x] T067 [P] Sign out clears session — **Traces**: FR-AUTH-01 — *moved to Settings screen (T066) with confirmation dialog*
 - [x] T068 Owner revoke member access → lose access on next sync — **Traces**: FR-USER-02 — *MemberRemovalPolicy + removeMember; swipe + detail actions with confirmation; MemberRemovalTests*

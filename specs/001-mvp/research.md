@@ -128,7 +128,7 @@
 
 **Update (2026-07-03)**: Paid Apple Developer Program active (Admin role).
 
-**Update (2026-07-08)**: Apple Sign-In **shipped in app** — `HomeFlow.entitlements` restored; `SignInWithAppleButton` + `signInWithIdToken` in `SupabaseClientProvider`. Remaining ops: enable Apple provider on **cloud** Supabase (Services ID `com.rdryfoos.homeflow`, JWT secret from Apple Developer portal).
+**Update (2026-07-08)**: Apple Sign-In **shipped in app** — `HomesFlow.entitlements` restored; `SignInWithAppleButton` + `signInWithIdToken` in `SupabaseClientProvider`. Remaining ops: enable Apple provider on **cloud** Supabase (Services ID `com.rdryfoos.homesflow`, JWT secret from Apple Developer portal).
 
 **Local dev**: Keep `[auth.external.apple] enabled = false` in `config.toml`; use email/password.
 
@@ -138,9 +138,9 @@
 
 ### D13 — Bundle identifier (2026-06-28)
 
-**Decision**: `com.rdryfoos.homeflow` (replaces planned `com.homeflow.app`).
+**Decision**: `com.rdryfoos.homesflow` (replaces planned `com.homesflow.app`).
 
-**Rationale**: Global bundle ID `com.homeflow.app` unavailable on Apple's registry for developer's team.
+**Rationale**: Global bundle ID `com.homesflow.app` unavailable on Apple's registry for developer's team.
 
 ---
 
@@ -157,5 +157,5 @@
 | Item | Notes |
 |------|-------|
 | SMS invites (FR-GUEST-02) | MVP: shareable invite link + manual token paste (**AC-USER-07**); automated email/SMS deferred |
-| Deep links (AC-GUEST-02) | Universal Links in v1.1; MVP uses paste-token invite accept + `homeflow://` share link only |
+| Deep links (AC-GUEST-02) | Universal Links in v1.1; MVP uses paste-token invite accept + `homesflow://` share link only |
 | Sentry / crash telemetry | Recommended before TestFlight; not blocking first implement pass |

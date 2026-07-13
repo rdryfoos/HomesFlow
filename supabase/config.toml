@@ -1,7 +1,7 @@
-# HomeFlow local Supabase — run `supabase start` from repo root.
+# HomesFlow local Supabase — run `supabase start` from repo root.
 # See specs/001-mvp/quickstart.md
 
-project_id = "homeflow"
+project_id = "homesflow"
 
 [api]
 enabled = true
@@ -24,8 +24,8 @@ enabled = true
 
 [auth]
 enabled = true
-site_url = "homeflow://auth-callback"
-additional_redirect_urls = ["homeflow://auth-callback"]
+site_url = "homesflow://auth-callback"
+additional_redirect_urls = ["homesflow://auth-callback"]
 enable_signup = true
 
 [auth.email]

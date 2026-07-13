@@ -31,7 +31,7 @@ Operational learnings from `/speckit.implement`. **Product requirements remain i
 | Local dev | **Debug** | `Secrets.xcconfig` | `http://127.0.0.1:54321` (Docker) | Simulator, fast iteration |
 | Device / demo | **Release** | `Secrets.Release.xcconfig` | `https://<ref>.supabase.co` | iPhone, TestFlight, stakeholders |
 
-Both files are **gitignored**. Copy from `*.example` templates in `ios/HomeFlow/Resources/`.
+Both files are **gitignored**. Copy from `*.example` templates in `ios/HomesFlow/Resources/`.
 
 ### API keys (critical)
 
@@ -41,7 +41,7 @@ Both files are **gitignored**. Copy from `*.example` templates in `ios/HomeFlow/
 | publishable | `sb_publishable_...` | Yes |
 | secret / service_role | `sb_secret_...` | **Never** — server only |
 
-After editing any `*.xcconfig`, **save the file** before building. Verify in Xcode → HomeFlow target → **Build Settings** → search `SUPABASE_URL` (must not show `YOUR_PROJECT_REF` or `127.0.0.1` when testing cloud on device).
+After editing any `*.xcconfig`, **save the file** before building. Verify in Xcode → HomesFlow target → **Build Settings** → search `SUPABASE_URL` (must not show `YOUR_PROJECT_REF` or `127.0.0.1` when testing cloud on device).
 
 ---
 
@@ -50,7 +50,7 @@ After editing any `*.xcconfig`, **save the file** before building. Verify in Xco
 1. Create project at [supabase.com/dashboard](https://supabase.com/dashboard)
 2. Link and push migrations:
    ```bash
-   cd ~/Developer/HomeFlow
+   cd ~/Developer/HomesFlow
    supabase login
    supabase link --project-ref <ref>
    supabase db push
@@ -66,16 +66,20 @@ Safari visiting `https://<ref>.supabase.co` and seeing `{"error":"requested path
 
 ## iOS signing & bundle ID
 
-- **Bundle ID**: `com.rdryfoos.homeflow` (global `com.homeflow.app` was unavailable)
+- **Bundle ID**: `com.rdryfoos.homesflow` (renamed from `com.rdryfoos.homeflow` 2026-07-13; global `com.homesflow.app` was unavailable)
+- **URL scheme**: `homesflow://` (invites + auth callback; was `homeflow://`)
+- **GitHub**: `https://github.com/rdryfoos/HomesFlow` (was `HomeFlow`)
+- **SonarCloud project key**: `rdryfoos_HomesFlow` — create/bind project in Sonar UI if analysis doesn't pick up the new key automatically; re-enter UI suppressions per [sonar-disposition.md](./sonar-disposition.md)
 - **Developer Team**: paid Apple Developer Program, Admin role
-- Set **Team** in Xcode → HomeFlow target → **Signing & Capabilities**
+- Set **Team** in Xcode → HomesFlow target → **Signing & Capabilities**
 - **Release** scheme + physical device for cloud Supabase
+- **Ops after rename**: register App ID `com.rdryfoos.homesflow` (and Apple Sign-In Services ID) in Apple Developer; update Supabase Auth redirect URLs to `homesflow://auth-callback`; reinstall app on device (new bundle ID = new install identity)
 
 ---
 
 ## Auth implementation
 
-- **FR-AUTH-01**: Email/password + **Sign in with Apple** on device builds. Entitlement restored in `HomeFlow.entitlements`; app exchanges Apple identity token via `SupabaseClientProvider.signInWithApple`.
+- **FR-AUTH-01**: Email/password + **Sign in with Apple** on device builds. Entitlement restored in `HomesFlow.entitlements`; app exchanges Apple identity token via `SupabaseClientProvider.signInWithApple`.
 - **Local Supabase**: `auth.external.apple.enabled = false` in `config.toml` — Apple button shows but Supabase rejects until cloud provider is configured; use email/password for local Docker dev.
 - **Cloud / TestFlight**: Enable **Apple** provider in Supabase Dashboard → Authentication → Providers (Services ID + secret per [research.md](./research.md) D12). Email provider remains enabled.
 
@@ -83,8 +87,8 @@ Session and sign-out craft patterns: [craft-conventions.md](./craft-conventions.
 
 ### Cloud Apple provider (device / TestFlight)
 
-1. **Apple Developer** → Identifiers → App ID `com.rdryfoos.homeflow` → enable **Sign in with Apple**
-2. Create a **Services ID** (e.g. `com.rdryfoos.homeflow.auth`) → configure Sign in with Apple → domain = `<ref>.supabase.co`, return URL = `https://<ref>.supabase.co/auth/v1/callback`
+1. **Apple Developer** → Identifiers → App ID `com.rdryfoos.homesflow` → enable **Sign in with Apple**
+2. Create a **Services ID** (e.g. `com.rdryfoos.homesflow.auth`) → configure Sign in with Apple → domain = `<ref>.supabase.co`, return URL = `https://<ref>.supabase.co/auth/v1/callback`
 3. Create a **Sign in with Apple key** (.p8) → note Key ID and Team ID
 4. **Supabase Dashboard** → Authentication → Providers → **Apple** → enable; paste Services ID as Client ID; generate JWT secret from Team ID + Key ID + .p8 (Supabase docs) or use Apple's secret generator
 5. Build **Release** scheme with `Secrets.Release.xcconfig` pointing at cloud Supabase → run on physical device → tap **Sign in with Apple**
@@ -126,7 +130,7 @@ Feature breadcrumbs: iPhone hero ~152pt; iPad hero ~528pt; section shells use `C
 
 ## Invites (partial)
 
-- Owner: People tab → Invite → share `homeflow://invite?token=…` link (**AC-USER-07**)
+- Owner: People tab → Invite → share `homesflow://invite?token=…` link (**AC-USER-07**)
 - Invitee: Dashboard → Join with Invite → paste token; must sign in with **invited email**
 - `accept_invite(token)` RPC in migration `002`
 - Deep link / Universal Links **not wired** — manual token paste only
@@ -154,7 +158,7 @@ Feature breadcrumbs: iPhone hero ~152pt; iPad hero ~528pt; section shells use `C
 
 - **T069a** — manual VoiceOver + largest Dynamic Type pass on device
 - **T024d–f** — iPad layout tests for AC-HOME-09…11; manual iPad pass until snapshot/XCUITest infra
-- **XCUITests** T017, T064, T069 — see [release-checklist.md](./release-checklist.md) (note: `HomeFlowUITests.testLaunch` only passes on a simulator with a signed-in session)
+- **XCUITests** T017, T064, T069 — see [release-checklist.md](./release-checklist.md) (note: `HomesFlowUITests.testLaunch` only passes on a simulator with a signed-in session)
 - **T022** — AC-HOME-01 integration test (validator-only today)
 
 ### Open — hardening
@@ -181,7 +185,7 @@ See [Implementation changelog](#implementation-changelog) below for dated breadc
 
 ## Implementation changelog
 
-Test-debt sweep (2026-07-03): T030–T033c, T040a, T050d closed via extracted seams (`InvitePolicy`, `RoleChangeAudit`, `MembershipMerge`, `SyncIndicatorPolicy`, `StepRowPresentation`). The AC-USER-04 test exposed a real bug: `PermissionService` let Managers create/update/delete owner-only procedures, providers, and documents because those cases ignored visibility; now all mutations go through `visibilityAllows`. Bonus UX fix: pasting a full `homeflow://invite?token=…` link into Accept Invite now works (previously only the bare token did).
+Test-debt sweep (2026-07-03): T030–T033c, T040a, T050d closed via extracted seams (`InvitePolicy`, `RoleChangeAudit`, `MembershipMerge`, `SyncIndicatorPolicy`, `StepRowPresentation`). The AC-USER-04 test exposed a real bug: `PermissionService` let Managers create/update/delete owner-only procedures, providers, and documents because those cases ignored visibility; now all mutations go through `visibilityAllows`. Bonus UX fix: pasting a full `homesflow://invite?token=…` link into Accept Invite now works (previously only the bare token did).
 
 T038 (2026-07-03): `OverwriteNotificationPolicy` centralizes AC-SYNC-01 loser-notification rules; `SyncEngine.mergeHome` now posts the banner when a pending home edit loses to a newer server timestamp. Test: `test_AC_SYNC_01_offline_overwrite_notifies_loser` in SyncConflictMatrixTests.
 
@@ -220,7 +224,7 @@ T076 (2026-07-03): `StructuralActionPolicy` implements AC-SYNC-07 — structural
 | Schema evolution | Supabase migrations in Git (`supabase db push`); no manual dashboard DDL on staging/prod | In use |
 | Secrets | `Secrets*.xcconfig` gitignored; never commit service-role keys | In use |
 | **Craft Phase A** | `sonar-project.properties`, `craft-conventions.md`, `sonar-disposition.md`, quick fixes | **Done** (2026-07-08) |
-| **Craft Phase B** | CI: shellcheck + Gate 2 + SwiftLint + build + `HomeFlowTests` | **Done** (2026-07-08) — `.github/workflows/ci.yml` |
+| **Craft Phase B** | CI: shellcheck + Gate 2 + SwiftLint + build + `HomesFlowTests` | **Done** (2026-07-08) — `.github/workflows/ci.yml` |
 | **Craft Phase C** | Tighten SwiftLint incrementally (re-enable size/complexity rules as files are split); optional `unused_parameter` as warning-as-error | **Next** (opportunistic) |
 | **Craft Phase D** | SonarCloud suppressions (UI) + GitHub branch protection on `main` | **Done** (2026-07-08) |
 | **Craft Phase E** | PR-only merge + PR template + CI-based Sonar scan | **Next** — tasks T087–T090 |
