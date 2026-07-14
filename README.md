@@ -1,12 +1,17 @@
 # HomesFlow
 
-> I'm a product and engineering leader with 25 years in software delivery. I built this to find out whether AI-assisted development can hold up to the same rigor I've always encouraged from teams. Short answer: it can, and the sprint that proved it took a few days, not months.
+**Code Is Cheap. Proof Is Not.**
+*Objective-Driven Governance, in production.*
 
-A home management app for owners of multiple properties who need to coordinate maintenance and usage with family or a caretaking team.
+> I'm a product and engineering leader with 25 years in software delivery. I built HomesFlow to find out whether AI-assisted development can hold up to the same rigor I've always encouraged from teams. Short answer: it can, and the sprint that proved it took a few days, not months.
 
-Also, a working case study in how to bring real product discipline, traceability, and architectural rigor to AI-assisted development. Built spec-first, iteratively, with traceable requirements and proper verification & validation, because I've spent years watching teams skip the rigor, and I wanted to prove that AI assistance makes software craftsmanship so affordable it's practically a fiscal imperative.
+HomesFlow is a home management app for owners of multiple properties who need to coordinate maintenance and usage with family or a caretaking team. It was designed as a production-ready, well-crafted codebase for a user base of fewer than 12. The app was never the point. It's about the governance. 
+
+HomesFlow is also the live production evidence behind [Dryfoos Consulting](https://dryfoos.com)'s Objective-Driven Governance experimentation. Generation was never the hard part; any developer can produce plausible code at near-zero cost now. Proving that code does what the strategy demands is the real constraint. In HomesFlow, every line of code (AI-assisted or not) traces to an authorized specification ID before it merges, checked by script on every build, not asserted after the fact.
 
 **If you have five minutes:** look at the [coverage matrix](specs/001-mvp/coverage.md) for scope and build state, read [traceability.md](traceability.md) for how the thread works, then [HomesFlow.prd.md](HomesFlow.prd.md) for the product itself.
+
+**Interested in the framework behind this repo?** Visit [dryfoos.com](https://dryfoos.com) or [start a conversation](https://calendly.com/dryfoos/rik-dryfoos-intro).
 
 ---
 
