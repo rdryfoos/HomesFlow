@@ -35,9 +35,9 @@ No orphan code, no silent scope, no untracked debt: an acceptance criterion is e
 
 | Document | Role |
 |----------|------|
-| **[Story map](https://homesflow.storiesonboard.com/m/homesflow1)** (StoriesOnBoard) | Product planning view: releases, story slices, and what's next; feeds the PRD |
-| **`HomesFlow.prd.md`** | Product requirements, user stories, acceptance criteria |
-| **`.specify/memory/constitution.md`** | Non-negotiable architectural and process laws |
+| **`HomesFlow.prd.md`** | Product requirements, user stories, acceptance criteria (authoritative scope) |
+| **`.specify/memory/constitution.md`** | Non-negotiable process and architecture laws (not product scope) |
+| **[Story map](https://homesflow.storiesonboard.com/m/homesflow1)** (StoriesOnBoard) | Human planning aid — releases and story slices; not Gate-2-enforced; promote changes into the PRD when they become product truth |
 | **`traceability.md`** | How IDs flow from PRD → spec → tasks → code → tests |
 | **`specs/001-mvp/craft-conventions.md`** | Swift, shell, lint, and Sonar policy (craft gates) |
 | **`specs/001-mvp/dev-notes.md`** | Environments, deployment, feature breadcrumbs, platform backlog |
