@@ -17,8 +17,10 @@ SonarCloud reports **code smells only** (no bugs/vulnerabilities at baseline). M
 
 1. Create a SonarCloud **analysis token** (My Account → Security).  
 2. Add repo secret `SONAR_TOKEN` (Settings → Secrets and variables → Actions).  
-3. Confirm the `sonar` job is green on a PR.  
-4. In SonarCloud → Administration → Analysis Method, **turn off Automatic Analysis** so only CI scans run (avoids double analysis and keeps suppressions in git).
+3. Confirm the `sonar` job runs the scan (not the skip warning) and is green on a PR.  
+4. In SonarCloud → Administration → Analysis Method, **turn off Automatic Analysis** so only CI scans run (avoids double analysis and keeps suppressions in git).  
+
+Until `SONAR_TOKEN` exists, the CI `sonar` job **skips with a warning**; Automatic Analysis continues to decorate PRs as `SonarCloud Code Analysis`.
 
 UI multicriteria rows (below) can remain as belt-and-suspenders until automatic analysis is off; after that, git is source of truth.
 
