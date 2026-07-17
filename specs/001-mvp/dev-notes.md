@@ -227,7 +227,7 @@ T076 (2026-07-03): `StructuralActionPolicy` implements AC-SYNC-07 — structural
 | **Craft Phase B** | CI: shellcheck + Gate 2 + SwiftLint + build + `HomesFlowTests` | **Done** (2026-07-08) — `.github/workflows/ci.yml` |
 | **Craft Phase C** | Tighten SwiftLint incrementally (re-enable size/complexity rules as files are split); optional `unused_parameter` as warning-as-error | **Next** (opportunistic) |
 | **Craft Phase D** | SonarCloud suppressions (UI) + GitHub branch protection on `main` | **Done** (2026-07-08) |
-| **Craft Phase E** | PR-only merge + PR template + CI-based Sonar scan | **Next** — tasks T087–T090 |
+| **Craft Phase E** | PR-only merge + PR template + CI-based Sonar scan | **In progress** — T088–T090 done; T087 via `finish-phase-e.sh` after merge |
 | Observability | Sentry crash telemetry (DSN-gated via `SENTRY_DSN`) | **Done** — optional until TestFlight |
 | Regression evals | Scripted sync/conflict scenario datasets in CI (SC-04 matrix) | **Done** — `SyncConflictMatrixTests` |
 
@@ -249,10 +249,10 @@ Pre-release sign-off: [`release-checklist.md`](./release-checklist.md) per `trac
 
 **Phase E** — PR workflow + CI Sonar (tracked in [tasks.md](./tasks.md) Phase 14):
 
-1. **T087** — PR-only merge to `main`; remove reliance on admin bypass (gates exist but direct push still works for repo admins)
-2. **T088** — PR template: task ID(s), traced AC/FR IDs, test/Gate 2 evidence
-3. **T089** — Sonar from CI so git `multicriteria` in `sonar-project.properties` is authoritative (automatic analysis ignores them today)
-4. **T090** — Document branch → PR → merge in `craft-conventions.md` and README
+1. ~~**T088** — PR template~~ ✅ `.github/pull_request_template.md`
+2. ~~**T090** — Document branch → PR → merge~~ ✅ `craft-conventions.md` + README
+3. ~~**T089** — Sonar from CI~~ ✅ job `sonar` in `ci.yml` (needs `SONAR_TOKEN`; then disable Automatic Analysis)
+4. **T087** — PR-only merge + `enforce_admins` — run after merge: `bash scripts/finish-phase-e.sh`
 
 Target flow: feature branch → open PR → `craft-gate` + Sonar green on PR → merge → `main` protected without bypass.
 

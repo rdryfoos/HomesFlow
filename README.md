@@ -80,13 +80,21 @@ export SPECIFY_FEATURE_DIRECTORY=specs/001-mvp
 | 5 | `/speckit.analyze` | Gate: must pass before coding |
 | 6 | `/speckit.implement` | `ios/`, `supabase/` |
 
+## Delivery workflow
+
+```text
+feature branch → pull request → craft-gate + SonarCloud green → merge to main
+```
+
+Do **not** push product or craft changes straight to `main`. Use a PR so Gate 2, craft checks, and Sonar run before merge. Branch protection setup: `bash scripts/finish-phase-e.sh` (admin). Details: `specs/001-mvp/craft-conventions.md` § Delivery workflow.
+
 ## Quality checks
 
 | Gate | What | CI |
 |------|------|-----|
-| **Gate 0** | Build + unit tests + SwiftLint + shellcheck | `.github/workflows/ci.yml` |
-| **Gate 2** | Golden thread (`check-traceability.sh`) | same workflow (ubuntu job) |
-| **SonarCloud** | Static analysis ([dashboard](https://sonarcloud.io/project/overview?id=rdryfoos_HomesFlow)); policy in `sonar-project.properties` | SonarCloud on push |
+| **Gate 0** | Build + unit tests + SwiftLint + shellcheck | `.github/workflows/ci.yml` (`craft-gate`) |
+| **Gate 2** | Golden thread (`check-traceability.sh`) | same workflow (`traceability` job) |
+| **SonarCloud** | Static analysis ([dashboard](https://sonarcloud.io/project/overview?id=rdryfoos_HomesFlow)); policy in `sonar-project.properties` | CI job `sonar` (`SONAR_TOKEN`) |
 
 Local:
 

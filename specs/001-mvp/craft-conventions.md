@@ -8,13 +8,34 @@ Product rigor answers *what* we build and *how we prove it* (Gate 2). Craft rigo
 
 ## Hierarchy
 
-1. **Constitution** + **PRD** — product law  
-2. **traceability.md** — golden thread (Gate 2)  
-3. **This file** — Swift, shell, and static-analysis policy  
-4. **sonar-project.properties** — SonarCloud configuration (must match this file)  
-5. **sonar-disposition.md** — bulk Sonar waivers with rationale  
+1. **PRD** — product scope (what to build)  
+2. **Constitution** — process / architecture law (how we build)  
+3. **traceability.md** — golden thread (Gate 2)  
+4. **This file** — Swift, shell, and static-analysis policy  
+5. **sonar-project.properties** — SonarCloud configuration (must match this file)  
+6. **sonar-disposition.md** — bulk Sonar waivers with rationale  
 
-When Sonar and Gate 2 disagree, **Gate 2 wins** for tests; **Supabase API shape wins** for DTO naming.
+When Sonar and Gate 2 disagree, **Gate 2 wins** for tests; **Supabase API shape wins** for DTO naming. Product scope vs process: see constitution Hierarchy of Truth.
+
+---
+
+## Delivery workflow (Craft Phase E)
+
+Target path for every change:
+
+```text
+feature branch → open PR → craft-gate + SonarCloud green → merge to main
+```
+
+| Rule | Detail |
+|------|--------|
+| No direct push to `main` | Branch protection requires a PR (`scripts/finish-phase-e.sh`) |
+| Required checks | `craft-gate` (shellcheck + Gate 2 + iOS) and `SonarCloud Code Analysis` |
+| PR template | `.github/pull_request_template.md` — task IDs, Traces, Gate 2 evidence |
+| Scope | From `HomesFlow.prd.md` only; silent PRD → ask or propose a PRD change |
+| Agents | Same rules; do not bypass gates via admin push |
+
+Break-glass (emergency only): temporarily turn off “Do not allow bypassing…” in GitHub branch settings, fix forward, then re-run `bash scripts/finish-phase-e.sh`.
 
 ---
 
@@ -72,9 +93,9 @@ When Sonar and Gate 2 disagree, **Gate 2 wins** for tests; **Supabase API shape 
 | **Gate 2** | `bash scripts/check-traceability.sh` | Linux or macOS |
 | **Shell** | `shellcheck scripts/*.sh` | Linux or macOS |
 | **SwiftLint** | `swiftlint lint --config ios/.swiftlint.yml` | macOS |
-| **Sonar** | SonarCloud on push (quality gate on **new code** after Phase D) | SonarCloud |
+| **Sonar** | CI job `sonar` in `.github/workflows/ci.yml` (`SONAR_TOKEN`) + quality gate on **new code** | Ubuntu + SonarCloud |
 
-SwiftLint intentionally disables size/complexity rules on the existing codebase; opt-in rules target `force_try`, `force_cast`, and similar footguns. Sonar policy excludes migrations and suppresses conventions documented in `sonar-disposition.md`.
+SwiftLint intentionally disables size/complexity rules on the existing codebase; opt-in rules target `force_try`, `force_cast`, and similar footguns. Sonar policy excludes migrations and suppresses conventions documented in `sonar-disposition.md`. CI-based scan reads `sonar.issue.ignore.multicriteria` from `sonar-project.properties`.
 
 ---
 
