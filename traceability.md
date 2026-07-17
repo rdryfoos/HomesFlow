@@ -2,7 +2,9 @@
 
 Purpose: guarantee an unbroken chain from PRD requirement → spec → task → code → test, so that coverage and scope are *machine-checkable* rather than maintained by hand.
 
-This file is the single source of mechanics. The short, non-negotiable **principle** belongs in the Spec Kit constitution (`.specify/memory/constitution.md`); everything else lives here and is referenced from there.
+Gate 2 proves the PRD is *true of the system*: shipped behavior is authorized by a registry ID, and every acceptance criterion is either verified by a named test or explicitly tracked as debt. It does not prove the PRD is the right product — that is discovery/validation work outside this chain.
+
+This file is the single source of mechanics. The short, non-negotiable **principle** belongs in the Spec Kit constitution (`.specify/memory/constitution.md`); everything else lives here and is referenced from there. Product scope remains in `HomesFlow.prd.md` (see constitution Hierarchy of Truth — scope vs process).
 
 ---
 

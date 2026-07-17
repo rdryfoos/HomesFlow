@@ -48,10 +48,16 @@ When documents conflict, higher layers win:
 5. `specs/<feature>/plan.md` and `tasks.md`
 6. Source code
 
+**Scope vs process.** Product scope and acceptance criteria are authoritative only in `HomesFlow.prd.md`. This constitution governs *how* we build (process, architecture, traceability). If the PRD is silent on a product behavior, do not invent scope here — amend the PRD. If documents conflict on *engineering law*, this constitution wins; on *what the product must do*, the PRD wins.
+
+External planning aids (e.g. StoriesOnBoard story maps) may inform humans when drafting or revising the PRD. They are not part of this hierarchy and are not Gate-2-enforced.
+
 ## Governance
 
 Amendments require a version bump and brief rationale. Traceability mechanics live in `traceability.md`; engineering and toolchain notes in `specs/001-mvp/dev-notes.md`. Neither overrides this file or the PRD.
 
-**Version**: 1.2.0 | **Ratified**: 2026-06-28 | **Last Amended**: 2026-07-03
+**Version**: 1.2.1 | **Ratified**: 2026-06-28 | **Last Amended**: 2026-07-17
+
+**1.2.1 rationale**: Clarified Hierarchy of Truth so agents do not blur process law (constitution) with product scope (PRD). Story maps and similar tools stay outside the machine-checked chain.
 
 **1.2.0 rationale**: Principle III previously hardcoded blanket timestamp-wins. Amended to defer to the PRD's data-type-aware conflict model (story-map decision 2026-07-03): automatic resolution with loser notification, terminal-status protection, connectivity-gated structural actions. Keeps the constitution stable as per-data-type rules evolve in the PRD.
