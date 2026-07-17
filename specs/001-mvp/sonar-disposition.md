@@ -1,16 +1,30 @@
 # SonarCloud Disposition: HomesFlow MVP
 
 **Project**: [rdryfoos_HomesFlow](https://sonarcloud.io/project/overview?id=rdryfoos_HomesFlow)  
-**Policy files**: `sonar-project.properties` (CI-based analysis) · `.sonarcloud.properties` (automatic analysis scope)  
+**Policy files**: `sonar-project.properties` (CI-based analysis — authoritative) · `.sonarcloud.properties` (legacy automatic-analysis scope)  
 **Craft context**: `craft-conventions.md`
 
 SonarCloud reports **code smells only** (no bugs/vulnerabilities at baseline). Most findings were **tool misconfiguration**, not craft failures.
 
-> **Automatic analysis limitation**: SonarCloud ignores `sonar.issue.ignore.multicriteria` from properties files. Until we switch to CI-based scan, enter the suppressions below in **Project Administration → General Settings → Analysis Scope → Ignore Issues on Multiple Criteria** (same patterns as git).
+## Analysis mode (Craft Phase E / T089)
+
+| Mode | Status | Notes |
+|------|--------|-------|
+| **CI-based** (preferred) | Job `sonar` in `.github/workflows/ci.yml` | Reads git `sonar.issue.ignore.multicriteria`; needs `SONAR_TOKEN` secret |
+| Automatic analysis | Disable after CI Sonar is green | Ignores multicriteria from properties files |
+
+**Setup**
+
+1. Create a SonarCloud **analysis token** (My Account → Security).  
+2. Add repo secret `SONAR_TOKEN` (Settings → Secrets and variables → Actions).  
+3. Confirm the `sonar` job is green on a PR.  
+4. In SonarCloud → Administration → Analysis Method, **turn off Automatic Analysis** so only CI scans run (avoids double analysis and keeps suppressions in git).
+
+UI multicriteria rows (below) can remain as belt-and-suspenders until automatic analysis is off; after that, git is source of truth.
 
 ---
 
-## Configured suppressions (in git + Sonar UI)
+## Configured suppressions (in git; mirror in Sonar UI until automatic analysis is off)
 
 | Rule key pattern | File path pattern | Count (baseline) | Rationale |
 |------------------|-------------------|----------------:|-----------|
@@ -18,7 +32,7 @@ SonarCloud reports **code smells only** (no bugs/vulnerabilities at baseline). M
 | **swift:S115** | `**/ios/**` | 26 | Supabase JSON uses `snake_case` field names |
 | **swift:S1075** | `**/HomesFlowTests/**` | 7 | Test fixture URIs, not production config |
 | **swift:S1186** | `**/ios/HomesFlow/Features/**` | 13 | SwiftUI dismiss-only closures |
-| *(scope)* | `supabase/**` excluded | 19 plsql | Immutable migrations — via `.sonarcloud.properties` |
+| *(scope)* | `supabase/**` excluded | 19 plsql | Immutable migrations — via properties exclusions |
 
 ---
 
@@ -40,11 +54,11 @@ After the next analysis, bulk-close any remaining **S1186** outside `Features/` 
 
 ## Quality gate target (new code)
 
-Once baseline is calibrated:
-
 - **0** new bugs, vulnerabilities, blocker issues  
 - **0** new critical on `ios/HomesFlow/**` (excluding configured suppressions)  
 - Legacy debt on old code: trend down, not zero  
+
+Branch protection requires the GitHub check **SonarCloud Code Analysis** (posted by the SonarCloud GitHub App after CI or automatic analysis).
 
 ---
 
@@ -54,4 +68,4 @@ When adding a convention that Sonar fights:
 
 1. Update `craft-conventions.md`  
 2. Add a `sonar.issue.ignore.multicriteria` entry with a one-line rationale  
-3. Note the change here — do not hand-edit Sonar UI without updating git  
+3. Note the change here — do not rely on Sonar UI alone once CI analysis is the source of truth  
