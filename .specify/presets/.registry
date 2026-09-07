@@ -5,11 +5,13 @@
       "version": "0.1.0",
       "source": "local",
       "manifest_hash": "sha256:b635743a9f9c48bebdfb39abf3d840e16cf38ca90c73992af49afeee012530a1",
-      "enabled": true,
+      "enabled": false,
       "priority": 10,
       "registered_commands": {},
       "registered_skills": {},
-      "installed_at": "2026-08-06T18:45:20.293055+00:00"
+      "installed_at": "2026-08-06T18:45:20.293055+00:00",
+      "archived_at": "2026-09-07T00:00:00+00:00",
+      "archive_note": "Pre-rename preset (clewseau 0.1.0); files removed 2026-09-07, recoverable at tag clew-era-final. HomesFlow carries the durable-ID and Traces rules in its own .specify/templates, so no replacement preset is installed; the specassay preset (Carries vocabulary) waits on the Traces-to-Carries migration."
     }
   }
 }

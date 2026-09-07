@@ -39,26 +39,29 @@ Domain language for specs, plans, and code. When wording is ambiguous, this file
 
 On **iPad**, each tab uses a three-panel layout: sidebar (home context + tabs) + section list + section detail (**FR-NAV-01**, **AC-HOME-10**).
 
-## Clewseau vocabulary
+## SpecAssay vocabulary
 
-Traceability terms from the Clewseau Spec Kit overlay (also in constitution Article: Clewseau vocabulary). Do not invent synonyms — especially not “dossier” for the Gate artifact.
+Traceability terms from the SpecAssay Spec Kit overlay. Do not invent synonyms — especially not “dossier” for the Gate artifact.
 
 | Term | Meaning |
 |------|---------|
-| **clew** | The Gate-emitted traceability artifact (`format: "clew"`). Default filename `clew.json`. |
-| **clew.json** | Usual on-disk path for a clew (configurable via Gate `clew_path`). |
-| **Clewseau** | Spec Kit overlay: durable IDs, Gate 2, clew emission. Not Thorsten Schlathölter’s open-source `clew` tool. |
-| **clewloupe** | Viewer that consumes a clew only — no target re-scan. |
-| **verified** | Named carrier exists (AC proof and/or `@covers` / proof for US/FR/NFR). |
-| **tracked-debt** | Incomplete, but declared on an open task with `Traces:`. |
+| **trace-manifest** | The Gate-emitted traceability artifact (`format: "trace-manifest"`). Default filename `trace-manifest.json`. |
+| **trace-manifest.json** | Usual on-disk path for a trace-manifest (configurable via `manifest_path` in `specassay-check-config.yml`). |
+| **SpecAssay** | Spec Kit overlay: durable IDs, Gate 2, trace-manifest emission. Not Thorsten Schlathölter’s open-source `clew` tool. |
+| **Loupe** | Viewer that reads a trace-manifest only — no target re-scan. |
+| **proven** | Named carrier exists (AC proof and/or `@covers` / proof for US/FR/NFR). A fact that a carrier exists, not a claim the code is correct. |
+| **tracked-debt** | Incomplete, but declared on an open task with a task mark. |
 | **GAP** | Silent AC gap — neither proof nor open debt; Gate refuses; thread frays. |
 | **backlog** | US/FR/NFR with no own carrier — planning altitude, not a silent gap. |
-| **Gate 2** | Deterministic Clewseau check + clew emit (`speckit.assay.check`; formerly `speckit.clewseau-gate.check`, pre-rename era; archived at `clew-era-final`). |
+| **mark** / **`@covers`** | A one-line comment in source naming the durable ID(s) that code serves. |
+| **`Traces:`** | HomesFlow’s task mark: the ID(s) a task checkbox carries. SpecAssay’s current name for the same mark is `Carries:`; the Gate accepts both, and this repo still writes `Traces:`. |
+| **Gate 2** | Deterministic SpecAssay check + manifest emit (`speckit.specassay-check.gate`; run in CI as `scripts/check-traceability.sh`). |
 
-Pre-rename gate tooling (clewseau-gate v0.2.0, clew.json) archived 2026-08-18;
-recoverable at tag `clew-era-final`; lineage recorded in the provenance repo.
+Pre-rename gate tooling (the `clewseau-gate` extension v0.2.0, `clew.json`) archived 2026-08-18
+and the matching preset removed 2026-09-07; both recoverable at tag `clew-era-final`; lineage
+recorded in the provenance repo.
 
-SDLC worked examples (AC-HOME-09 / AC-HOME-10 and peers): Clewseau repo `docs/reading-a-clew.md`.
+SDLC worked examples (AC-HOME-09 / AC-HOME-10 and peers): SpecAssay repo `docs/reading-a-manifest.md`.
 
 ## MVP exclusions
 
